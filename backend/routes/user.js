@@ -5,24 +5,17 @@ const User = require("../models/user");
 const gravatar = require("gravatar");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const config = require("config");
-const auth = require("../middleware/auth")
+const config = require("config")
 
-router.get("/", auth, async (req, res)=>{
-    try {
-        const user = await User.findById(req.user.id).select("-password");
-        res.json(user);
-    }catch (e) {
-        console.error(e.message);
-    }
-})
 
-//Authenticate user and get token
+//Register user
 router.post("/", [
+    //name is required
+    body("name","Name is required").not().isEmpty(),
     //username must be email
     body('email',"Please include a valid email").isEmail(),
-    //password id required
-    body('password',"Password id required").exists()
+    //min length of password must be 5
+    body('password',"Please enter a password with 5 or more characters").isLength({min: 5})
 ], async (req, res)=>{
     // Finds the validation errors in this request and wraps them in an object with handy functions
     const errors = validationResult(req);
@@ -36,17 +29,31 @@ router.post("/", [
         //Check if user is already exists
         let user = await User.findOne({email});
 
-        //Check user
-        if(!user){
-            return res.status(400).json({errors: [{msg: "Invalid Credentials"}]})
+        if(user){
+            return res.status(400).json({errors: [{msg: "User already exists"}]})
         }
 
-      const isMatch = await bcrypt.compare(password, user.password);
+        //Create avatar
+        const avatar = gravatar.url(email,{
+            s: "200",
+            r: "pg",
+            d: "mm"
+        });
 
-        //Check password
-        if(!isMatch){
-            return res.status(400).json({errors: [{msg: "Invalid Credentials"}]})
-        }
+        user = new User({
+            name,
+            email,
+            avatar,
+            password
+        });
+
+        //Encrypt password
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(password, salt);
+
+        await user.save();
+
+        //Return jsonwebtoken
 
         const payload = {
             user: {
@@ -58,10 +65,10 @@ router.post("/", [
 
         jwt.sign(payload,secretKey,{expiresIn: 360000},(err, token)=>{
             if(err) throw err;
-            res.json(token)
+            res.json({token})
         })
 
-        console.log("User loged in")
+        res.send("User registered")
     }catch (e) {
         console.log(e.message)
     }
