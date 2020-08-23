@@ -82,6 +82,41 @@ router.delete("/:post_id", auth, async (req, res)=>{
     }
 })
 
+//Create like
+router.put("/:post_id/like", auth, async (req, res)=>{
+    try {
+        let post = await Post.findById(req.params.post_id);
+        if(post.likes.filter(like => like.user.toString()===req.user.id).length > 0){
+            return res.status(400).json({msg: "Post has been already liked"})
+        }
+        post.likes.unshift({user: req.user.id});
+        await post.save();
+        res.json("Liked is created")
+
+    }catch (e) {
+        console.log(e.message)
+        res.status(500).send("Server error")
+    }
+})
+
+//Remove like
+router.put("/:post_id/unlike", auth, async (req, res)=>{
+    try {
+        let post = await Post.findById(req.params.post_id);
+        if(post.likes.filter(like => like.user.toString() === req.user.id).length === 0){
+            return res.status(400).json({msg: "Post has not yet been liked"})
+        }
+        let removeIndex = post.likes.map(like => like.user.toString()).indexOf(req.user.id);
+        post.likes.splice(removeIndex, 1)
+        await post.save();
+        res.json("Liked is deleted")
+
+    }catch (e) {
+        console.log(e.message)
+        res.status(500).send("Server error")
+    }
+})
+
 //Create comments
 router.put("/:post_id/comments", [
     auth,
@@ -114,8 +149,23 @@ router.put("/:post_id/comments", [
             console.log(e)
             res.status(500).send("Server error")
         }
-
     }
 ])
+
+//Delete comment
+router.delete("/:post_id/comments/:comment_id", auth, async (req, res)=>{
+    try{
+        let post = await Post.findById(req.params.post_id);
+        console.log(post.comments )
+        post.comments = post.comments.filter((com)=>com._id.toString() !== req.params.comment_id)
+        await post.save();
+        res.send("Comment deleted")
+    }catch (e) {
+        console.log(e)
+        res.status(500).send("Server error")
+    }
+})
+
+
 
 module.exports = router
