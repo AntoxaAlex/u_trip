@@ -1,5 +1,0 @@
-{
-  "PORT": "4000",
-  "DBURL":"mongodb+srv://dbUser:anton1995@cluster0.otz1o.mongodb.net/trips?retryWrites=true&w=majority",
-  "SECRET": "kumazloypes"
-}
