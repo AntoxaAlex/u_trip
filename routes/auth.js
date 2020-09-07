@@ -58,10 +58,10 @@ router.post("/", [
 
         jwt.sign(payload,secretKey,{expiresIn: 360000},(err, token)=>{
             if(err) throw err;
-            res.json(token)
+            res.json({token})
         })
 
-        console.log("User loged in")
+        console.log("User logged in")
     }catch (e) {
         console.log(e.message)
     }
