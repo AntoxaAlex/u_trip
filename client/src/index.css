@@ -16,3 +16,64 @@ nav{
   z-index: 1;
   position: relative;
 }
+
+#findTripBox{
+  width: 100%;
+  height: 700px;
+  background-image: url("imgs/home/rana-sawalha-W_-6PWGbYaU-unsplash.jpg");
+  background-size: cover;
+}
+
+/*============================================DASHBOARD============================================*/
+
+#dashboard{
+  padding: 20px;
+}
+
+
+#firstColumn{
+
+}
+
+#avatarBox{
+  padding: 0px 20px 20px 0px;
+}
+
+#secondColumn{
+
+}
+
+#nameBox{
+  width: 100%;
+  font-size: 1.4rem;
+}
+
+
+#mainInfo{
+
+}
+
+#mainInfo table{
+  width: 50%;
+}
+
+#addition-container{
+
+}
+
+#gender-form label{
+  margin-right: 15px;
+}
+
+/*============================================NEWTRIP============================================*/
+
+.campGroup{
+
+}
+
+.upload-image input[type=file]{outline:0;opacity:0;pointer-events:none;user-select:none}
+.upload-image .label{width:200px; height:200px; border:2px dotted #6DD5FA;border-radius:5px;display:block;padding:1.2em;transition:border 300ms ease;cursor:pointer;text-align:center; margin: auto}
+.upload-image .label i{display:block;font-size:42px;padding-bottom:16px;padding-top: 20px}
+.upload-image .label span{font-size:1rem}
+.upload-image .label i,.upload-image .label .title{color:#6DD5FA;transition:200ms color}
+.upload-image .label:hover{border:2px solid #6DD5FA}

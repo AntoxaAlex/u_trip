@@ -2,21 +2,23 @@ const express = require("express");
 const router = express.Router({mergeParams: true});
 const { body, validationResult} = require("express-validator");
 const User = require("../models/user");
-const gravatar = require("gravatar");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const config = require("config")
+const config = require("config");
 
 
 //Register user
-router.post("/", [
+router.post("/",    [
     //name is required
-    body("name","Name is required").not().isEmpty(),
+    body("firstname","First name is required").not().isEmpty(),
+    //secondname is required
+    body("secondname","Second name is required").not().isEmpty(),
     //username must be email
     body('email',"Please include a valid email").isEmail(),
     //min length of password must be 5
     body('password',"Please enter a password with 5 or more characters").isLength({min: 5})
-], async (req, res)=>{
+    ],
+    async (req, res)=>{
     // Finds the validation errors in this request and wraps them in an object with handy functions
     const errors = validationResult(req);
     if(!errors.isEmpty()){
@@ -24,7 +26,7 @@ router.post("/", [
     }
 
 //    Retrieve values from body
-    const { name, email, password} = req.body;
+    const { firstname, secondname, email, password } = req.body;
     try {
         //Check if user is already exists
         let user = await User.findOne({email});
@@ -33,17 +35,11 @@ router.post("/", [
             return res.status(400).json({errors: [{msg: "User already exists"}]})
         }
 
-        //Create avatar
-        const avatar = gravatar.url(email,{
-            s: "200",
-            r: "pg",
-            d: "mm"
-        });
 
         user = new User({
-            name,
+            firstname,
+            secondname,
             email,
-            avatar,
             password
         });
 

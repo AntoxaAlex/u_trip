@@ -3,6 +3,7 @@ const app = express();
 const config = require("config");
 const connectDB = require("./config/db")
 const cors = require("cors");
+const bodyParser = require("body-parser");
 
 
 
@@ -10,7 +11,8 @@ const cors = require("cors");
 const port = config.get("PORT") || 4000;
 
 //Middleware
-app.use(express.json({extended: false}));
+app.use(bodyParser.urlencoded({limit: "50mb", extended: true}));
+app.use(bodyParser.json({limit: "50mb", extended: true}))
 app.use(cors());
 
 //Defile routes

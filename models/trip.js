@@ -5,6 +5,9 @@ let tripSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectID,
         ref: "User"
     },
+    imageUrl: {
+        type: String
+    },
     title: {
         type: String,
         required: true
@@ -13,9 +16,19 @@ let tripSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    halts: {
-        type: [String]
-    },
+    campContent: [
+        {
+            campTitle: {
+                type: String
+            },
+            campImage: {
+                type: String
+            },
+            campDescription: {
+                type: String
+            }
+        }
+    ],
     final_destination: {
         type: String,
         required: true

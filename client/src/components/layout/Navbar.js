@@ -12,6 +12,9 @@ const Navbar =({auth:{isAuthenticated, loading}, logout})=>{
                 <Link className="nav-link" to="/trips/home">Home <span className="sr-only">(current)</span></Link>
             </li>
             <li className="nav-item">
+                <Link className="nav-link" to="/dashboard">Dashboard</Link>
+            </li>
+            <li className="nav-item">
                 <Link className="nav-link" to="/trips/new">New</Link>
             </li>
         </ul>

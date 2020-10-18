@@ -1,5 +1,8 @@
 {
   "PORT": "4000",
   "DBURL":"mongodb+srv://dbUser:anton1995@cluster0.otz1o.mongodb.net/trips?retryWrites=true&w=majority",
-  "SECRET": "kumazloypes"
+  "SECRET": "kumazloypes",
+  "CLOUDINARY_NAME": "antoxaalex",
+  "CLOUDINARY_API_KEY": "636914778372888",
+  "CLOUDINARY_API_SECRET": "LSKgVnU6TMxXpO6uPx7M8ZgtU6E"
 }

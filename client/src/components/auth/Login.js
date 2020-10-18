@@ -19,7 +19,7 @@ const Login = ({login, isAuthenticated}) =>{
     }
 
     if(isAuthenticated){
-        return <Redirect to="/trips/home"/>
+        return <Redirect to="/dashboard"/>
     }
     return (
         <React.Fragment>
