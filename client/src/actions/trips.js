@@ -1,4 +1,5 @@
-import {NEW_TRIP_SUCCESS, NEW_TRIP_FAILED, GET_PROFILE, PROFILE_ERROR, GET_ALL_MY_TRIPS} from "./types";
+
+import {NEW_TRIP_SUCCESS, NEW_TRIP_FAILED, GET_TRIP_BY_ID, PROFILE_ERROR, GET_ALL_MY_TRIPS, SET_MAP_POSITION} from "./types";
 import axios from "axios";
 import {setAlert} from "./alert";
 
@@ -20,49 +21,67 @@ export const getAllMyTrips = () => async dispatch =>{
     }
 }
 
+//Get trip by id
+export const getTripById = (id) => async dispatch => {
+    try{
+        const res = await axios.get("/trips/"+id)
+        dispatch({
+            type: GET_TRIP_BY_ID,
+            payload: res.data
+        })
+    }catch (e) {
+        console.log(e)
+    }
+}
+
 //Create new trip
 export const createTrip = (
-    image,
+    tripImage,
     title,
-    starting_point,
-    campContent,
-    final_destination,
+    trip_description,
     from,
     to,
-    trip_description
+    isCompleted,
+    sp_title,
+    sp_description,
+    sp_image,
+    sp_latitude,
+    sp_longitude,
+    campContent,
+    fd_title,
+    fd_description,
+    fd_image,
+    fd_latitude,
+    fd_longitude
 ) => async dispatch => {
     const config = {
         headers: {
             "Content-Type": "application/json"
         }
     }
-    console.log(
-        "Title: " + title,
-        "Starting point" + starting_point,
-        "Camps" + campContent,
-        "Final destination" + final_destination,
-        "From" + from,
-        "To" + to,
-        "Description" + trip_description
-    )
 
-
-
+    const body = JSON.stringify({
+        tripImage,
+        title,
+        trip_description,
+        from,
+        to,
+        isCompleted,
+        sp_title,
+        sp_description,
+        sp_image,
+        sp_latitude,
+        sp_longitude,
+        campContent,
+        fd_title,
+        fd_description,
+        fd_image,
+        fd_latitude,
+        fd_longitude
+    })
 
     try {
-        const imageUrl = await axios.post("/trips/tripimage", image);
-
-        const body = JSON.stringify({
-            imageUrl: imageUrl.data,
-            title,
-            starting_point,
-            campContent,
-            final_destination,
-            from,
-            to,
-            trip_description
-        })
-
+        // const imageUrl = await axios.post("/trips/tripimage", imageForm);
         const res = await axios.post("/trips", body, config);
 
         console.log(res.data)
@@ -81,3 +100,5 @@ export const createTrip = (
         console.log(e)
     }
 }
+
+

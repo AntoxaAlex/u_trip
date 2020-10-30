@@ -1,9 +1,11 @@
 import React, {useState, Fragment} from "react";
 import {connect} from "react-redux";
+import {Redirect} from "react-router-dom";
 import PropTypes from "prop-types";
 import {createProfile} from "../../actions/profile";
 
-const Create = ({createProfile, profile:{profile}}) => {
+
+const Create = ({createProfile, profile:{profile, isUpdated}}) => {
     const[formData, setFormData]= useState({
         dob: "",
         place: "",
@@ -68,9 +70,9 @@ const Create = ({createProfile, profile:{profile}}) => {
             date
         )
 
-        // if(profile.isUpdated === true){
-        //     return <Redirect to="/profile/me"/>
-        // }
+        if(isUpdated === true){
+            return <Redirect to="/dashboard"/>
+        }
     }
     return(
         <Fragment>

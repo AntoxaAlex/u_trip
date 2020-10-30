@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router({mergeParams: true});
 const Trip = require("../models/trip");
-const Post = require("../models/post");
+const Post = require("../models/comment");
 const auth = require("../middleware/auth");
 const config =require("config");
 const { body, validationResult} = require("express-validator");
@@ -75,8 +75,7 @@ router.post("/", [
     auth,
     [
         body("title", "Title is required").not().isEmpty(),
-        body("starting_point", "Starting point is required").not().isEmpty(),
-        body("final_destination", "Final destination is required").not().isEmpty(),
+        body("isCompleted", "This field is required").not().isEmpty(),
         body("from", "This field is required").not().isEmpty(),
         body("trip_description", "Description is required").not().isEmpty()
     ]
@@ -87,31 +86,49 @@ router.post("/", [
     }
 
     const {
-        imageUrl,
+        tripImage,
         title,
-        starting_point,
-        campContent,
-        final_destination,
+        trip_description,
         from,
         to,
-        trip_description
+        isCompleted,
+        sp_title,
+        sp_description,
+        sp_image,
+        sp_latitude,
+        sp_longitude,
+        campContent,
+        fd_title,
+        fd_description,
+        fd_image,
+        fd_latitude,
+        fd_longitude
     } = req.body
 
     const tripObj = {};
     tripObj.user = req.user.id
-    if(imageUrl) tripObj.imageUrl = imageUrl;
+    if(tripImage) tripObj.tripImage = tripImage;
     if(title) tripObj.title = title;
-    if(starting_point) tripObj.starting_point = starting_point;
+    if(trip_description) tripObj.trip_description = trip_description;
+    if(from) tripObj.from = from;
+    if(to) tripObj.to = to;
+    if(isCompleted) tripObj.isCompleted = isCompleted
+    if(sp_title) tripObj.sp_title = sp_title;
+    if(sp_description) tripObj.sp_description = sp_description;
+    if(sp_image) tripObj.sp_image = sp_image;
+    if(sp_latitude) tripObj.sp_latitude = sp_latitude;
+    if(sp_longitude) tripObj.sp_longitude = sp_longitude;
+    if(fd_title) tripObj.fd_title = fd_title;
+    if(fd_description) tripObj.fd_description = fd_description;
+    if(fd_image) tripObj.fd_image = fd_image;
+    if(fd_latitude) tripObj.fd_latitude = fd_latitude;
+    if(fd_longitude) tripObj.fd_longitude = fd_longitude;
     if(campContent){
         tripObj.campContent = [];
         campContent.map((camp)=>{
             tripObj.campContent.push(camp)
         })
     }
-    if(final_destination) tripObj.final_destination = final_destination;
-    if(from) tripObj.from = from;
-    if(to) tripObj.to = to;
-    if(trip_description) tripObj.trip_description = trip_description;
 
     try{
         let trip = new Trip(tripObj);
@@ -125,7 +142,33 @@ router.post("/", [
 })
 
 //Upload main trip image
-router.post("/tripimage", auth, upload.single("tripImage"), async (req, res, next)=>{
+router.post("/tripImage", auth, upload.single("tripImage"), async (req, res, next)=>{
+    try {
+        await cloudinary.v2.uploader.upload(req.file.path, (error, result) => {
+            if(error){
+                console.log(error)
+            }
+            res.json(result.secure_url);
+        })
+    }catch (e) {
+        console.log(e)
+    }
+})
+
+router.post("/sp_image", auth, upload.single("sp_image"), async (req, res, next)=>{
+    try {
+        await cloudinary.v2.uploader.upload(req.file.path, (error, result) => {
+            if(error){
+                console.log(error)
+            }
+            res.json(result.secure_url);
+        })
+    }catch (e) {
+        console.log(e)
+    }
+})
+
+router.post("/fd_image", auth, upload.single("fd_image"), async (req, res, next)=>{
     try {
         await cloudinary.v2.uploader.upload(req.file.path, (error, result) => {
             if(error){
@@ -153,9 +196,9 @@ router.post("/campImage", auth, upload.single("campImage"), async (req, res, nex
 })
 
 //Show trip with a specific id
-router.get("/show/:id", auth, async (req, res)=>{
+router.get("/:id", auth, async (req, res)=>{
     try{
-        let trip = await Trip.findById(req.params.id).populate("posts");
+        let trip = await Trip.findById(req.params.id).populate("comments");
         if(!trip){
             res.status(404).send("Trip not found")
         }

@@ -5,31 +5,10 @@ let tripSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectID,
         ref: "User"
     },
-    imageUrl: {
+    tripImage: {
         type: String
     },
     title: {
-        type: String,
-        required: true
-    },
-    starting_point: {
-        type: String,
-        required: true
-    },
-    campContent: [
-        {
-            campTitle: {
-                type: String
-            },
-            campImage: {
-                type: String
-            },
-            campDescription: {
-                type: String
-            }
-        }
-    ],
-    final_destination: {
         type: String,
         required: true
     },
@@ -44,10 +23,63 @@ let tripSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    posts: [
+    isCompleted: {
+        type: Boolean,
+        required: true
+    },
+    sp_title:{
+        type: String
+    },
+    sp_image:{
+        type: String
+    },
+    sp_description:{
+        type: String
+    },
+    sp_latitude:{
+        type: String
+    },
+    sp_longitude:{
+        type: String
+    },
+    campContent: [
+        {
+            campTitle:{
+                type: String
+            },
+            campImage:{
+                type: String
+            },
+            campDescription:{
+                type: String
+            },
+            campLatitude:{
+                type: String
+            },
+            campLongitude:{
+                type: String
+            }
+        }
+    ],
+    fd_title:{
+        type: String
+    },
+    fd_image:{
+        type: String
+    },
+    fd_description:{
+        type: String
+    },
+    fd_latitude:{
+        type: String
+    },
+    fd_longitude:{
+        type: String
+    },
+    comments: [
         {
             type: mongoose.Schema.Types.ObjectID,
-            ref: "Post"
+            ref: "Comment"
         }
     ],
     date:{

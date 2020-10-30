@@ -14,4 +14,6 @@ export const CLEAR_PROFILE = "CLEAR_PROFILE";
 export const NEW_TRIP_SUCCESS = "NEW_TRIP_SUCCESS";
 export const NEW_TRIP_FAILED = "NEW_TRIP_FAILED";
 export const GET_ALL_MY_TRIPS = "GET_ALL_MY_TRIPS";
+export const GET_TRIP_BY_ID = "GET_TRIP_BY_ID";
 export const CHANGE_TAB = "CHANGE_TAB";
+export const SET_MAP_POSITION = "SET_MAP_POSITION";

@@ -1,10 +1,12 @@
-import {NEW_TRIP_SUCCESS, NEW_TRIP_FAILED, GET_ALL_MY_TRIPS} from "../actions/types";
+import {NEW_TRIP_SUCCESS, NEW_TRIP_FAILED, GET_ALL_MY_TRIPS, GET_TRIP_BY_ID, SET_MAP_POSITION} from "../actions/types";
 
 const initialState ={
     trip: null,
     trips: [],
     loading: true,
-    errors: {}
+    errors: {},
+    positionObj: null,
+    posId: null
 };
 
 export default (state = initialState, action) =>{
@@ -21,6 +23,12 @@ export default (state = initialState, action) =>{
             return {
                 ...state,
                 trips: payload,
+                loading: false
+            }
+        case GET_TRIP_BY_ID:
+            return {
+                ...state,
+                trip: payload,
                 loading: false
             }
         case NEW_TRIP_FAILED:

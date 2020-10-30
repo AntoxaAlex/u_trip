@@ -10,7 +10,8 @@ const Dashboard = ({getCurrentProfile, getAllMyTrips, changeTab, auth:{user}, pr
     useEffect(()=>{
         getCurrentProfile();
         getAllMyTrips()
-    },[getCurrentProfile])
+    },[getCurrentProfile,getAllMyTrips])
+
 
     const onChangeTab = e => {
         changeTab(e.target.name)
@@ -113,13 +114,13 @@ const Dashboard = ({getCurrentProfile, getAllMyTrips, changeTab, auth:{user}, pr
                                                     <div className="row">
                                                         {trips.map((trip,i)=>{
                                                             return(
-                                                                <div key= {i}className="card col-4">
-                                                                    <img src={trip.imageUrl} className="card-img-top"
+                                                                <div key= {i} className="card col-4">
+                                                                    <img src={trip.tripImage} className="card-img-top"
                                                                          alt="..."/>
                                                                          <div className="card-body">
                                                                              <h5 className="card-title">{trip.title}</h5>
                                                                              <p className="card-text">{trip.description}</p>
-                                                                             <a href="#" className="btn btn-primary">See more</a>
+                                                                             <Link to={"/trips/show/"+trip._id} className="btn btn-primary">See more</Link>
                                                                          </div>
                                                                 </div>
                                                             )

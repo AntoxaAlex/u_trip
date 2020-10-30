@@ -9,7 +9,7 @@ import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 
 import NewTrip from "./components/trips/NewTrip";
-import ShowTrip from "./components/trips/show.component";
+import ShowTrip from "./components/trips/ShowTrip";
 import EditTrip from "./components/trips/edit.component";
 import Navbar from "./components/layout/Navbar";
 import Alert from "./components/layout/Alert"

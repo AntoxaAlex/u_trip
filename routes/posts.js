@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router({mergeParams: true});
 const { body, validationResult} = require("express-validator");
-const Post = require("../models/post");
+const Post = require("../models/comment");
 const Trip = require("../models/trip");
 const auth = require("../middleware/auth");
 
