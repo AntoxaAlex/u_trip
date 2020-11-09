@@ -1,6 +1,16 @@
 import axios from "axios";
 import {setAlert} from "./alert";
-import {REGISTER_FAILED, REGISTER_SUCCESS, USER_LOADED, AUTH_ERR, LOGIN_FAILED, LOGIN_SUCCESS, LOGOUT, CLEAR_PROFILE} from "./types";
+import {
+    REGISTER_FAILED,
+    REGISTER_SUCCESS,
+    USER_LOADED,
+    AUTH_ERR,
+    LOGIN_FAILED,
+    LOGIN_SUCCESS,
+    LOGOUT,
+    CLEAR_PROFILE,
+    GET_PROFILE
+} from "./types";
 import setAuthToken from "../utils/setAuthToken";
 
 
@@ -11,11 +21,16 @@ export const loadUser = () => async dispatch => {
     }
     
     try {
-        const res = await axios.get("/auth");
+        const resUser = await axios.get("/auth");
+        const resProfile = await axios.get("/profile/me") ;
 
         dispatch({
             type:USER_LOADED,
-            payload: res.data
+            payload: resUser.data
+        })
+        dispatch({
+            type: GET_PROFILE,
+            payload: resProfile.data
         })
     }catch (e) {
         dispatch({

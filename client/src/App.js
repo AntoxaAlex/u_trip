@@ -37,7 +37,7 @@ const App = ()=>{
             <Router>
                 <Navbar/>
                 <Route exact path="/" component={Landing}/>
-                <section className="container">
+                <section id="mainContainer" className="container">
                     <Alert/>
                     <Switch>
                         <Route exact path="/auth/signin" component={Login}/>

@@ -10,20 +10,25 @@ import {
 
 const libraries = ["places"]
 
-const TripMap = ({trip}) =>{
+const TripMap = ({trip, center}) =>{
 
-console.log(trip)
+    const[selected, setSelected] = useState({
+        isDisplayed: false,
+        title: "",
+        lat: "",
+        lng: ""
+    })
 
+    const setInfoWindow =(title, lat, lng) => {
+        setSelected({...selected, isDisplayed: true, title: title, lat: lat, lng: lng})
+    }
 
     const mapContainerStyle = {
-        width: "600px",
-        height: "600px"
+        width: "100%",
+        height: "500px"
     }
 
-    const center ={
-        lat: parseFloat(trip.sp_latitude),
-        lng: parseFloat(trip.sp_longitude)
-    }
+
 
     const options ={
         disableDefaultUI: true,
@@ -48,16 +53,41 @@ console.log(trip)
             onClick={(e)=>{}}
         >
 
-            <Marker key={trip.sp_title} position={{lat: parseFloat(trip.sp_latitude), lng: parseFloat(trip.sp_longitude)}}/>
+            <Marker key={trip.sp_title}
+                    position={{
+                        lat: parseFloat(trip.sp_latitude),
+                        lng: parseFloat(trip.sp_longitude)
+                    }}
+                    onMouseOver={()=>setInfoWindow(trip.sp_title,trip.sp_latitude, trip.sp_longitude)}
+            />
 
             {trip.campContent.map((camp, i)=>{
-                console.log(camp)
                 return(
-                    <Marker key={i} position={{lat: parseFloat(camp.campLatitude), lng: parseFloat(camp.campLongitude)}}/>
+                    <Marker key={i}
+                            position={{lat: parseFloat(camp.campLatitude), lng: parseFloat(camp.campLongitude)}}
+                            onMouseOver={()=>setInfoWindow(camp.campTitle, camp.campLatitude, camp.campLongitude)}
+                    />
                 )
             })}
 
-            <Marker key={trip.fd_title} position={{lat: parseFloat(trip.fd_latitude), lng: parseFloat(trip.fd_longitude)}}/>
+            <Marker key={trip.fd_title}
+                    position={{lat: parseFloat(trip.fd_latitude), lng: parseFloat(trip.fd_longitude)}}
+                    onMouseOver={()=>setInfoWindow(trip.fd_title,trip.fd_latitude, trip.fd_longitude)}
+            />
+
+
+            {selected.isDisplayed ? (
+                <InfoWindow
+                    position={{lat: parseFloat(selected.lat), lng: parseFloat(selected.lng)}}
+                    onCloseClick={()=>setSelected({...selected,isDisplayed: false})}
+                >
+                    <div>
+                        <h2>{selected.title}</h2>
+                        <p>Latitude: {selected.lat}</p>
+                        <p>Longitude:  {selected.lng}</p>
+                    </div>
+                </InfoWindow>
+            ): null}
 
         </GoogleMap>
     )

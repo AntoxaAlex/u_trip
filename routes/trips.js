@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router({mergeParams: true});
 const Trip = require("../models/trip");
-const Post = require("../models/comment");
+const Comment = require("../models/comment");
 const auth = require("../middleware/auth");
 const config =require("config");
 const { body, validationResult} = require("express-validator");
@@ -238,7 +238,7 @@ router.put("/:id",[
 router.delete("/:id", auth, async (req, res)=>{
     try{
         await Trip.findByIdAndRemove(req.params.id);
-        await Post.findOneAndRemove({user: req.user.id});
+        await Comment.findOneAndRemove({user: req.user.id});
 
         res.send("Trip deleted")
     }catch (e) {

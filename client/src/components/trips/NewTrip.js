@@ -177,7 +177,10 @@ const NewTrip = ({createTrip}) => {
 
 
     //===================================================Change inputs values===================================================
-    const onChange = e => {setFormData({...formData, [e.target.name]: e.target.value})};
+    const onChange = e => {
+        setFormData({...formData, [e.target.name]: e.target.value})
+
+    };
     const onChangeImage = (e) => {
         const {name, files} = e.target;
         uploadImage(name, files[0])
@@ -388,6 +391,7 @@ const NewTrip = ({createTrip}) => {
                                         className="form-control"
                                         name="sp_latitude"
                                         placeholder="Write latitude"
+                                        autoComplete="off"
                                         id="sp_latitude"
                                         value={sp_latitude}
                                         onChange={(e)=>onChangeStPoint(e)}
@@ -397,6 +401,7 @@ const NewTrip = ({createTrip}) => {
                                         className="form-control"
                                         name="sp_longitude"
                                         placeholder="Write longitude"
+                                        autoComplete="off"
                                         id="sp_longitude"
                                         value={sp_longitude}
                                         onChange={(e)=>onChangeStPoint(e)}
@@ -478,6 +483,7 @@ const NewTrip = ({createTrip}) => {
                                                         className="form-control"
                                                         name="campLatitude"
                                                         placeholder="Write latitude"
+                                                        autoComplete="off"
                                                         id={"campLatitude" + i}
                                                         value={campContent[i].campLatitude}
                                                         onChange={(e)=>onChangeCamp(e,i)}
@@ -487,6 +493,7 @@ const NewTrip = ({createTrip}) => {
                                                         className="form-control"
                                                         name="campLongitude"
                                                         placeholder="Write longitude"
+                                                        autoComplete="off"
                                                         id={"campLongitude" +i}
                                                         value={campContent[i].campLongitude}
                                                         onChange={(e)=>onChangeCamp(e,i)}
@@ -579,6 +586,7 @@ const NewTrip = ({createTrip}) => {
                                         className="form-control"
                                         name="fd_latitude"
                                         placeholder="Write latitude"
+                                        autoComplete="off"
                                         id="fd_latitude"
                                         value={fd_latitude}
                                         onChange={(e)=>onChangeFnDestination(e)}
@@ -588,6 +596,7 @@ const NewTrip = ({createTrip}) => {
                                         className="form-control"
                                         name="fd_longitude"
                                         placeholder="Write longitude"
+                                        autoComplete="off"
                                         id="fd_longitude"
                                         value={fd_longitude}
                                         onChange={(e)=>onChangeFnDestination(e)}

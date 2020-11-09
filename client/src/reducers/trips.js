@@ -1,4 +1,4 @@
-import {NEW_TRIP_SUCCESS, NEW_TRIP_FAILED, GET_ALL_MY_TRIPS, GET_TRIP_BY_ID, SET_MAP_POSITION} from "../actions/types";
+import {NEW_TRIP_SUCCESS, NEW_TRIP_FAILED, GET_ALL_MY_TRIPS, GET_TRIP_BY_ID} from "../actions/types";
 
 const initialState ={
     trip: null,
@@ -34,7 +34,7 @@ export default (state = initialState, action) =>{
         case NEW_TRIP_FAILED:
             return {
                 ...state,
-                errors: payload,
+                // errors: payload,
                 loading: false
             }
         default:

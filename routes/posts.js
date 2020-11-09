@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router({mergeParams: true});
 const { body, validationResult} = require("express-validator");
-const Post = require("../models/comment");
+const Comment = require("../models/comment");
 const Trip = require("../models/trip");
 const auth = require("../middleware/auth");
 
-//Create post
+//Create comment
 router.post("/", [
     auth,
     [
@@ -18,26 +18,25 @@ router.post("/", [
     }
 
     const {
-        text,
-        name,
-        likes,
+        username,
+        profileImage,
+        text
     } = req.body;
 
-    const postObj = {
-        text,
-        name,
-        likes
-    };
-    postObj.user = req.user.id;
-
+    const commentObj = {};
+    commentObj.user = req.user.id;
+    commentObj.username = username;
+    commentObj.profileImage = profileImage
+    if(text) commentObj.text = text;
 
     try {
-        let post = await new Post(postObj);
-        await post.save()
-        console.log("Post is created")
+        let comment = await new Comment(commentObj);
+        await comment.save()
+        console.log("Comment is created")
 
-        const trip = await Trip.findById(req.params.id);
-        trip.posts.unshift(post);
+        const trip = await Trip.findById(req.params.id).populate("comments");
+        trip.comments.unshift(comment);
+        // console.log(trip)
         await trip.save()
         res.json(trip)
     }catch (e) {
@@ -48,7 +47,7 @@ router.post("/", [
 })
 
 
-//Edit post
+//Edit comment
 router.put("/:post_id", [
     auth,
     [
@@ -61,8 +60,8 @@ router.put("/:post_id", [
         }
 
         try {
-            let post =await Post.findByIdAndUpdate(req.params.post_id, req.body, {new: true});
-            res.json(post);
+            let comment =await Comment.findByIdAndUpdate(req.params.post_id, req.body, {new: true});
+            res.json(comment);
             console.log("Post is updated")
         }catch (e) {
             console.log(e.message)
@@ -83,15 +82,23 @@ router.delete("/:post_id", auth, async (req, res)=>{
 })
 
 //Create like
-router.put("/:post_id/like", auth, async (req, res)=>{
+router.put("/:comment_id/like", auth, async (req, res)=>{
     try {
-        let post = await Post.findById(req.params.post_id);
-        if(post.likes.filter(like => like.user.toString()===req.user.id).length > 0){
-            return res.status(400).json({msg: "Post has been already liked"})
+        let comment = await Comment.findById(req.params.comment_id);
+        if(comment.likes.filter(like => like.user.toString()===req.user.id).length > 0){
+            let removeIndex = comment.likes.map(like => like.user.toString()).indexOf(req.user.id);
+            comment.likes.splice(removeIndex, 1)
+        } else {
+            comment.likes.unshift({user: req.user.id});
         }
-        post.likes.unshift({user: req.user.id});
-        await post.save();
-        res.json("Liked is created")
+        await comment.save();
+        console.log("Liked is created")
+
+        const trip = await Trip.findById(req.params.id).populate("comments");
+        // trip.comments.unshift(comment);
+        // console.log(trip)
+        await trip.save()
+        res.json(trip)
 
     }catch (e) {
         console.log(e.message)
@@ -99,26 +106,9 @@ router.put("/:post_id/like", auth, async (req, res)=>{
     }
 })
 
-//Remove like
-router.put("/:post_id/unlike", auth, async (req, res)=>{
-    try {
-        let post = await Post.findById(req.params.post_id);
-        if(post.likes.filter(like => like.user.toString() === req.user.id).length === 0){
-            return res.status(400).json({msg: "Post has not yet been liked"})
-        }
-        let removeIndex = post.likes.map(like => like.user.toString()).indexOf(req.user.id);
-        post.likes.splice(removeIndex, 1)
-        await post.save();
-        res.json("Liked is deleted")
 
-    }catch (e) {
-        console.log(e.message)
-        res.status(500).send("Server error")
-    }
-})
-
-//Create comments
-router.put("/:post_id/comments", [
+//Create reply
+router.put("/:comment_id/reply", [
     auth,
     [
         body("text", "Text is required").not().isEmpty()
@@ -130,27 +120,32 @@ router.put("/:post_id/comments", [
         }
 
         const {
-            text,
-            name,
+            username,
+            profileImage,
+            text
         } = req.body;
 
-        const commentObj = {
-            text,
-            name
+        const replyObj = {
+            username,
+            profileImage,
+            text
         };
-        commentObj.user = req.user.id;
+        replyObj.user = req.user.id;
 
         try {
-            const post = await Post.findById(req.params.post_id);
-            post.comments.unshift(commentObj);
-            await post.save()
-            res.json(post)
+            const comment = await Comment.findById(req.params.comment_id);
+            comment.replies.unshift(replyObj);
+            await comment.save()
+
+            const trip = await Trip.findById(req.params.id).populate("comments");
+            res.json(trip)
         }catch (e) {
             console.log(e)
             res.status(500).send("Server error")
         }
     }
 ])
+
 
 //Delete comment
 router.delete("/:post_id/comments/:comment_id", auth, async (req, res)=>{

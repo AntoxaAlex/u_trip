@@ -1,7 +1,7 @@
 
-import {NEW_TRIP_SUCCESS, NEW_TRIP_FAILED, GET_TRIP_BY_ID, PROFILE_ERROR, GET_ALL_MY_TRIPS, SET_MAP_POSITION} from "./types";
+import {NEW_TRIP_SUCCESS, NEW_TRIP_FAILED, GET_TRIP_BY_ID, PROFILE_ERROR, GET_ALL_MY_TRIPS} from "./types";
 import axios from "axios";
-import {setAlert} from "./alert";
+// import {setAlert} from "./alert";
 
 
 //Get all own trips
@@ -31,6 +31,9 @@ export const getTripById = (id) => async dispatch => {
         })
     }catch (e) {
         console.log(e)
+        dispatch({
+            type: NEW_TRIP_FAILED,
+        })
     }
 }
 
@@ -98,6 +101,81 @@ export const createTrip = (
         //     type: NEW_TRIP_FAILED
         // })
         console.log(e)
+    }
+}
+
+//Create comment
+export const createComment = (text, id, profileImage, username) =>async dispatch=>{
+    const config = {
+        headers: {
+            "Content-Type": "application/json"
+        }
+    }
+
+    const body = JSON.stringify({
+        username,
+        profileImage,
+        text
+        // likes,
+    })
+
+    try {
+        const res = await axios.post("/trips/show/"+id+"/posts", body, config)
+        console.log(res.data)
+        dispatch({
+            type: NEW_TRIP_SUCCESS,
+            payload: res.data
+        })
+    }catch (e) {
+        console.log(e.message)
+    }
+
+}
+
+export const createReply = (text, id, commentId, profileImage, username) =>async dispatch=>{
+    const config = {
+        headers: {
+            "Content-Type": "application/json"
+        }
+    }
+
+    const body = JSON.stringify({
+        username,
+        profileImage,
+        text
+        // likes,
+    })
+
+    try {
+        const res = await axios.put("/trips/show/"+id+"/posts/" + commentId +"/reply", body, config)
+        console.log(res.data)
+        dispatch({
+            type: NEW_TRIP_SUCCESS,
+            payload: res.data
+        })
+    }catch (e) {
+        console.log(e.message)
+    }
+
+}
+
+//Manage likes
+
+export const addLike = (tripId, commentId) => async dispatch =>{
+    const config = {
+        headers: {
+            "Content-Type": "application/json"
+        }
+    }
+    try{
+        const res = await axios.put("/trips/show/"+tripId+"/posts/"+commentId+"/like", config)
+        console.log(res.data)
+        dispatch({
+            type: NEW_TRIP_SUCCESS,
+            payload: res.data
+        })
+    }catch (e) {
+        console.log(e.message)
     }
 }
 

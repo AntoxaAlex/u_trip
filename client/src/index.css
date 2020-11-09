@@ -1,5 +1,7 @@
 body {
   margin: 0;
+  background-image: url("imgs/background.jpg");
+  background-size: cover;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -17,11 +19,20 @@ nav{
   position: relative;
 }
 
+#mainContainer{
+  background-color: white;
+  margin: 80px auto;
+}
+
 #findTripBox{
   width: 100%;
   height: 700px;
   background-image: url("imgs/home/rana-sawalha-W_-6PWGbYaU-unsplash.jpg");
   background-size: cover;
+}
+
+.navbar{
+  height: 70px;
 }
 
 /*============================================DASHBOARD============================================*/
@@ -144,3 +155,124 @@ nav{
 .upload-image .label span{font-size:1rem}
 .upload-image .label i,.upload-image .label .title{color:#6DD5FA;transition:200ms color}
 .upload-image .label:hover{border:2px solid #6DD5FA}
+
+/*============================================SHOWTRIP============================================*/
+
+
+.trip_container{
+  padding: 20px;
+}
+
+#trip_title_div h1{
+  text-align: center;
+  color: white;
+  font-size: 6rem;
+  text-shadow: 5px 5px 10px gray;
+}
+
+
+#trip_description_div{
+  max-height: 150px;
+  overflow: auto;
+}
+
+#ratingDiv input{
+  display: none;
+}
+
+#ratingDiv label{
+  width: 30px;
+  height: 30px;
+  content: "";
+  background-color: rgba(245,243,10,1);
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+
+}
+#ratingDiv:not(:checked) label:hover ~ label{
+  background-color: white !important;
+
+}
+
+#mapCampRow{
+  margin-bottom: 15px;
+}
+
+#tripMapDiv{
+  width: 100%;
+  height: 500px;
+  padding: 0;
+}
+
+#tripCampsDiv{
+  max-height: 500px;
+  height: 500px;
+  overflow: auto;
+}
+#tripCampsDiv .card-body{
+  padding: 0 10px;
+}
+
+
+.sp_fd_card_title{
+  text-shadow: 5px 5px 10px rebeccapurple;
+}
+
+
+.campsList{
+  list-style-type: none;
+}
+
+.btn_close_card{
+  width: 3%;
+  margin-left: 97%;
+}
+
+.no-gutters{
+  padding: 10px;
+}
+
+.card_text_div{
+  max-height: 250px;
+  height: 250px;
+  overflow: auto;
+}
+
+#trip_description_id{
+  max-height: 250px;
+  overflow: auto;
+}
+
+#commentsCreationForm{
+  margin-top: 20px;
+}
+
+.comment_header p{
+  display: inline;
+  float: right;
+}
+
+.comment_btns{
+
+}
+
+
+/*SCROLLBAR*/
+/* width */
+/*::-webkit-scrollbar {*/
+/*  width: 10px;*/
+/*}*/
+
+/*!* Track *!*/
+/*::-webkit-scrollbar-track {*/
+/*  background: gray;*/
+/*}*/
+
+/*!* Handle *!*/
+/*::-webkit-scrollbar-thumb {*/
+/*  background: #6DD5FA;*/
+/*}*/
+
+/*!* Handle on hover *!*/
+/*::-webkit-scrollbar-thumb:hover {*/
+/*  background: #555;*/
+/*}*/

@@ -1,16 +1,22 @@
 const mongoose = require("mongoose");
 
+
 const commentSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectID,
         ref: "User"
     },
-    text: {
+    username: {
         type: String,
         required: true
     },
-    name:{
-        type: String
+    profileImage: {
+        type: String,
+        required: true
+    },
+    text: {
+        type: String,
+        required: true
     },
     likes: [
         {
@@ -20,18 +26,23 @@ const commentSchema = new mongoose.Schema({
             }
         }
     ],
-    answers: [
+    replies: [
         {
             user: {
                 type: mongoose.Schema.Types.ObjectID,
                 ref: "User"
             },
-            text: {
+            username: {
                 type: String,
                 required: true
             },
-            name:{
-                type: String
+            profileImage: {
+                type: String,
+                required: true
+            },
+            text: {
+                type: String,
+                required: true
             },
             date: {
                 type:Date,
