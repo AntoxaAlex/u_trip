@@ -1,4 +1,4 @@
-import {PROFILE_ERROR, GET_PROFILE, NEW_PROFILE, CLEAR_PROFILE, CHANGE_TAB} from "../actions/types";
+import {PROFILE_ERROR, GET_PROFILE, NEW_PROFILE, CLEAR_PROFILE, CHANGE_TAB, GET_ALL_PROFILES, GET_ALL_PROFILES_EXEPT} from "../actions/types";
 
 const initialState = {
     profile: null,
@@ -17,6 +17,18 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 profile: payload,
+                loading: false
+            }
+        case GET_ALL_PROFILES:
+            return {
+                ...state,
+                profiles: payload,
+                loading: false
+            }
+        case GET_ALL_PROFILES_EXEPT:
+            return {
+                ...state,
+                profiles: payload,
                 loading: false
             }
         case NEW_PROFILE:

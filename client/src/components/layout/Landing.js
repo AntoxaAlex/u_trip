@@ -4,19 +4,16 @@ import {Link} from "react-router-dom";
 const Landing = () =>{
     return (
         <div className="landing">
-            <div className="landing-header">
-                <h1>Welcome to yTrip!</h1>
-                <Link className="btn btn-primary btn-lg" to="/trips/home">List of trips</Link>
+            <div id="video_background">
+                <video autoPlay="autoplay" muted loop="loop" id="landing_video">
+                    <source src="https://res.cloudinary.com/antoxaalex/video/upload/v1605278069/backgrounds/190915_B_02_HaLong_33_kgzjpm.mp4" type="video/mp4"/>
+                </video>
             </div>
-            <ul className="slideshow">
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-            </ul>
+            <div className="landing-header fade-in">
+                <h1>Welcome to yTrip!</h1>
+                <Link className="btn btn-primary btn-lg" to="/n/home">Get started</Link>
+            </div>
+
         </div>
     );
 }

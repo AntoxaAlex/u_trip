@@ -11,8 +11,8 @@ import {
 const libraries = ["places"]
 
 const mapContainerStyle = {
-    width: "500px",
-    height: "450px"
+    width: "100%",
+    height: "500px"
 }
 
 const center ={

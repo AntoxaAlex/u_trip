@@ -3,6 +3,8 @@ const router = express.Router({mergeParams: true});
 const auth = require("../middleware/auth");
 const User = require("../models/user");
 const Profile = require("../models/profile");
+const Trip = require("../models/trip");
+const Comment = require("../models/comment");
 const config =require("config")
 const { body, validationResult} = require("express-validator")
 const multer  = require("multer")
@@ -53,9 +55,9 @@ function checkFileType(file, cb) {
 //Get own profile
 router.get("/me",auth, async (req, res)=>{
     try {
-        const profile = await Profile.findOne({user: req.user.id}).populate("user",["name"]);
+        const profile = await Profile.findOne({user: req.user.id}).populate("user");
         if(!profile){
-            return res.status(400).json({msg: "There are no profile for this user"})
+            console.log("There are no profile for this user")
         }
         res.json(profile);
 
@@ -85,7 +87,6 @@ router.post("/", [
         dob,
         place,
         job,
-        tripdays,
         preferences,
         gender,
         bio,
@@ -103,9 +104,12 @@ router.post("/", [
     if(dob) profileObj.dob = dob;
     if(place) profileObj.place = place;
     if(job) profileObj.job = job;
-    if(tripdays) profileObj.tripdays = tripdays;
     if(preferences) {
-        profileObj.preferences = preferences.split(", ").map((preference)=>preference.trim());
+        console.log(preferences)
+        profileObj.preferences = [];
+        preferences.map((preference)=>{
+            profileObj.preferences.push(preference)
+        })
     }
     if(gender) profileObj.gender = gender;
     if(bio) profileObj.bio = bio;
@@ -121,9 +125,11 @@ router.post("/", [
         if(profile){
         //    Update profile
             profile = await Profile.findOneAndUpdate({user: req.user.id}, {$set: profileObj}, {new: true})
-            return res.json(profile);
+            profile.save()
         }
         //Create profile if not
+        profileObj.tripdays = 0;
+        profileObj.level = 0;
         profile = new Profile(profileObj);
         profile.save();
         res.json(profile)
@@ -133,6 +139,19 @@ router.post("/", [
     }
 
     console.log("Profile is created");
+})
+
+//Set status
+router.post("/status", auth, async (req, res)=>{
+    const {status} = req.body
+    try{
+        const profile = await Profile.findOne({user: req.user.id});
+        profile.status = status
+        profile.save();
+        res.json(profile)
+    } catch (e) {
+        console.log(e.message)
+    }
 })
 
 //Upload avatar
@@ -152,7 +171,19 @@ router.post("/avatar", auth, upload.single("avatar"), async (req, res, next)=>{
 //Get all profiles
 router.get("/",auth, async (req, res)=>{
     try {
-        const profiles = await  Profile.find().populate("user",["name", "avatar"]);
+        const profiles = await  Profile.find().populate("user");
+        res.json(profiles)
+
+    }catch (e) {
+        console.log(e.message);
+        res.status(500).send("Server error")
+    }
+})
+
+//Get all profiles except own
+router.get("/except",auth, async (req, res)=>{
+    try {
+        const profiles = await  Profile.find({user: { $ne : req.user.id}}).populate("user");
         res.json(profiles)
 
     }catch (e) {
@@ -185,7 +216,8 @@ router.delete("/",auth, async (req, res)=>{
     try {
         await Profile.findOneAndRemove({user: req.user.id});
         await User.findOneAndRemove({_id: req.user.id});
-
+        await Trip.findOneAndRemove({user: req.user._id})
+        await Comment.findOneAndRemove({user: req.user._id})
         res.json({msg: "User removed"})
 
     }catch (e) {

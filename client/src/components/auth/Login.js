@@ -19,39 +19,44 @@ const Login = ({login, isAuthenticated}) =>{
     }
 
     if(isAuthenticated){
-        return <Redirect to="/dashboard"/>
+        return <Redirect to="/n/home"/>
     }
     return (
         <React.Fragment>
-            <h1 className="large text-primary">Sign In</h1>
-            <p className="lead">
-                <i className="fas fa-user" /> Sign Into Your Account
+            <h1 className="large display-4">Sign In</h1>
+            <p className="lead mb-5">
+                Sign Into Your Account
             </p>
-            <form className="form" onSubmit={e=>onSubmit(e)}>
-                <div className="form-group">
-                    <input
-                        type="email"
-                        placeholder="Email Address"
-                        name="email"
-                        value={email}
-                        onChange={(e)=>onChange(e)}
-                    />
-                </div>
-                <div className="form-group">
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        name="password"
-                        value={password}
-                        onChange={(e)=>onChange(e)}
-                        minLength="5"
-                    />
-                </div>
-                <input type="submit" className="btn btn-primary" value="Login" />
-            </form>
-            <p className="my-1">
-                Don't have an account? <Link to="/auth/signup">Sign Up</Link>
-            </p>
+            <div className="signIn_registerDiv">
+                <form className="form" onSubmit={e=>onSubmit(e)}>
+                    <div className="form-group">
+                        <input
+                            type="email"
+                            className="form-control"
+                            placeholder="Email Address"
+                            autoComplete="off"
+                            name="email"
+                            value={email}
+                            onChange={(e)=>onChange(e)}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <input
+                            type="password"
+                            className="form-control"
+                            placeholder="Password"
+                            name="password"
+                            value={password}
+                            onChange={(e)=>onChange(e)}
+                            minLength="5"
+                        />
+                    </div>
+                    <input type="submit" className="btn btn-primary" value="Login" />
+                </form>
+                <p className="my-1">
+                    Don't have an account? <Link to="/n/auth/signup">Sign Up</Link>
+                </p>
+            </div>
         </React.Fragment>
     );
 }

@@ -27,20 +27,23 @@ const Register = ({setAlert, register, isAuthenticated})=>{
     }
 
     if(isAuthenticated){
-        return <Redirect to="/dashboard"/>
+        return <Redirect to="/n/home"/>
     }
 
     return (
         <div>
-            <h1 className="large text-primary">Sign Up</h1>
+            <h1 className="large display-4">Sign Up</h1>
             <p className="lead">
-                <i className="fas fa-user"/> Create Your Account
+                Create Your Account
             </p>
+            <div className="signIn_registerDiv">
             <form className="form" onSubmit={e=>onSubmit(e)}>
                 <div className="form-group">
                     <input
                         type="text"
                         placeholder="First name"
+                        className="form-control"
+                        autoComplete="off"
                         name="firstname"
                         value={firstname}
                         onChange={(e)=>onChange(e)}
@@ -50,6 +53,8 @@ const Register = ({setAlert, register, isAuthenticated})=>{
                     <input
                     type="text"
                     placeholder="Second name"
+                    autoComplete="off"
+                    className="form-control"
                     name="secondname"
                     value={secondname}
                     onChange={(e)=>onChange(e)}
@@ -59,18 +64,17 @@ const Register = ({setAlert, register, isAuthenticated})=>{
                     <input
                         type="email"
                         placeholder="Email Address"
+                        className="form-control"
+                        autoComplete="off"
                         name="email"
                         value={email}
                         onChange={(e)=>onChange(e)}
                     />
-                    <small className="form-text">
-                        This site uses Gravatar so if you want a profile image, use a
-                        Gravatar email
-                    </small>
                 </div>
                 <div className="form-group">
                     <input
                         type="password"
+                        className="form-control"
                         placeholder="Password"
                         name="password"
                         value={password}
@@ -80,6 +84,7 @@ const Register = ({setAlert, register, isAuthenticated})=>{
                 <div className="form-group">
                     <input
                         type="password"
+                        className="form-control"
                         placeholder="Confirm Password"
                         name="password2"
                         value={password2}
@@ -88,8 +93,9 @@ const Register = ({setAlert, register, isAuthenticated})=>{
                 </div>
                 <input type="submit" className="btn btn-primary" value="Register"/>
             </form>
+            </div>
             <p className="my-1">
-                Already have an account? <Link to="/auth/signin">Sign In</Link>
+                Already have an account? <Link to="/n/auth/signin">Sign In</Link>
             </p>
         </div>
     );

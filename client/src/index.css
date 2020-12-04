@@ -1,6 +1,5 @@
 body {
   margin: 0;
-  background-image: url("imgs/background.jpg");
   background-size: cover;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -14,14 +13,70 @@ code {
     monospace;
 }
 
+/*Navbar*/
 nav{
   z-index: 1;
   position: relative;
 }
 
+.navbar{
+  height: 70px;
+}
+
+.navbar-brand{
+  font-size: 2rem;
+}
+
+.navbar .fa-sign-out-alt{
+  font-size: 1.5rem;
+}
+
+.navbar-brand span{
+  color: blue;
+}
+
+/*SignIn/Register*/
+#registerContainer{
+  background-color: rgba(255, 255, 255,0.5);
+  margin: 150px auto;
+  text-align: center;
+  padding: 50px 0;
+}
+
+.signIn_registerDiv{
+  width: 200px;
+  height: 300px;
+  margin: auto;
+}
+
+.signIn_registerDiv .form-control{
+  background-color: transparent;
+  border-radius: 0;
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  border-color: black;
+  box-shadow: none;
+  color: black;
+}
+
+.signIn_registerDiv .form-control:focus{
+  background-color: transparent;
+  border-radius: 0;
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  border-color: red;
+  box-shadow: none;
+}
+
+
+
 #mainContainer{
   background-color: white;
-  margin: 80px auto;
+  z-index: 2;
+  position: relative;
+  padding: 0;
 }
 
 #findTripBox{
@@ -31,8 +86,72 @@ nav{
   background-size: cover;
 }
 
-.navbar{
-  height: 70px;
+
+/*================================================HOME====================================================*/
+
+#introDiv{
+  width: 100%;
+  height: 500px;
+  background-image: url("https://res.cloudinary.com/antoxaalex/image/upload/v1607020584/backgrounds/mountain-and-sea-4770131_1920_vizew2.jpg");
+  background-size: cover;
+  background-position: center;
+  border-radius: 15px 15px 0 0;
+  text-align: center;
+  padding: 50px;
+  margin-bottom: 50px;
+}
+
+
+#introHeader{
+  font-size:8rem;
+  color: white;
+  font-family: 'Nerko One', cursive;
+  margin-bottom: 100px;
+}
+
+#tripsNearYou{
+  background-color: orangered;
+  width: 100%;
+  height: 300px;
+  margin-bottom: 50px;
+}
+
+#bestTripsDiv{
+  background-color: pink;
+  width: 100%;
+  height: 300px;
+  margin-bottom: 50px;
+}
+
+#bestUsersDiv{
+  background-color: limegreen;
+  width: 100%;
+  height: 300px;
+  margin-bottom: 50px;
+}
+
+#bottomDiv{
+  background-color: cornflowerblue;
+  width: 100%;
+  height: 300px;
+}
+/*============================================CREATE PROFILE============================================*/
+.profileHeader{
+  text-align: center;
+}
+
+.mainInfoProfile{
+  width: 50%;
+  margin: auto;
+}
+
+.checkbox_div{
+  max-height: 150px;
+  overflow: auto;
+}
+
+.checkbox_div label{
+  margin-left: 10px;
 }
 
 /*============================================DASHBOARD============================================*/
@@ -50,13 +169,45 @@ nav{
   padding: 0px 20px 20px 0px;
 }
 
+#preferenceDiv i{
+  margin: 5px;
+  font-size: 1rem;
+  color: gray;
+  transition: 0.5s;
+}
+
+#preferenceDiv i:hover{
+  margin: 5px;
+  font-size: 1.3rem;
+  color: cornflowerblue;
+}
+
+
+.fadeIn{
+  opacity: 0;
+}
+
+.fadeOut{
+  opacity: 1;
+}
+
 #secondColumn{
 
 }
 
 #nameBox{
   width: 100%;
+}
+
+#statusString{
+  padding: 5px;
+  margin-bottom: 0;
+  font-style: italic;
+}
+
+#dashboardName{
   font-size: 1.4rem;
+  margin-bottom: 0px;
 }
 
 
@@ -68,50 +219,193 @@ nav{
   width: 50%;
 }
 
-#addition-container{
 
-}
 
 #gender-form label{
   margin-right: 15px;
 }
 
+
+#allTripFriends{
+  background: linear-gradient(to right,rgba(250,208,231,0.3), rgba(188,58,127,0.3));
+  border-radius:15px 15px 15px 15px;
+  border: 1px solid gray;
+  padding: 20px 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.friendDiv{
+  margin: 0 10px 0 10px;
+  opacity: 0.5;
+  transition: 200ms ease;
+}
+.friendDiv:hover{
+  margin: 0 10px 0 10px;
+  opacity: 1;
+}
+
+#createProfileBtn{
+  height: 300px;
+  width: 300px;
+  background-color: white;
+  color: cornflowerblue;
+  border: 2px solid cornflowerblue;
+  border-radius: 15px;
+  transition: 200ms ease;
+  font-size: 2.5rem;
+  padding-top: 6%;
+}
+
+#createProfileBtn:hover{
+  background-color: cornflowerblue;
+  color: white;
+}
+
 /*============================================NEWTRIP============================================*/
 
+.newTripDiv{
+  padding: 50px 10px;
+}
+
+.tripHeader{
+  color: rgb(143,149,168);
+  margin-bottom: 30px;
+}
+
+.headerNum{
+  width: 55px;
+  height: 55px;
+  border: 2px solid rgb(143,149,168);
+  border-radius: 50%;
+  margin: 0;
+}
 
 
+.tripMainImageDiv{
+  width: 100%;
+  height: 200px;
+}
 
-
-#tripMainImage label{
-  width:300px;
-  height:300px;
-  border:2px dotted black;
-  border-radius:5px;
-  display:block;
-  padding-top:4em;
-  transition:border 300ms ease;
+.tripMainImageDiv input[type=file]{outline:0;opacity:0;pointer-events:none;user-select:none;}
+.tripMainImageDiv label{
+  width: 200px;
+  height: 70px;
+  border:2px solid rgb(222,224,230);
+  border-radius:15px;
+  background-color: rgb(247,247,250);
   cursor:pointer;
   text-align:center;
-  margin: auto
-}
-#tripImageDiv label i, #tripImageDiv label span{
-  color:black;
-  transition:200ms color
+  padding: 20px;
+  font-size: 1.2rem;
+  color: rgb(144,152,184);
 }
 
-#tripImageDiv label:hover{border:2px solid black}
-
-.tripBlock{
-  width: 350px;
-  height: 500px;
-  margin: auto;
+.mainTripInfo{
+  color:  rgb(144,152,184);
 }
 
-.tripBlock .tripBlockPart{
-  display: inline-block;
-  height: 450px;
+.teammatesHeaderDiv{
+  color:  rgb(144,152,184);
+  background-color: rgb(247,247,250);
+  padding: 10px 0 10px 0;
+  border: 1px solid rgb(144,152,184);
+  border-radius: 15px 15px 0 0;
+}
+
+.assemblesTeammatesDiv{
+  height: 240px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-left: 1px solid rgb(144,152,184);
+  border-right: 1px solid rgb(144,152,184);
+  border-bottom: 1px solid rgb(144,152,184);
+  background-color: rgb(247,247,250);
+  border-radius: 0 0 15px 15px;
+}
+
+.searchTeamInput{
+  border-radius: 0px;
+  border: 1px solid rgb(144,152,184);
+}
+
+.searchedTeammateList{
+  padding: 10px;
+  list-style-type: none;
+  width: 100%;
+  height: 200px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: rgb(247,247,250);
+  border: 1px solid rgb(144,152,184);
+  border-top: none;
+  margin-bottom: 0;
+}
+
+
+.routePlan{
+  background-color: rgb(247,247,250);
+  border: 1px solid rgb(144,152,184);
+  border-radius: 15px;
+}
+
+.addCampBtn{
+  color: rgb(144,152,184);
+  border: 1px solid rgb(144,152,184);
+}
+
+.addCampBtn:hover{
+  background-color: rgb(144,152,184);
+  border: 1px solid rgb(144,152,184);
+}
+
+.routePlan .routeTrack{
+  max-width: 100%;
+}
+
+.routeTrack input{
+  width: 20px;
+  height: 20px;
+  transition: 0.25s linear;
+}
+
+.routeTrack input:checked{
+  width: 30px;
+  height: 30px;
+}
+
+
+.pointRadiosDiv{
+  display: inline;
+}
+
+.waySpanRadio{
+  color: rgb(143,149,168);
+  font-weight: bold;
+  font-size: 1.6rem;
+}
+
+
+.routePlan .card{
+  background-color: rgb(247,247,250);
+  color: rgb(143,149,168);
+  border: none;
+  border-radius: 0 0 15px 15px;
 
 }
+
+.routePlan .card-body input, .routePlan .card-body textarea{
+  border: none;
+  border-bottom: 1px solid black;
+  border-radius: 0;
+  background-color: rgb(247,247,250);
+}
+.routePlan .card-body input:focus, .routePlan .card-body textarea:focus{
+  box-shadow: none;
+}
+
+
+
 .tripBlock .form-group{
   width: 50%;
   display: flex;
@@ -121,8 +415,16 @@ nav{
   padding-left: 0;
 }
 
+.st_point_block{
+  border: 1px solid rgb(144,152,184);
+  border-radius: 15px;
+  background-color: rgb(247,247,250);
+}
 
+.st_point_block .card{
+  background-color: rgb(247,247,250);
 
+}
 
 #addCampBtn{
   width: 100px;
@@ -145,16 +447,61 @@ nav{
   border-color: orangered;
 }
 
-.upload-image .form-group{
-  width: 200px;
-  margin: 0 auto;
+.upload-image input[type=file]{
+  outline:0;
+  opacity:0;
+  pointer-events:none;
+  user-select:none;
 }
-.upload-image input[type=file]{outline:0;opacity:0;pointer-events:none;user-select:none;}
-.upload-image .label{width:200px; height:200px; border:2px dashed gray;border-radius:5px;display:block;padding:1.2em;transition:border 300ms ease;cursor:pointer;text-align:center; margin: auto}
-.upload-image .label i{display:block;font-size:42px;padding-bottom:16px;padding-top: 20px}
-.upload-image .label span{font-size:1rem}
-.upload-image .label i,.upload-image .label .title{color:#6DD5FA;transition:200ms color}
-.upload-image .label:hover{border:2px solid #6DD5FA}
+.upload-image .label{
+  width:200px;
+  height:200px;
+  border:2px dashed rgb(144,152,184);
+  border-radius:5px;
+  display:block;
+  transition:border 300ms ease;
+  cursor:pointer;
+  text-align:center;
+  margin: auto;
+  align-content: center;
+  color: rgb(143,149,168);
+  padding-top: 2.3rem;
+}
+.upload-image .label i{
+  font-size: 3rem;
+  display: block;
+}
+.upload-image .label span{
+  font-size: 1.5rem;
+}
+
+.upload-image .label:hover{
+  border:2px solid rgb(144,152,184)
+}
+
+
+
+#editTripMainImage input[type=file]{outline:0;opacity:0;pointer-events:none;user-select:none;}
+#editTripMainImage label{
+  width: 100%;
+  height: 200px;
+  border:2px solid rgb(222,224,230);
+  border-radius:15px;
+  background-color: rgb(247,247,250);
+  cursor:pointer;
+  text-align:center;
+  padding: 5% 10%;
+  font-size: 1.2rem;
+  color: white;
+}
+
+#editTripMainImage label i{
+  font-size: 3rem;
+  display: inline;
+}
+#editTripMainImage label span{
+  font-size: 3rem;
+}
 
 /*============================================SHOWTRIP============================================*/
 
@@ -191,6 +538,13 @@ nav{
 #ratingDiv:not(:checked) label:hover ~ label{
   background-color: white !important;
 
+}
+
+#ratingDiv{
+  font-size: 2rem;
+  background-color: gray;
+  border: 2px solid yellow;
+  border-radius: 15px;
 }
 
 #mapCampRow{
@@ -255,6 +609,35 @@ nav{
 
 }
 
+
+/*=====================================================CroppModal=============================================*/
+.modalStyle{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 1000;
+}
+
+.modalDivStyle{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  background-color: white;
+  border-radius: 15px;
+  border: 1px solid gray;
+  padding: 10px;
+}
+
+
+
+/*======================================OTHER=========================================*/
+.fa-check{
+  color: green;
+}
 
 /*SCROLLBAR*/
 /* width */

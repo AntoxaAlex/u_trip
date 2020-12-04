@@ -1,88 +1,77 @@
+#video_background{
+    position: fixed;
+}
+
+#landing_video{
+    position: relative;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
 .landing-header {
-    z-index: 1;
     position: relative;
     text-align: center;
     padding-top: 40vh;
+    z-index: 1;
 }
 
 .landing-header h1 {
+    font-size: 5rem;
+    font-family: 'Tangerine', cursive;
     color: #fff;
 }
 
-.slideshow {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    z-index: 0;
-    list-style: none;
-    margin: 0;
-    padding: 0;
+.fade-in {
+    animation: fadeIn ease 10s;
+    -webkit-animation: fadeIn ease 10s;
+    -moz-animation: fadeIn ease 10s;
+    -o-animation: fadeIn ease 10s;
+    -ms-animation: fadeIn ease 10s;
+}
+@keyframes fadeIn {
+    0% {
+        opacity:0;
+    }
+    100% {
+        opacity:1;
+    }
 }
 
-.slideshow li {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    background-size: cover;
-    background-position: 50% 50%;
-    background-repeat: no-repeat;
-    opacity: 0;
-    z-index: 0;
-    animation: imageAnimation 50s linear infinite;
+@-moz-keyframes fadeIn {
+    0% {
+        opacity:0;
+    }
+    100% {
+        opacity:1;
+    }
 }
 
-.slideshow li:nth-child(1) {
-    background-image: url("imgs/landing/beach.jpg")
-}
-.slideshow li:nth-child(2) {
-    background-image: url("imgs/landing/camp.jpg");
-    animation-delay: 10s;
-}
-.slideshow li:nth-child(3) {
-    background-image: url("imgs/landing/china.jpg");
-    animation-delay: 20s;
-}
-.slideshow li:nth-child(4) {
-    background-image: url("imgs/landing/desert.jpg");
-    animation-delay: 30s;
-}
-.slideshow li:nth-child(5) {
-    background-image: url("imgs/landing/desert2.jpg");
-    animation-delay: 40s;
-}
-.slideshow li:nth-child(6) {
-    background-image: url("imgs/landing/moskow.jpg");
-    animation-delay: 50s;
+@-webkit-keyframes fadeIn {
+    0% {
+        opacity:0;
+    }
+    100% {
+        opacity:1;
+    }
 }
 
-.slideshow li:nth-child(7) {
-    background-image: url("imgs/landing/mountain.jpg");
-    animation-delay: 60s;
+@-o-keyframes fadeIn {
+    0% {
+        opacity:0;
+    }
+    100% {
+        opacity:1;
+    }
 }
 
-
-@keyframes imageAnimation {
+@-ms-keyframes fadeIn {
     0% {
         opacity: 0;
-        animation-timing-function: ease-in;
     }
-    10% {
+    100% {
         opacity: 1;
-        animation-timing-function: ease-out;
     }
-    20% {
-        opacity: 1
-    }
-    30% {
-        opacity: 0
-    }
-}
-
-/* Older browser support - .no-cssanimations class added by modernizr */
-.no-cssanimations .slideshow li {
-    opacity: 1;
 }

@@ -8,6 +8,9 @@ let tripSchema = new mongoose.Schema({
     tripImage: {
         type: String
     },
+    type: {
+        type: String
+    },
     title: {
         type: String,
         required: true
@@ -24,9 +27,22 @@ let tripSchema = new mongoose.Schema({
         required: true
     },
     isCompleted: {
-        type: Boolean,
-        required: true
+        type: Boolean
     },
+    team:[
+        {
+            user:{
+                type: mongoose.Schema.Types.ObjectID,
+                ref: "User"
+            },
+            avatar: {
+                type: String
+            },
+            username: {
+                type: String
+            }
+        }
+    ],
     sp_title:{
         type: String
     },
@@ -80,6 +96,17 @@ let tripSchema = new mongoose.Schema({
         {
             type: mongoose.Schema.Types.ObjectID,
             ref: "Comment"
+        }
+    ],
+    generalRating:{
+        type: Number
+    },
+    ratings:[
+        {
+            user: {
+                type: mongoose.Schema.Types.ObjectID,
+                ref: "User"
+            }
         }
     ],
     date:{

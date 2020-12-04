@@ -5,6 +5,21 @@ const Comment = require("../models/comment");
 const Trip = require("../models/trip");
 const auth = require("../middleware/auth");
 
+
+//Show comment with a specific id
+router.get("/:comment_id", auth, async (req, res)=>{
+    try{
+        const comment =await Comment.findById(req.params.comment_id)
+        if(!comment){
+            res.status(404).send("Comment not found")
+        }
+        res.json(comment)
+    }catch (e) {
+        console.log(e)
+    }
+
+})
+
 //Create comment
 router.post("/", [
     auth,
@@ -48,7 +63,7 @@ router.post("/", [
 
 
 //Edit comment
-router.put("/:post_id", [
+router.put("/:comment_id", [
     auth,
     [
         body("text", "Text is required").not().isEmpty()
@@ -60,9 +75,12 @@ router.put("/:post_id", [
         }
 
         try {
-            let comment =await Comment.findByIdAndUpdate(req.params.post_id, req.body, {new: true});
-            res.json(comment);
-            console.log("Post is updated")
+            let comment =await Comment.findByIdAndUpdate(req.params.comment_id, req.body, {new: true});
+            console.log("Comment is updated")
+
+            const trip = await Trip.findById(req.params.id).populate("comments");
+            await trip.save()
+            res.json(trip)
         }catch (e) {
             console.log(e.message)
             res.status(500).send("Server error")
@@ -70,11 +88,14 @@ router.put("/:post_id", [
     }
 ])
 
-//Delete post
-router.delete("/:post_id", auth, async (req, res)=>{
+//Delete comment
+router.delete("/:comment_id", auth, async (req, res)=>{
     try {
-        await Post.findByIdAndRemove(req.params.post_id);
-        res.send("Post is deleted")
+        await Comment.findByIdAndRemove(req.params.comment_id);
+        console.log("Comment is deleted")
+        const trip = await Trip.findById(req.params.id).populate("comments");
+        await trip.save()
+        res.json(trip)
     }catch (e) {
         console.log(e.message)
         res.status(500).send("Server error")
@@ -147,14 +168,18 @@ router.put("/:comment_id/reply", [
 ])
 
 
-//Delete comment
-router.delete("/:post_id/comments/:comment_id", auth, async (req, res)=>{
+//Delete reply
+router.delete("/:comment_id/reply/:index", auth, async (req, res)=>{
     try{
-        let post = await Post.findById(req.params.post_id);
-        console.log(post.comments )
-        post.comments = post.comments.filter((com)=>com._id.toString() !== req.params.comment_id)
-        await post.save();
-        res.send("Comment deleted")
+        let comment = await Comment.findById(req.params.comment_id);
+        const index = parseInt(req.params.index)
+        console.log(index)
+        comment.replies.splice(index,1)
+        await comment.save();
+
+        const trip = await Trip.findById(req.params.id).populate("comments");
+        await trip.save()
+        res.json(trip)
     }catch (e) {
         console.log(e)
         res.status(500).send("Server error")

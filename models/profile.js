@@ -5,6 +5,9 @@ const profileSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectID,
         ref: "User"
     },
+    status: {
+        type: String
+    },
     imageUrl: {
         type: String
     },
@@ -21,16 +24,24 @@ const profileSchema = mongoose.Schema({
         required: true
     },
     tripdays: {
-        type: String,
-        required: true
+        type: Number
     },
     gender: {
         type: String,
         required: true
     },
-    preferences: {
-      type: [String],
-      required: true
+    preferences: [
+        {
+            iconClass:{
+                type: String
+            },
+            value:{
+                type: String
+            }
+        }
+    ],
+    level:{
+      type: Number
     },
     bio: {
         type: String
