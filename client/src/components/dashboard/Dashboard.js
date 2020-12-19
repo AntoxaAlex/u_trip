@@ -12,7 +12,7 @@ const Dashboard = ({getCurrentProfile, getAllMyTrips, getCurrentTrip, completeTr
         getCurrentProfile()
         getCurrentTrip()
         getAllMyTrips()
-    },[loading])
+    },[loading, trips.loading])
 
     const [profileStatus, setPrStatus] =useState({
         status: ""
@@ -91,6 +91,7 @@ const Dashboard = ({getCurrentProfile, getAllMyTrips, getCurrentTrip, completeTr
                                                 as={InputGroup.Append}
                                                 variant="outline-light"
                                                 id="input-group-dropdown-2"
+                                                title=""
                                             >
                                                 <button className="btn bg-transparent" onClick={()=>addStatus("in trip")}>In trip</button>
                                                 <button className="btn bg-transparent" onClick={()=>addStatus("ready for trip")}>Ready for trip</button>
@@ -174,7 +175,7 @@ const Dashboard = ({getCurrentProfile, getAllMyTrips, getCurrentTrip, completeTr
                                             </Fragment>}
                                             </div>)}
                                     <div id="trips">
-                                        {trips ===null && loading ? <Spinner/> : (
+                                        {trips && loading ? <Spinner/> : (
                                             <Fragment>
                                                 <ul className="nav nav-tabs">
                                                     <li className="nav-item">
@@ -229,19 +230,21 @@ const Dashboard = ({getCurrentProfile, getAllMyTrips, getCurrentTrip, completeTr
                                             </Fragment>
                                         )}
                                     </div>
-                                            {trips.map((trip, i)=>{
-                                                return(
-                                                    <div id="allTripFriends">
-                                                        {trip.team.map((teammate, i)=>{
-                                                            return(
-                                                                <Link to={"/n/dashboard/"+teammate._id}>
-                                                                    <img alt="" key={i+0.1} src={teammate.avatar} className="rounded-circle friendDiv" style={{width: "100px", height: "100px"}}/>
-                                                                </Link>
-                                                            )
-                                                        })}
-                                                    </div>
-                                                )
-                                            })}
+                                    <div id="allTripFriends">
+                                        {trips.map((trip, i)=>{
+                                            return(
+                                                <Fragment key={i}>
+                                                    {trip.team.map((teammate, i)=>{
+                                                        return(
+                                                            <Link key={i} to={"/n/dashboard/"+teammate._id}>
+                                                                <img alt="" key={i+0.1} src={teammate.avatar} className="rounded-circle friendDiv" style={{width: "100px", height: "100px"}}/>
+                                                            </Link>
+                                                        )
+                                                    })}
+                                                </Fragment>
+                                            )
+                                        })}
+                                    </div>
                                 </div>
                             </div>
 

@@ -21,6 +21,7 @@ app.use("/auth",require("./routes/auth"));
 app.use("/profile",require("./routes/profile"));
 app.use("/user", require("./routes/user"));
 app.use("/trips/show/:id/posts", require("./routes/posts"));
+app.use("/search", require("./routes/search"));
 
 //Set up data base
 connectDB();

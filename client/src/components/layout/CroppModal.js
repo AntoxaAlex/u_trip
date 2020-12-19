@@ -1,4 +1,5 @@
 import React, {Fragment} from "react";
+import 'react-image-crop/dist/ReactCrop.css'
 import ReactCrop from "react-image-crop";
 const CroppModal = ({open, onClose, stateName, imgSrc, imgCrop, cropName, selectedImgCrop, setImgCrop, onTripImageLoadedModal, onTripCropCompleteModal}) =>{
     if(!open) return null

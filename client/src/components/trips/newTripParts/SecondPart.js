@@ -1,165 +1,103 @@
 import React from "react";
 import {connect} from "react-redux";
-import PropTypes from "prop-types";
-import {DropdownButton} from "react-bootstrap";
 
-const SecondPart = ({active, setProgressBar, formData, onChange, title, trip_description, from}) =>{
+const SecondPart = ({active, setProgressBar, searchTeammates, teammates, displayList, addTeammate, profile, assembledTeammates, removeMember}) =>{
     if (!active) return null
     return(
-        <div className="mainTripInfo mb-5">
+        <div className="tripTeamDiv">
             <div className="tripHeader row">
                 <div className="col-1 text-center">
-                    <h1 className="headerNum">2</h1>
+                    <h5 className="headerNum">2</h5>
                 </div>
-                <h1 className="text-left col-11">Fill main information</h1>
+                <h5 className="text-left col-11">Assemble a team</h5>
             </div>
-            <div className="form-group row" style={{width: "60%"}}>
-                <label htmlFor="dropdown-basic-button" className="col-sm-3 col-form-label">Trip's type</label>
-
-                <div id="typeInputDiv" className="col-sm-9 row">
-                    <h5 className="col-4 border-secondary">{formData.tripType === "" ? "Choose trip location" : formData.tripType}</h5>
-                    <DropdownButton variant="light" id="dropdown-basic-button" className="col-1" style={{width: "100%", display: "inline", marginLeft: "10px"}}>
-                        <div id="dropdownTypes">
-                            <div className="tripTypesDiv">
-                                <input
-                                    className="mr-2"
-                                    type="radio"
-                                    name="tripType"
-                                    id="tripType"
-                                    spellCheck="false"
-                                    value="Mountains"
-                                    onChange={(e)=>onChange(e)}
-                                />
-                                <label htmlFor="tripType">  <i className="fas fa-mountain"/>  Mountains</label>
-                            </div>
-                            <div className="tripTypesDiv">
-                                <input
-                                    className="mr-2"
-                                    type="radio"
-                                    name="tripType"
-                                    id="tripType"
-                                    spellCheck="false"
-                                    value="Savannah"
-                                    onChange={(e)=>onChange(e)}
-                                />
-                                <label htmlFor="tripType"><i className="fas fa-hippo"/>  Savannah</label>
-                            </div>
-                            <div className="tripTypesDiv">
-                                <input
-                                    className="mr-2"
-                                    type="radio"
-                                    name="tripType"
-                                    id="tripType"
-                                    spellCheck="false"
-                                    value="Forest"
-                                    onChange={(e)=>onChange(e)}
-                                />
-                                <label htmlFor="tripType"><i className="fas fa-tree"/>  Forest</label>
-                            </div>
-                            <div className="tripTypesDiv">
-                                <input
-                                    className="mr-2"
-                                    type="radio"
-                                    name="tripType"
-                                    id="tripType"
-                                    spellCheck="false"
-                                    value="Jungle"
-                                    onChange={(e)=>onChange(e)}
-                                />
-                                <label htmlFor="tripType"><i className="fas fa-frog"/>  Jungle</label>
-                            </div>
-                            <div className="tripTypesDiv">
-                                <input
-                                    className="mr-2"
-                                    type="radio"
-                                    name="tripType"
-                                    id="tripType"
-                                    spellCheck="false"
-                                    value="Seas/Oceans"
-                                    onChange={(e)=>onChange(e)}
-                                />
-                                <label htmlFor="tripType"><i className="fas fa-water"/>  Seas/Oceans</label>
-                            </div>
-                            <div className="tripTypesDiv">
-                                <input
-                                    className="mr-2"
-                                    type="radio"
-                                    name="tripType"
-                                    id="tripType"
-                                    spellCheck="false"
-                                    value="Arctiс"
-                                    onChange={(e)=>onChange(e)}
-                                />
-                                <label htmlFor="tripType"><i className="far fa-snowflake"/>  Arctiс</label>
-                            </div>
-                            <div className="tripTypesDiv">
-                                <input
-                                    className="mr-2"
-                                    type="radio"
-                                    name="tripType"
-                                    id="tripType"
-                                    spellCheck="false"
-                                    value="Islands"
-                                    onChange={(e)=>onChange(e)}
-                                />
-                                <label htmlFor="tripType"><i className="fas fa-umbrella-beach"/>  Islands</label>
-                            </div>
-                            <div className="tripTypesDiv">
-                                <input
-                                    className="mr-2"
-                                    type="radio"
-                                    name="tripType"
-                                    id="tripType"
-                                    spellCheck="false"
-                                    value="Cities"
-                                    onChange={(e)=>onChange(e)}
-                                />
-                                <label htmlFor="tripType"><i className="fas fa-city"/>  Cities</label>
-                            </div>
-                        </div>
-                    </DropdownButton>
-                </div>
-            </div>
-            <div className="form-group row" style={{width: "60%"}}>
-                <label htmlFor="title" className="col-sm-3 col-form-label">Trip's title</label>
+            <div className="searchTeammateDiv mb-4">
                 <input
                     type="text"
-                    className="form-control col-sm-9"
-                    name="title"
-                    id="title"
-                    spellCheck="false"
-                    autoComplete="off"
-                    value={title}
-                    onChange={(e)=>onChange(e)}
+                    placeholder="Write name"
+                    className="form-control searchTeamInput"
+                    onChange={(e)=>searchTeammates(e)}
                 />
+                {teammates.length > 0 && !displayList && <ul className="searchedTeammateList">
+                    {teammates.map((teammate, i)=>{
+                        return(
+                            <li key={i} className="my-3">
+                                <div className="row">
+                                    <div className="col-1">
+                                        <img alt="" className="rounded-circle" style={{width: "50px", height: "50px"}} src={teammate.imageUrl}/>
+                                    </div>
+                                    <div className="col-3 ">
+                                        <p>{teammate.user.firstname} {teammate.user.secondname}</p>
+                                    </div>
+                                    <div className="col-2">
+                                        <p>{teammate.status ? teammate.status : "No status"}</p>
+                                    </div>
+                                    <div className="col-2">
+                                        {teammate.preferences.length > 0 && <div className="row">
+                                            {teammate.preferences.map((preference, i) => {
+                                                return(
+                                                    <div key={i} className="col-1"><i className={preference.iconClass}/></div>
+                                                )
+                                            })}
+                                        </div>}
+                                    </div>
+                                    <div className="col-2">
+                                        <p>Level: {teammate.level}</p>
+                                    </div>
+                                    <div className="col-2">
+                                        {teammate.status === "ready for trip" || "Set status" ? (
+                                            <button type="button" className="btn btn-outline-success" onClick={()=> {
+                                                addTeammate(teammate)
+                                            }}>Add teammate</button>
+                                        ) : (
+                                            <button type="button" className="btn btn-outline-secondary">Add teammate</button>
+                                        )}
+                                    </div>
+                                </div>
+                                <hr/>
+                            </li>
+                        )
+                    })}
+                </ul>
+                }
             </div>
-            <div className="form-group row" style={{width: "60%"}}>
-                <label htmlFor="title" className="col-sm-3 col-form-label">Description</label>
-                <textarea
-                    className="form-control col-sm-9"
-                    name="trip_description"
-                    spellCheck="false"
-                    id="description"
-                    value={trip_description}
-                    onChange={(e)=>onChange(e)}
-                />
+            <div className="teammatesHeaderDiv text-center">
+                <h3 className="m-0">Trip's members</h3>
             </div>
-            <div className="form-group row" style={{width: "60%"}}>
-                <label htmlFor="title" className="col-sm-3 col-form-label">Start date</label>
-                <input
-                    type="date"
-                    className="form-control col-sm-9"
-                    name="from"
-                    id="from"
-                    value={from}
-                    onChange={(e)=>onChange(e)}
-                />
+            <div className="assemblesTeammatesDiv mb-3">
+                <div className="row p-3">
+                    {profile !== null && <div className="assembledMember col-2 mb-3 text-center">
+                        <img
+                            className="rounded-circle"
+                            alt="" src={profile.imageUrl}
+                            style={{width: "100px", height: "100px"}}
+                        />
+                        <p style={{fontStyle: "italic"}}>Guide</p>
+                    </div>}
+                    {assembledTeammates.filter(team=>team._id !== profile._id).map((teammate, i)=>{
+                        return(
+                            <div key={i} className="assembledMember col-2 mb-3 text-center">
+                                <img
+                                    className="rounded-circle mb-2"
+                                    alt="" src={teammate.imageUrl}
+                                    style={{width: "100px", height: "100px"}}
+                                />
+                                <button
+                                    type="button"
+                                    className="btn btn-sm btn-outline-danger d-block mx-auto"
+                                    onClick={()=>removeMember(teammate, i)}
+                                >Remove</button>
+                            </div>
+                        )
+                    })}
+                </div>
             </div>
-            {formData.tripType !== "" && formData.title !== "" && formData.trip_description !== "" && formData.from !== "" && <button
+            {assembledTeammates.length>0 && <button
                 type="button"
-                className="btn-outline-primary"
+                className="btn-outline-primary btnNextPart"
                 onClick={()=>{
-                    setProgressBar(50)
+                    addTeammate(profile)
+                    setProgressBar(66)
                 }}>
                 Next
             </button>}

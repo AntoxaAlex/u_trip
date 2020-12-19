@@ -1,34 +1,32 @@
 import React, {useState, Fragment, useEffect} from 'react';
 import {connect} from "react-redux";
-import {createTrip} from "../../actions/trips";
+import {getTripById,createTrip} from "../../actions/trips";
 import {getAllProfilesExceptOwn} from "../../actions/profile";
 import PropTypes from "prop-types";
 
 import FirstPart from "./newTripParts/FirstPart";
 import SecondPart from "./newTripParts/SecondPart";
 import ThirdPart from "./newTripParts/ThirdPart";
-import FourthPart from "./newTripParts/FourthPart";
 
-import 'react-image-crop/dist/ReactCrop.css';
 import Spinner from "../layout/Spinner";
 import {Redirect} from "react-router-dom";
 import {ProgressBar} from "react-bootstrap";
+import axios from "axios";
+import {useParams} from "react-router";
 
-const NewTrip = ({createTrip, getAllProfilesExceptOwn, profile:{profile, profiles, loading}, isCreated}) => {
+const NewTrip = ({getTripById,createTrip, getAllProfilesExceptOwn, profile:{profile, profiles, loading}, isCreated,trips:{trip},tripsLoading}) => {
     //===================================================State===================================================
-
+    const {id} = useParams()
 
     const[newTripPart, setNewTripPart] = useState({
         firstPart: true,
         secondPart: false,
         thirdPart: false,
-        fourthPart: false
     })
     const[progressBar, setProgressBar] = useState(0)
     const[formData, setFormData]= useState({
         tripType: "",
         title: "",
-        from: "",
         trip_description: ""
     });
 
@@ -47,17 +45,46 @@ const NewTrip = ({createTrip, getAllProfilesExceptOwn, profile:{profile, profile
 
 
     useEffect(()=>{
-        getAllProfilesExceptOwn()
-            setProfiles(profiles)
+        if(id){
+            getTripById(id)
+        }
+        if(trip){
+            setFormData({
+                tripType: loading || !trip.type ? "" : trip.type,
+                title: loading || !trip.title ? "" : trip.title,
+                trip_description: loading || !trip.trip_description ? "" : trip.trip_description
+            })
+            setAssembledTeammates(loading || !trip.team ? null : trip.team)
+            setImage({
+                sp_image: loading || !trip.st_point.sp_image ? "" : trip.st_point.sp_image,
+                fd_image: loading || !trip.fn_destination.fd_image ? "" : trip.fn_destination.fd_image
+            })
+            setStartingPoint({
+                sp_title: loading || !trip.st_point.sp_title ? "" : trip.st_point.sp_title,
+                sp_description: loading || !trip.st_point.sp_description ? "" : trip.st_point.sp_description,
+                isSpReached: loading || !trip.st_point.isSpReached ? false : trip.st_point.isSpReached
+            })
+            setFinalDestination({
+                fd_title: loading || !trip.fn_destination.fd_title ? "" : trip.fn_destination.fd_title,
+                fd_description: loading || !trip.fn_destination.fd_description ? "" : trip.fn_destination.fd_description,
+                isFdReached: loading || !trip.fn_destination.isFdReached ? false : trip.fn_destination.isFdReached
+            })
+            setSpPosition({
+                sp_latitude: loading || !trip.st_point.sp_latitude ? "" : trip.st_point.sp_latitude,
+                sp_longitude: loading || !trip.st_point.sp_longitude ? "" : trip.st_point.sp_longitude
+            })
+            setFdPosition({
+                fd_latitude: loading || !trip.fn_destination.fd_latitude ? "" : trip.fn_destination.fd_latitude,
+                fd_longitude: loading || !trip.fn_destination.fd_longitude ? "" : trip.fn_destination.fd_longitude,
+            })
 
-    })
+            setCamp(loading || !trip.campContent.length === 0 ? [] : trip.campContent)
+        }
+        getAllProfilesExceptOwn()
+        setProfiles(profiles)
+    },[loading, tripsLoading])
 
     const [crop, setCrop] = useState({
-        tripImageCrop: {
-            unit: "%",
-            width: 30,
-            aspect: 32 / 9
-        },
         campImageCrop: {
             unit: "%",
             width: 30,
@@ -66,10 +93,8 @@ const NewTrip = ({createTrip, getAllProfilesExceptOwn, profile:{profile, profile
     });
 
     const[imageForm, setImage] =useState({
-        tripImgSrc: "",
         sp_imageSrc: "",
         fd_imageSrc: "",
-        tripImage: "",
         sp_image: "",
         fd_image: ""
     });
@@ -79,16 +104,22 @@ const NewTrip = ({createTrip, getAllProfilesExceptOwn, profile:{profile, profile
     const[stPointForm, setStartingPoint] =useState({
         sp_title: "",
         sp_description: "",
+        isSpReached: false
+    });
+    const[stPosition, setSpPosition] = useState({
         sp_latitude: "",
         sp_longitude: ""
-    });
+    })
 
     const[fnDestinationForm, setFinalDestination] =useState({
         fd_title: "",
         fd_description: "",
+        isFdReached: false
+    });
+    const[fdPosition, setFdPosition] = useState({
         fd_latitude: "",
         fd_longitude: ""
-    });
+    })
 
     const[campContent, setCamp] =useState([]);
 
@@ -96,23 +127,20 @@ const NewTrip = ({createTrip, getAllProfilesExceptOwn, profile:{profile, profile
         val: "st_point"
     })
 
-    const[displayMap, setMap] = useState({
-        st_point_map: false,
-        fn_destination_map: false
-    })
 
-    const[displayCampMap, setCampMap] =useState([]);
+
 
 
     //===================================================Add/Remove camp functions===================================================
     const addCamp = async () =>{
 
         setCamp([...campContent, {
-            campTitle: "",
             campImage: "",
+            campTitle: "",
             campDescription: "",
             campLatitude: "",
-            campLongitude: ""
+            campLongitude: "",
+            isCampReached: false
         }])
 
         setCampOpen([...isCampModalOpen, false])
@@ -125,18 +153,18 @@ const NewTrip = ({createTrip, getAllProfilesExceptOwn, profile:{profile, profile
         const campList = [...campContent];
         campList.splice(index,1);
         setCamp(campList)
+        setDisplayedPoint({val: "st_point"})
+
     }
 
     //===================================================Retrieve variables from state===================================================
     const {
         tripType,
         title,
-        from,
         trip_description
     } = formData;
 
     const {
-        tripImage,
         sp_image,
         fd_image
     } = imageForm
@@ -144,16 +172,24 @@ const NewTrip = ({createTrip, getAllProfilesExceptOwn, profile:{profile, profile
     const{
         sp_title,
         sp_description,
+        isSpReached
+    } = stPointForm
+
+    const{
         sp_latitude,
         sp_longitude
-    } = stPointForm
+    } = stPosition
 
     const {
         fd_title,
         fd_description,
+        isFdReached
+    } = fnDestinationForm
+
+    const {
         fd_latitude,
         fd_longitude
-    } = fnDestinationForm
+    } = fdPosition
 
 
     ////===================================================Upload camp images to cloudinary===================================================
@@ -168,8 +204,9 @@ const NewTrip = ({createTrip, getAllProfilesExceptOwn, profile:{profile, profile
         const campImageForm = new FormData()
         campImageForm.append("name", name)
         campImageForm.append("file", file)
+        const campImageUrl = await axios.post("/trips/uploadImage", campImageForm)
         const campList = [...campContent];
-        campList[index][name] = campImageForm
+        campList[index][name] = campImageUrl.data
         setCamp(campList);
     }
 
@@ -184,7 +221,17 @@ const NewTrip = ({createTrip, getAllProfilesExceptOwn, profile:{profile, profile
 
     const addTeammate = (candidate) =>{
         if(assembledTeammates.filter(teammate=>teammate._id === candidate._id).length === 0){
-            setAssembledTeammates([...assembledTeammates,candidate])
+            setAssembledTeammates([...assembledTeammates,{
+                _id: candidate._id,
+                user: candidate.user._id,
+                imageUrl: candidate.imageUrl,
+                firstname: candidate.user.firstname,
+                secondname: candidate.user.secondname,
+                level: candidate.level,
+                status: candidate.status,
+                tripdays: candidate.tripdays,
+                isReady: false
+            }])
         }
     }
 
@@ -194,34 +241,9 @@ const NewTrip = ({createTrip, getAllProfilesExceptOwn, profile:{profile, profile
         setAssembledTeammates(teammates)
     }
 
-    //===================================================Get position===================================================
-    const getPosition = (el1, el2) =>{
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((position) =>{
-                document.getElementById(el1).textContent = position.coords.latitude
-                document.getElementById(el2).textContent = position.coords.longitude
-            });
-        } else {
-            console.log("Geolocation is not supported by this browser.");
-        }
-    }
+
 
     //===================================================Map===================================================
-
-    const togglePanel = (map) =>{
-        if(map === "st_point_map"){
-            setMap({...displayMap, [map]: !displayMap.st_point_map})
-        } else if(map === "fn_destination_map"){
-            setMap({...displayMap, [map]: !displayMap.fn_destination_map})
-        }
-    }
-
-    const toggleCampPanel = (map,i) => {
-
-        const displayMap = [...displayCampMap];
-        displayMap[i] = true;
-        setCampMap(displayMap);
-    }
 
     const setMapPosition = (lat, lng, el1, el2) =>{
         document.getElementById(el1).textContent = lat
@@ -239,10 +261,7 @@ const NewTrip = ({createTrip, getAllProfilesExceptOwn, profile:{profile, profile
         if (e.target.files && e.target.files.length > 0) {
             const reader = new FileReader();
             reader.addEventListener('load', () =>{
-                if(id === "tripImage"){
-                    setImage({...imageForm, tripImgSrc: reader.result })
-                    console.log(imageForm.tripImgSrc)
-                } else if(id === "sp_image"){
+                if(id === "sp_image"){
                     setImage({...imageForm, sp_imageSrc: reader.result })
                     console.log(imageForm.sp_imageSrc)
                 } else if(id === "fd_image"){
@@ -284,7 +303,7 @@ const NewTrip = ({createTrip, getAllProfilesExceptOwn, profile:{profile, profile
 
     const makeClientCrop = async (crop,id, ref) => {
 
-        if(id === "tripImage" || id === "sp_image" || id === "fd_image" ){
+        if(id === "sp_image" || id === "fd_image" ){
             if (imageForm[ref] && crop.width && crop.height) {
                 getCroppedImg(
                     imageForm[ref],
@@ -347,7 +366,7 @@ const NewTrip = ({createTrip, getAllProfilesExceptOwn, profile:{profile, profile
             u8arr[n] = bstr.charCodeAt(n);
         }
         let croppedImage = new File([u8arr], fileName, {type:mime});
-        if(id === "tripImage" || id === "sp_image" || id === "fd_image" ){
+        if(id === "sp_image" || id === "fd_image" ){
             uploadImage(id, croppedImage)
         }else {
             uploadCampImages(croppedImage,ref,id)
@@ -356,13 +375,22 @@ const NewTrip = ({createTrip, getAllProfilesExceptOwn, profile:{profile, profile
     }
 
 
-    const onChangeStPoint = e => setStartingPoint({...stPointForm, [e.target.name]: e.target.value});
-    const onChangeFnDestination = e => setFinalDestination({...fnDestinationForm, [e.target.name]: e.target.value});
+    const onChangeStPoint = (name,value) => setStartingPoint({...stPointForm, [name]: value});
+    const onChangeSpPosition = (lat, lng) => setSpPosition({...stPosition,sp_latitude: lat,sp_longitude: lng})
 
-    const onChangeCamp = (e,index) => {
-        const {name, value} = e.target;
+    const onChangeFnDestination = (name,value) => setFinalDestination({...fnDestinationForm, [name]: value});
+    const onChangeFdPosition = (lat, lng) => setFdPosition({...fdPosition, fd_latitude: lat,fd_longitude: lng})
+
+    const onChangeCamp = (name,value, index) => {
         const campList = [...campContent];
         campList[index][name] = value;
+        setCamp(campList);
+    }
+
+    const onChangeCampPosition = (lat,lng,index) =>{
+        const campList = [...campContent];
+        campList[index].campLatitude = lat;
+        campList[index].campLongitude = lng;
         setCamp(campList);
     }
 
@@ -370,28 +398,28 @@ const NewTrip = ({createTrip, getAllProfilesExceptOwn, profile:{profile, profile
     const onSubmit = e => {
         e.preventDefault();
         setProgressBar(100)
-        setNewTripPart({...newTripPart, fourthPart: false})
-        // createTrip(
-        //     "",
-        //     "create",
-        //     tripImage,
-        //     tripType,
-        //     title,
-        //     trip_description,
-        //     from,
-        //     assembledTeammates,
-        //     sp_title,
-        //     sp_description,
-        //     sp_image,
-        //     sp_latitude,
-        //     sp_longitude,
-        //     campContent,
-        //     fd_title,
-        //     fd_description,
-        //     fd_image,
-        //     fd_latitude,
-        //     fd_longitude
-        //     )
+        setNewTripPart({...newTripPart, thirdPart: false})
+        createTrip(
+            id,
+            id === undefined ? "create" : "edit",
+            tripType,
+            title,
+            trip_description,
+            assembledTeammates,
+            sp_image,
+            sp_title,
+            sp_description,
+            sp_latitude,
+            sp_longitude,
+            isSpReached,
+            fd_image,
+            fd_title,
+            fd_description,
+            fd_latitude,
+            fd_longitude,
+            isFdReached,
+            campContent
+            )
     }
     if(isCreated){
         return <Redirect to="/n/dashboard"/>
@@ -404,98 +432,76 @@ const NewTrip = ({createTrip, getAllProfilesExceptOwn, profile:{profile, profile
                 <div className="newTripDiv">
                     <h1 className="text-center my-5">Create trip</h1>
                     <form onSubmit={e=>onSubmit(e)} encType="multipart/form-data" className="container">
-                        <ProgressBar  id="pb1" variant="warning" label={`${progressBar}%`} now={progressBar} className="mb-5"/>
-
-                        <FirstPart
-                            active={newTripPart.firstPart}
-                            image={tripImage}
-                            setOpen={setOpen}
-                            isModalOpen={isModalOpen}
-                            onChangeTripImage={(e,id)=>onChangeTripImage(e,id)}
-                            imageForm={imageForm}
-                            crop={crop}
-                            setCrop={setCrop}
-                            onTripImageLoaded={(image,ref)=>onTripImageLoaded(image,ref)}
-                            onTripCropComplete={(crop, name, ref)=>onTripCropComplete(crop, name, ref)}
-                            setProgressBar={(val)=> {
-                                setProgressBar(val)
-                                setNewTripPart({...newTripPart, firstPart: false, secondPart: true})
-                            }}
-                        />
-
-                        <SecondPart
-                            active={newTripPart.secondPart}
-                            setProgressBar={(val)=> {
-                                setProgressBar(val)
-                                setNewTripPart({...newTripPart, secondPart: false, thirdPart: true})
-                            }}
-                            formData={formData}
-                            onChange={(e)=>onChange(e)}
-                            title={title}
-                            trip_description={trip_description}
-                            from={from}
-                        />
+                        <ProgressBar  id="pb1" variant="warning" label={`${progressBar}%`} animated now={progressBar} className="mb-5 bg-secondary"/>
+                        {newTripPart.firstPart || newTripPart.secondPart  ? (<div id="tripPartDiv" className="text-center">
+                            <FirstPart
+                                active={newTripPart.firstPart}
+                                formData={formData}
+                                onChange={(e)=>onChange(e)}
+                                title={title}
+                                trip_description={trip_description}
+                                setProgressBar={(val)=> {
+                                    setProgressBar(val)
+                                    setNewTripPart({...newTripPart, firstPart: false, secondPart: true})
+                                }}
+                            />
 
 
-                        <ThirdPart
-                            active={newTripPart.thirdPart}
-                            setProgressBar={(val)=> {
-                                setProgressBar(val)
-                                setNewTripPart({...newTripPart, thirdPart: false, fourthPart: true})
-                            }}
-                            searchTeammates={(e)=>searchTeammates(e)}
-                            teammates={teammates}
-                            displayList={displayList}
-                            setProfileList={setProfileList}
-                            addTeammate={(teammate)=>addTeammate(teammate)}
-                            profile={profile}
-                            assembledTeammates={assembledTeammates}
-                            removeMember={(teammate, i)=>removeMember(teammate, i)}
-                        />
-
-
-                        <FourthPart
-                            active={newTripPart.fourthPart}
-                            addCamp={()=>addCamp()}
-                            setDisplayedPoint={setDisplayedPoint}
-                            campContent={campContent}
-                            displayedPoint={displayedPoint}
-                            sp_image={sp_image}
-                            setOpen={setOpen}
-                            isModalOpen={isModalOpen}
-                            onChangeTripImage={(e,id)=>onChangeTripImage(e,id)}
-                            sp_title={sp_title}
-                            onChangeStPoint={(e)=>onChangeStPoint(e)}
-                            sp_description={sp_description}
-                            sp_latitude={sp_latitude}
-                            sp_longitude={sp_longitude}
-                            getPosition={(lat,lng)=>getPosition(lat,lng)}
-                            togglePanel={(map)=>togglePanel(map)}
-                            displayMap={displayMap}
-                            setMapPosition={setMapPosition}
-                            imageForm={imageForm}
-                            crop={crop}
-                            setCrop={setCrop}
-                            onTripImageLoaded={(image, ref)=>onTripImageLoaded(image, ref)}
-                            onTripCropComplete={(crop, name, ref)=>onTripCropComplete(crop, name, ref)}
-                            fd_image={fd_image}
-                            fd_title={fd_title}
-                            onChangeFnDestination={(e)=>onChangeFnDestination(e)}
-                            fd_description={fd_description}
-                            fd_latitude={fd_latitude}
-                            fd_longitude={fd_longitude}
-                            isCampModalOpen={isCampModalOpen}
-                            setCampOpen={setCampOpen}
-                            removeCamp={(i)=>removeCamp(i)}
-                            onChangeCamp={(e,i)=>onChangeCamp(e,i)}
-                            toggleCampPanel={(map,i)=>toggleCampPanel(map, i)}
-                            displayCampMap={displayCampMap}
-                            campImageCrop={campImageCrop}
-                            onCampImageLoaded={(image,i)=>onCampImageLoaded(image,i)}
-                            onCampCropComplete={(crop, name,i)=>onCampCropComplete(crop, name, i)}
-                            stPointForm={stPointForm}
-                        />
-
+                            <SecondPart
+                                active={newTripPart.secondPart}
+                                setProgressBar={(val)=> {
+                                    setProgressBar(val)
+                                    setNewTripPart({...newTripPart, secondPart: false, thirdPart: true})
+                                }}
+                                searchTeammates={(e)=>searchTeammates(e)}
+                                teammates={teammates}
+                                displayList={displayList}
+                                addTeammate={(teammate)=>addTeammate(teammate)}
+                                profile={profile}
+                                assembledTeammates={assembledTeammates}
+                                removeMember={(teammate, i)=>removeMember(teammate, i)}
+                            />
+                        </div>) :( newTripPart.thirdPart ? (<div id="thirdPartDiv" className="text-center">
+                            <ThirdPart
+                                active={newTripPart.thirdPart}
+                                addCamp={()=>addCamp()}
+                                setDisplayedPoint={setDisplayedPoint}
+                                campContent={campContent}
+                                displayedPoint={displayedPoint}
+                                sp_image={sp_image}
+                                setOpen={setOpen}
+                                isModalOpen={isModalOpen}
+                                onChangeTripImage={(e,id)=>onChangeTripImage(e,id)}
+                                sp_title={sp_title}
+                                onChangeStPoint={(name,value)=>onChangeStPoint(name,value)}
+                                onChangeSpPosition={(lat,lng)=>onChangeSpPosition(lat,lng)}
+                                sp_description={sp_description}
+                                sp_latitude={sp_latitude}
+                                sp_longitude={sp_longitude}
+                                setMapPosition={setMapPosition}
+                                imageForm={imageForm}
+                                crop={crop}
+                                setCrop={setCrop}
+                                onTripImageLoaded={(image, ref)=>onTripImageLoaded(image, ref)}
+                                onTripCropComplete={(crop, name, ref)=>onTripCropComplete(crop, name, ref)}
+                                fd_image={fd_image}
+                                fd_title={fd_title}
+                                onChangeFnDestination={(name,value)=>onChangeFnDestination(name,value)}
+                                onChangeFdPosition={(lat,lng)=>onChangeFdPosition(lat,lng)}
+                                fd_description={fd_description}
+                                fd_latitude={fd_latitude}
+                                fd_longitude={fd_longitude}
+                                isCampModalOpen={isCampModalOpen}
+                                setCampOpen={setCampOpen}
+                                removeCamp={(i)=>removeCamp(i)}
+                                onChangeCamp={(name,value,i)=>onChangeCamp(name,value,i)}
+                                onChangeCampPosition={(lat, lng,i)=>onChangeCampPosition(lat,lng,i)}
+                                campImageCrop={campImageCrop}
+                                onCampImageLoaded={(image,i)=>onCampImageLoaded(image,i)}
+                                onCampCropComplete={(crop, name,i)=>onCampCropComplete(crop, name, i)}
+                                stPointForm={stPointForm}
+                            />
+                            </div>) : <Spinner/>)}
                     </form>
                 </div>
             )}
@@ -508,14 +514,18 @@ NewTrip.propTypes = {
     createTrip: PropTypes.func.isRequired,
     getAllProfilesExceptOwn: PropTypes.func.isRequired,
     pos: PropTypes.object.isRequired,
-    profile: PropTypes.object.isRequired
+    profile: PropTypes.object.isRequired,
+    trips: PropTypes.object.isRequired,
+    tripsLoading: PropTypes.bool.isRequired
 }
 
 const mapStateToProps = state =>({
     pos: state.trips,
     profile: state.profile,
-    isCreated: state.trips.isCreated
+    isCreated: state.trips.isCreated,
+    trips: state.trips,
+    tripsLoading: state.trips.loading
 })
 
 
-export default connect(mapStateToProps, {createTrip, getAllProfilesExceptOwn})(NewTrip);
+export default connect(mapStateToProps, {createTrip, getAllProfilesExceptOwn,getTripById})(NewTrip);

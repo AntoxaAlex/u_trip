@@ -27,6 +27,8 @@ import EditComment from "./components/trips/EditComment";
 import Dashboard from "./components/dashboard/Dashboard";
 import DashboardById from "./components/dashboard/DashboardById";
 
+import SearchResult from "./components/SearchResult";
+
 
 
 
@@ -59,7 +61,8 @@ const App = ()=>{
                     <PrivateRoute exact path="/n/trips/show/:id/comment/:comment_id" component={EditComment}/>
                     <Route exact path="/n/trips/new" component={NewTrip}/>
                     <Route exact path="/n/trips/show/:id" component={ShowTrip}/>
-                    <PrivateRoute exact path="/n/trips/edit/:id" component={EditTrip}/>
+                    <PrivateRoute exact path="/n/trips/edit/:id" component={NewTrip}/>
+                    <Route exact path="/n/search/:value" component={SearchResult}/>
                 </section>
             </Router>
        </Provider>

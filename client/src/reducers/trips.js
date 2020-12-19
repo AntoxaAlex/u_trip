@@ -1,10 +1,19 @@
-import {NEW_TRIP_SUCCESS, NEW_TRIP_FAILED, GET_ALL_MY_TRIPS, GET_TRIP_BY_ID, GET_CURRENT_TRIP, GET_ALL_TRIPS} from "../actions/types";
+import {
+    NEW_TRIP_SUCCESS,
+    NEW_TRIP_FAILED,
+    GET_ALL_MY_TRIPS,
+    GET_TRIP_BY_ID,
+    GET_CURRENT_TRIP,
+    GET_ALL_TRIPS,
+    NOT_READY_TRIP
+} from "../actions/types";
 
 const initialState ={
     trip: null,
     trips: [],
     currentTrip: null,
     loading: true,
+    status: null,
     isCreated: false,
     errors: {},
     positionObj: null,
@@ -20,37 +29,54 @@ export default (state = initialState, action) =>{
                 ...state,
                 trip: payload,
                 loading: false,
-                isCreated: true
+                isCreated: true,
+                status: null
             }
         case GET_ALL_MY_TRIPS:
             return {
                 ...state,
                 trips: payload,
-                loading: false
+                loading: false,
+                isCreated: false,
+                status: null
             }
         case GET_ALL_TRIPS:
             return {
                 ...state,
                 trips: payload,
-                loading: false
+                loading: false,
+                isCreated: false,
+                status: null
             }
         case GET_TRIP_BY_ID:
             return {
                 ...state,
                 trip: payload,
-                loading: false
+                loading: false,
+                isCreated: false,
+                status: null
             }
         case GET_CURRENT_TRIP:
             return {
                 ...state,
                 currentTrip: payload,
-                loading: false
+                loading: false,
+                isCreated: false,
+                status: null
             }
         case NEW_TRIP_FAILED:
             return {
                 ...state,
                 // errors: payload,
-                loading: false
+                loading: false,
+                isCreated: false,
+                status: null
+            }
+        case NOT_READY_TRIP:
+            return {
+                ...state,
+                status: payload.status,
+                trip: payload.id
             }
         default:
             return state

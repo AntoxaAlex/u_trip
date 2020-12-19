@@ -1,5 +1,6 @@
 import React, {Fragment} from "react";
 import ReactCrop from "react-image-crop";
+import 'react-image-crop/dist/ReactCrop.css'
 const ProfileCroppModal = ({open, onClose, src, crop, setImgCrop, onImageLoadedModal, onCropCompleteModal}) =>{
     if(!open) return null
     return(

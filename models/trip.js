@@ -5,8 +5,8 @@ let tripSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectID,
         ref: "User"
     },
-    tripImage: {
-        type: String
+    isTripReady: {
+        type: Boolean
     },
     type: {
         type: String
@@ -14,13 +14,6 @@ let tripSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true
-    },
-    from: {
-        type: Date,
-        required: true
-    },
-    to: {
-        type: Date,
     },
     trip_description: {
         type: String,
@@ -35,35 +28,84 @@ let tripSchema = new mongoose.Schema({
                 type: mongoose.Schema.Types.ObjectID,
                 ref: "User"
             },
-            avatar: {
+            imageUrl: {
                 type: String
             },
-            username: {
+            firstname: {
                 type: String
+            },
+            secondname: {
+                type: String
+            },
+            level: {
+                type: Number
+            },
+            status: {
+                type: String
+            },
+            tripdays: {
+                type: Number
+            },
+            isReady: {
+                type: Boolean
             }
         }
     ],
-    sp_title:{
-        type: String
+    st_point:{
+        sp_title:{
+            type: String
+        },
+        sp_image:{
+            type: String
+        },
+        sp_description:{
+            type: String
+        },
+        sp_latitude:{
+            type: String
+        },
+        sp_longitude:{
+            type: String
+        },
+        isSpReached:{
+            type: Boolean
+        },
+        departureDate:{
+            type: Date
+        }
     },
-    sp_image:{
-        type: String
-    },
-    sp_description:{
-        type: String
-    },
-    sp_latitude:{
-        type: String
-    },
-    sp_longitude:{
-        type: String
+    fn_destination:{
+        fd_title:{
+            type: String
+        },
+        fd_image:{
+            type: String
+        },
+        fd_description:{
+            type: String
+        },
+        fd_latitude:{
+            type: String
+        },
+        fd_longitude:{
+            type: String
+        },
+        fd_travelMode:{
+            type: String
+        },
+        isFdReached:{
+            type: Boolean
+        },
+        arrivalDate:{
+            type: Date
+        }
     },
     campContent: [
         {
-            campTitle:{
+            campImage:{
                 type: String
             },
-            campImage:{
+            campTitle:{
                 type: String
             },
             campDescription:{
@@ -74,24 +116,15 @@ let tripSchema = new mongoose.Schema({
             },
             campLongitude:{
                 type: String
+            },
+            isCampReached:{
+                type: Boolean
+            },
+            arrivalDate:{
+                type: Date
             }
         }
     ],
-    fd_title:{
-        type: String
-    },
-    fd_image:{
-        type: String
-    },
-    fd_description:{
-        type: String
-    },
-    fd_latitude:{
-        type: String
-    },
-    fd_longitude:{
-        type: String
-    },
     comments: [
         {
             type: mongoose.Schema.Types.ObjectID,

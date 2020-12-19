@@ -9,7 +9,8 @@ import {
     COMMENT_FAILED,
     NEW_PROFILE,
     GET_CURRENT_TRIP,
-    GET_ALL_TRIPS
+    GET_ALL_TRIPS,
+    NOT_READY_TRIP
 } from "./types";
 import axios from "axios";
 import React from "react";
@@ -81,10 +82,17 @@ export const getTripById = (id) => async dispatch => {
 export const getCurrentTrip = () => async dispatch => {
     try{
         const res = await axios.get("/trips/current")
-        dispatch({
-            type: GET_CURRENT_TRIP,
-            payload: res.data
-        })
+        if(res.data.status === "not ready"){
+            dispatch({
+                type: NOT_READY_TRIP,
+                payload: res.data
+            })
+        } else {
+            dispatch({
+                type: GET_CURRENT_TRIP,
+                payload: res.data
+            })
+        }
     }catch (e) {
         console.log(e)
         dispatch({
@@ -114,23 +122,23 @@ export const getUserCurrentTrip = (id) => async dispatch => {
 export const createTrip = (
     id,
     dir,
-    tripImage,
     tripType,
     title,
     trip_description,
-    from,
     assembledTeammates,
+    sp_image,
     sp_title,
     sp_description,
-    sp_image,
     sp_latitude,
     sp_longitude,
-    campContent,
+    isSpReached,
+    fd_image,
     fd_title,
     fd_description,
-    fd_image,
     fd_latitude,
-    fd_longitude
+    fd_longitude,
+    isFdReached,
+    campContent
 ) => async dispatch => {
     const config = {
         headers: {
@@ -138,57 +146,39 @@ export const createTrip = (
         }
     }
 
-    console.log(tripImage)
-    console.log(sp_image)
-    console.log(fd_image)
-    campContent.map(camp=>{
-        console.log(camp.campImage)
-    })
+    console.log(assembledTeammates)
+
 
     try {
-            const tripImageUrl = await axios.post("/trips/uploadImage", tripImage)
-            const spImageUrl = await axios.post("/trips/uploadImage", sp_image)
-            const fdImageUrl = await axios.post("/trips/uploadImage", fd_image)
-            const newCampContent = []
-            campContent.map(async camp=>{
-                try{
-                 const campImageUrl = await axios.post("/trips/uploadImage", camp.campImage)
-                  await newCampContent.push({
-                        campImage: campImageUrl.data,
-                        campTitle: camp.campTitle,
-                        campDescription: camp.campDescription,
-                        campLatitude: camp.campLatitude,
-                        campLongitude: camp.campLongitude,
-                    })
-                }catch (e) {
-                    console.log(e.message)
-                }
-            })
-        console.log(tripImageUrl)
-        console.log(spImageUrl)
-        console.log(fdImageUrl)
-        console.log(newCampContent)
+            const spImageUrl = typeof sp_image === "string" ? sp_image : await axios.post("/trips/uploadImage", sp_image)
+            const fdImageUrl = typeof fd_image === "string" ? fd_image : await axios.post("/trips/uploadImage", fd_image)
 
         const body = JSON.stringify({
-            tripImage: tripImageUrl.data,
+            type:tripType,
             title,
             trip_description,
-            from,
-            assembledTeammates,
-            sp_title,
-            sp_description,
-            sp_image: spImageUrl.data,
-            sp_latitude,
-            sp_longitude,
-            campContent: newCampContent,
-            fd_title,
-            fd_description,
-            fd_image: fdImageUrl.data,
-            fd_latitude,
-            fd_longitude
+            team: assembledTeammates,
+            st_point:{
+                sp_image: typeof spImageUrl === "string" ? spImageUrl : spImageUrl.data,
+                sp_title,
+                sp_description,
+                sp_latitude,
+                sp_longitude,
+                isSpReached
+            },
+            fn_destination: {
+                fd_image: typeof fdImageUrl === "string" ? fdImageUrl : fdImageUrl.data,
+                fd_title,
+                fd_description,
+                fd_latitude,
+                fd_longitude,
+                isFdReached
+            },
+            campContent
         })
 
         if(dir === "create"){
+            console.log(body)
             const res = await axios.post("/trips", body, config);
             dispatch({
                 type: NEW_TRIP_SUCCESS,
@@ -211,6 +201,25 @@ export const createTrip = (
         //     type: NEW_TRIP_FAILED
         // })
         console.log(e)
+    }
+}
+
+//Reach point
+export const reachPoint = (tripId, pointId) => async dispatch =>{
+    const config = {
+        headers: {
+            "Content-Type": "application/json"
+        }
+    }
+    const body = JSON.stringify({pointId})
+    try {
+        const res = await axios.put("/trips/"+tripId+"/reachPoint", body, config)
+        dispatch({
+            type: NEW_TRIP_SUCCESS,
+            payload: res.data
+        })
+    }catch (e) {
+        console.log(e.message)
     }
 }
 
@@ -303,7 +312,7 @@ export const createComment = (text, id, profileImage, username) =>async dispatch
 }
 
 //Edit comment
-export const editComment = (name, text, trip_id, comment_id) => async dispatch =>{
+export const editComment = (text, trip_id, comment_id) => async dispatch =>{
     const config = {
         headers: {
             "Content-Type": "application/json"
@@ -395,20 +404,50 @@ export const removeCommentReply = (id, index, tripId, commentId,) => async dispa
             "Content-Type": "application/json"
         }
     }
-
-    if(id === "comment"){
-        const res = await axios.delete("/trips/show/"+tripId+"/posts/"+commentId, config)
-        dispatch({
-            type: NEW_TRIP_SUCCESS,
-            payload: res.data
-        })
-    }else if(id==="reply"){
-        const res = await axios.delete("/trips/show/"+tripId+"/posts/"+commentId+"/reply/"+index, config)
-        dispatch({
-            type: NEW_TRIP_SUCCESS,
-            payload: res.data
-        })
+    try {
+        if(id === "comment"){
+            const res = await axios.delete("/trips/show/"+tripId+"/posts/"+commentId, config)
+            dispatch({
+                type: NEW_TRIP_SUCCESS,
+                payload: res.data
+            })
+        }else if(id==="reply"){
+            const res = await axios.delete("/trips/show/"+tripId+"/posts/"+commentId+"/reply/"+index, config)
+            dispatch({
+                type: NEW_TRIP_SUCCESS,
+                payload: res.data
+            })
+        }
+    }catch (e) {
+        console.log(e.message)
     }
 }
+
+export const confirmTrip = (tripId) => async dispatch =>{
+    const config = {
+        headers: {
+            "Content-Type": "application/json"
+        }
+    }
+    try {
+        const res = await axios.put("/trips/"+tripId+"/confirm", config)
+        if(res.data.status === "you ready"){
+            dispatch({
+                type: NOT_READY_TRIP,
+                payload: res.data
+            })
+        }else {
+            dispatch({
+                type: NEW_TRIP_SUCCESS,
+                payload: res.data
+            })
+        }
+        console.log(res.data)
+    }catch (e) {
+        console.log(e.message)
+    }
+}
+
+
 
 

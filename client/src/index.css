@@ -73,7 +73,7 @@ nav{
 
 
 #mainContainer{
-  background-color: white;
+  height: 950px;
   z-index: 2;
   position: relative;
   padding: 0;
@@ -91,11 +91,10 @@ nav{
 
 #introDiv{
   width: 100%;
-  height: 500px;
-  background-image: url("https://res.cloudinary.com/antoxaalex/image/upload/v1607020584/backgrounds/mountain-and-sea-4770131_1920_vizew2.jpg");
+  height: 600px;
+  background-image: url("https://res.cloudinary.com/antoxaalex/image/upload/v1607170340/backgrounds/natural-4821583_tgztfm.png");
   background-size: cover;
   background-position: center;
-  border-radius: 15px 15px 0 0;
   text-align: center;
   padding: 50px;
   margin-bottom: 50px;
@@ -110,21 +109,18 @@ nav{
 }
 
 #tripsNearYou{
-  background-color: orangered;
   width: 100%;
   height: 300px;
   margin-bottom: 50px;
 }
 
 #bestTripsDiv{
-  background-color: pink;
   width: 100%;
   height: 300px;
   margin-bottom: 50px;
 }
 
 #bestUsersDiv{
-  background-color: limegreen;
   width: 100%;
   height: 300px;
   margin-bottom: 50px;
@@ -268,14 +264,31 @@ nav{
   padding: 50px 10px;
 }
 
+#tripPartDiv{
+  border-radius: 5px;
+  border: 1px solid rgb(222,224,230);
+  padding: 20px;
+  width: 60%;
+  margin: auto;
+  background-color: rgb(247,247,250);
+}
+
+#thirdPartDiv{
+  border-radius: 5px;
+  border: 1px solid rgb(222,224,230);
+  padding: 50px;
+  margin: auto;
+  background-color: rgb(247,247,250);
+}
+
 .tripHeader{
   color: rgb(143,149,168);
   margin-bottom: 30px;
 }
 
 .headerNum{
-  width: 55px;
-  height: 55px;
+  width: 35px;
+  height: 35px;
   border: 2px solid rgb(143,149,168);
   border-radius: 50%;
   margin: 0;
@@ -284,20 +297,26 @@ nav{
 
 .tripMainImageDiv{
   width: 100%;
-  height: 200px;
+}
+
+.btnNextPart{
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  font-size: 1.3rem;
 }
 
 .tripMainImageDiv input[type=file]{outline:0;opacity:0;pointer-events:none;user-select:none;}
 .tripMainImageDiv label{
-  width: 200px;
-  height: 70px;
-  border:2px solid rgb(222,224,230);
+  width: 300px;
+  height: 120px;
+  border:2px dotted rgb(222,224,230);
   border-radius:15px;
   background-color: rgb(247,247,250);
   cursor:pointer;
   text-align:center;
-  padding: 20px;
-  font-size: 1.2rem;
+  padding: 40px;
+  font-size: 1.4rem;
   color: rgb(144,152,184);
 }
 
@@ -454,8 +473,8 @@ nav{
   user-select:none;
 }
 .upload-image .label{
-  width:200px;
-  height:200px;
+  width:100%;
+  height:100%;
   border:2px dashed rgb(144,152,184);
   border-radius:5px;
   display:block;
@@ -507,21 +526,50 @@ nav{
 
 
 .trip_container{
-  padding: 20px;
+
+}
+
+#showTripHeader{
+  height: 500px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  padding: 30px;
 }
 
 #trip_title_div h1{
   text-align: center;
-  color: white;
-  font-size: 6rem;
-  text-shadow: 5px 5px 10px gray;
+  color: orangered;
+  font-family: 'Gochi Hand', cursive;
+  font-size: 10rem;
+}
+
+@media (max-width: 1150px){
+  #trip_title_div h1{
+    font-size: 7rem;
+  }
+}
+@media (max-width: 720px){
+  #trip_title_div h1{
+    font-size: 4rem;
+  }
 }
 
 
 #trip_description_div{
-  max-height: 150px;
-  overflow: auto;
+  text-wrap: normal;
+  font-family: 'Gochi Hand', cursive;
+  font-size: 1.5rem;
+  background-color: white;
+  border-radius: 15px;
+  padding: 10px;
 }
+
+#ratingRow{
+  background-color: white;
+  border-radius: 15px;
+  margin: 10px;
+}
+
 
 #ratingDiv input{
   display: none;
@@ -542,9 +590,7 @@ nav{
 
 #ratingDiv{
   font-size: 2rem;
-  background-color: gray;
-  border: 2px solid yellow;
-  border-radius: 15px;
+
 }
 
 #mapCampRow{
@@ -555,15 +601,44 @@ nav{
   width: 100%;
   height: 500px;
   padding: 0;
+  position: relative;
 }
 
 #tripCampsDiv{
   max-height: 500px;
   height: 500px;
   overflow: auto;
+  background-image: url("https://res.cloudinary.com/antoxaalex/image/upload/v1607197635/backgrounds/paper-1959384_1280_pbquvj.jpg");
+  background-size: 100% 100%;
+  padding: 30px;
 }
 #tripCampsDiv .card-body{
   padding: 0 10px;
+}
+
+.showPointDiv button, #commentsList h5, .pointDescription{
+  font-family: 'Gochi Hand', cursive;
+  font-size: 1.5rem;
+}
+
+.comment_header a{
+  font-family: 'Gochi Hand', cursive;
+  font-size: 1.5rem;
+  text-decoration: none;
+}
+
+.showPointDiv button:hover{
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: red;
+}
+
+.showPointDiv i{
+  font-size: 2rem;
+}
+.verticalBorder{
+  margin: 10px;
+  list-style-type: none;
 }
 
 
@@ -572,7 +647,7 @@ nav{
 }
 
 
-.campsList{
+.campsList, #setLi{
   list-style-type: none;
 }
 
@@ -605,10 +680,67 @@ nav{
   float: right;
 }
 
-.comment_btns{
 
+#camp_information h5, .pointDescription, .noDataDiv{
+  font-family: 'Tangerine', cursive;
+  font-size: 1.5rem;
 }
 
+
+#commentText{
+  height: 200px;
+  background-image: url("http://res.cloudinary.com/antoxaalex/image/upload/a_vflip/a_0/v1607258609/backgrounds/comment-150531_1280_tv7sna.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  padding: 50px 50px 40px 60px;
+  line-break: loose;
+}
+
+#commentBtns{
+  background-color: rgb(247,247,250);
+  border:2px solid rgb(222,224,230);
+  border-radius: 30px;
+  margin-top: 50px;
+  padding: 10px;
+  width: 50px;
+ }
+
+#commentBtns button, #commentBtns a{
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  padding: 0;
+}
+
+
+
+#friendsRow{
+  margin-bottom: 50px;
+  font-family: 'Tangerine', cursive;
+}
+
+#showTripTeamDiv{
+  margin-bottom: 50px;
+  overflow-y: auto;
+  overflow-x: inherit;
+  border-radius: 15px;
+  background-color: white;
+  padding: 15px;
+}
+
+#showTripTeamDiv button{
+  background-color: transparent;
+  border: none;
+}
+
+#showTripTeamDiv button:hover{
+  font-size: 1.7rem;
+}
+
+#showFriendInfo{
+  border-radius: 15px;
+  background-color: white;
+}
 
 /*=====================================================CroppModal=============================================*/
 .modalStyle{

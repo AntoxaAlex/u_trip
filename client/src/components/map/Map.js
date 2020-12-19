@@ -3,8 +3,7 @@ import config from "../../config.json"
 import {
     GoogleMap,
     useLoadScript,
-    Marker,
-    InfoWindow
+    Marker
 } from "@react-google-maps/api";
 
 
@@ -22,8 +21,7 @@ const center ={
 
 const options ={
     disableDefaultUI: true,
-    zoomControl: true,
-    styles: "satellite"
+    zoomControl: true
 }
 
 

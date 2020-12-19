@@ -9,15 +9,20 @@ import axios from "axios";
 import Spinner from "../layout/Spinner";
 import ReactCrop from "react-image-crop";
 import 'react-image-crop/dist/ReactCrop.css';
+import FirstPart from "./newTripParts/FirstPart";
+import SecondPart from "./newTripParts/SecondPart";
+import ThirdPart from "./newTripParts/ThirdPart";
+import {ProgressBar} from "react-bootstrap";
 
 const EditTrip = ({getTripById, getAllProfilesExceptOwn, createTrip, trips:{trip, loading}, profile})=>{
-    const {id} = useParams()
+    const {id,part} = useParams()
 
     //===================================================State===================================================
+    const[progressBar, setProgressBar] = useState(0)
+
     const[formData, setFormData]= useState({
+        tripType: "",
         title: "",
-        from: "",
-        to: "",
         isCompleted: "",
         trip_description: ""
     });
@@ -29,8 +34,6 @@ const EditTrip = ({getTripById, getAllProfilesExceptOwn, createTrip, trips:{trip
     const[displayList, setProfileList] =useState(false)
 
     const[imageForm, setImage] =useState({
-        tripImgSrc: "",
-        tripImage: "",
         sp_image: "",
         fd_image: ""
     });
@@ -80,15 +83,13 @@ const EditTrip = ({getTripById, getAllProfilesExceptOwn, createTrip, trips:{trip
         setProfiles(profile.profiles)
         if(trip){
             setFormData({
+                tripType: loading || !trip.type.typeName ? "" : trip.type.typeName,
                 title: loading || !trip.title ? "" : trip.title,
-                from: loading || !trip.from ? "" : trip.from,
-                to: loading || !trip.to ? "" : trip.to,
                 isCompleted: loading || !trip.isCompleted ? false : trip.isCompleted,
                 trip_description: loading || !trip.trip_description ? "" : trip.trip_description
             })
             setAssembledTeammates(loading || !trip.team ? null : trip.team)
             setImage({
-                tripImage: loading || !trip.tripImage ? "" : trip.tripImage,
                 sp_image: loading || !trip.sp_image ? "" : trip.sp_image,
                 fd_image: loading || !trip.fd_image ? "" : trip.fd_image
             })
@@ -142,10 +143,9 @@ const EditTrip = ({getTripById, getAllProfilesExceptOwn, createTrip, trips:{trip
 
     //===================================================Retrieve variables from state===================================================
     const {
+        tripType,
         title,
-        from,
         isCompleted,
-        to,
         trip_description
     } = formData;
 
@@ -376,52 +376,24 @@ const EditTrip = ({getTripById, getAllProfilesExceptOwn, createTrip, trips:{trip
     //===================================================Submit===================================================
     const onSubmit = e => {
         e.preventDefault();
-        const imageForm = new FormData()
-        imageForm.append('tripImage', tripImage[0])
-
-        // console.log(imageForm)
-        // console.log(title,
-        //     from,
-        //     isCompleted,
-        //     to,
-        //     trip_description)
-        // console.log("StPoint:  " + sp_title,
-        //     sp_description,
-        //     sp_image,
-        //     sp_latitude,
-        //     sp_longitude,
-        // )
-        // console.log("fnDest:   "+ fd_title,
-        //     fd_description,
-        //     fd_image,
-        //     fd_latitude,
-        //     fd_longitude)
-        //
-        // console.log(campContent)
-        //
-
-        console.log(sp_image)
         createTrip(
             id,
             "edit",
-            tripImage,
+            tripType,
             title,
             trip_description,
-            from,
-            to,
-            isCompleted,
             assembledTeammates,
+            sp_image,
             sp_title,
             sp_description,
-            sp_image,
             sp_latitude,
             sp_longitude,
-            campContent,
+            fd_image,
             fd_title,
             fd_description,
-            fd_image,
             fd_latitude,
-            fd_longitude
+            fd_longitude,
+            campContent
         )
         setSubmit(true)
     }
@@ -432,537 +404,555 @@ const EditTrip = ({getTripById, getAllProfilesExceptOwn, createTrip, trips:{trip
             {trip === null && loading ? (<Spinner/>): (<Fragment>
                 {trip !== null ? (<Fragment>
                     <form onSubmit={e=>onSubmit(e)} encType="multipart/form-data">
-                        <div className="tripMainImageDiv mb-5">
-                            <div className="tripHeader row">
-                                <div className="col-1 text-center">
-                                    <h1 className="headerNum">1</h1>
-                                </div>
-                                <h1 className="text-left col-11">Upload new image of your trip</h1>
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="tripImage" className="label">
-                                    <p className="title"><i className="far fa-file-image"/>  Upload image</p>
-                                    <input
-                                        type="file"
-                                        name="tripImage"
-                                        id="tripImage"
-                                        accept="image/*"
-                                        onChange={(e)=> onChangeTripImage(e, "tripMain")}
-                                    />
-                                </label>
-                            </div>
-                            <div className="croper">
-                                {imageForm.tripImgSrc?(<Fragment>
-                                    <ReactCrop
-                                        className="float-left mb-5"
-                                        src={imageForm.tripImgSrc}
-                                        crop={crop.tripImageCrop}
-                                        ruleOfThirds
-                                        onImageLoaded={(image)=>onTripImageLoaded(image)}
-                                        onChange={newCrop => setCrop({...crop, tripImageCrop: newCrop})}
-                                        onComplete={(crop)=>onTripCropComplete(crop, "tripMain")}
-                                    />
-                                </Fragment>):null }
-                            </div>
-                        </div>
+                        <ProgressBar  id="pb1" variant="warning" label={`${progressBar}%`} animated now={progressBar} className="mb-5 bg-secondary"/>>
+                        {part === "trip" && <FirstPart
+                            active={true}
+                            type="edit"
+                            formData={formData}
+                            onChange={(e)=>onChange(e)}
+                            title={title}
+                            trip_description={trip_description}
+                            setProgressBar={(val)=> {
+                                setProgressBar(val)
+                            }}
+                        />}
+                        {part === "team" && <SecondPart/>}
+                        {part === "route" && <ThirdPart/>}
 
-                        <div className="mainTripInfo mb-5">
-                            <div className="tripHeader row">
-                                <div className="col-1 text-center">
-                                    <h1 className="headerNum">2</h1>
-                                </div>
-                                <h1 className="text-left col-11">Update main information</h1>
-                            </div>
-                            <div className="form-group row" style={{width: "60%"}}>
-                                <label htmlFor="title" className="col-sm-3 col-form-label">Trip's title</label>
-                                <input
-                                    type="text"
-                                    className="form-control col-sm-9"
-                                    name="title"
-                                    id="title"
-                                    autoComplete="off"
-                                    value={title}
-                                    onChange={(e)=>onChange(e)}
-                                />
-                            </div>
-                            <div className="form-group row" style={{width: "60%"}}>
-                                <label htmlFor="title" className="col-sm-3 col-form-label">Description</label>
-                                <textarea
-                                    className="form-control col-sm-9"
-                                    name="trip_description"
-                                    id="description"
-                                    value={trip_description}
-                                    onChange={(e)=>onChange(e)}
-                                />
-                            </div>
-                            <div className="form-group row" style={{width: "60%"}}>
-                                <label htmlFor="title" className="col-sm-3 col-form-label">Start date</label>
-                                <input
-                                    type="date"
-                                    className="form-control col-sm-9"
-                                    name="from"
-                                    id="from"
-                                    value={from}
-                                    onChange={(e)=>onChange(e)}
-                                />
-                            </div>
-                            {isCompleted === "yes"  ?(
-                                <div className="form-group row" style={{width: "60%"}}>
-                                    <label htmlFor="to" className="col-sm-3 col-form-label">End date</label>
-                                    <input
-                                        type="date"
-                                        className="form-control col-sm-9"
-                                        name="to"
-                                        id="to"
-                                        value={to}
-                                        onChange={(e)=>onChange(e)}
-                                    />
-                                </div>
-                            ):(
-                                <Fragment>
-                                    <p>Trip is still in progress</p>
-                                </Fragment>
-                            )}
-                            <p>Is trip completed completed?</p>
-                            <div>
-                                <label htmlFor="isCompleted1">Yes</label>
-                                <input
-                                    type="radio"
-                                    name="isCompleted"
-                                    id="isCompleted1"
-                                    value="yes"
-                                    onChange={(e)=>onChange(e)}
-                                />
 
-                                <label htmlFor="isCompleted2">No</label>
-                                <input
-                                    type="radio"
-                                    name="isCompleted"
-                                    id="isCompleted2"
-                                    value="no"
-                                    onChange={(e)=>onChange(e)}
-                                />
 
-                            </div>
-                        </div>
-                        <div className="tripTeamDiv mb-5">
-                            <div className="tripHeader row">
-                                <div className="col-1 text-center">
-                                    <h1 className="headerNum">3</h1>
-                                </div>
-                                <h1 className="text-left col-11">Assemble a team</h1>
-                            </div>
-                            <div className="searchTeammateDiv mb-4">
-                                <input
-                                    type="text"
-                                    placeholder="Write name"
-                                    className="form-control searchTeamInput"
-                                    onChange={(e)=>searchTeammates(e)}
-                                />
-                                {teammates.length > 0 && !displayList && <ul className="searchedTeammateList">
-                                    {teammates.map((teammate, i)=>{
-                                        return(
-                                            <li key={i} className="my-3">
-                                                <div className="row">
-                                                    <div className="col-1">
-                                                        <img alt="" className="rounded-circle" style={{width: "50px", height: "50px"}} src={teammate.imageUrl}/>
-                                                    </div>
-                                                    <div className="col-3 ">
-                                                        <p>{teammate.user.firstname} {teammate.user.secondname}</p>
-                                                    </div>
-                                                    <div className="col-2">
-                                                        <p>{teammate.status ? teammate.status : "No status"}</p>
-                                                    </div>
-                                                    <div className="col-2">
-                                                        {teammate.preferences.length > 0 && <div className="row">
-                                                            {teammate.preferences.map((preference, i) => {
-                                                                return(
-                                                                    <div key={i} className="col-1"><i className={preference.iconClass}/></div>
-                                                                )
-                                                            })}
-                                                        </div>}
-                                                    </div>
-                                                    <div className="col-2">
 
-                                                    </div>
-                                                    <div className="col-2">
-                                                        {teammate.status === "ready for trip" ? (
-                                                            <button type="button" className="btn btn-outline-success" onClick={()=>addTeammate(teammate)}>Add teammate</button>
-                                                        ) : (
-                                                            <button type="button" className="btn btn-outline-secondary">Add teammate</button>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                                <hr/>
-                                            </li>
-                                        )
-                                    })}
-                                </ul>
-                                }
-                            </div>
-                            <div className="teammatesHeaderDiv text-center">
-                                <h3 className="m-0">Trip's members</h3>
-                            </div>
-                            <div className="assemblesTeammatesDiv mb-3">
-                                <div className="row p-3">
-                                    {assembledTeammates && assembledTeammates.length > 0 && <Fragment>
-                                        {assembledTeammates.map((teammate, i)=>{
-                                            return(
-                                                <div key={i} className="assembledMember col-2 mb-3 text-center">
-                                                    <img
-                                                        className="rounded-circle mb-2"
-                                                        alt="" src={teammate.avatar}
-                                                        style={{width: "100px", height: "100px"}}
-                                                    />
-                                                    <button
-                                                        type="button"
-                                                        className="btn btn-sm btn-outline-danger d-block mx-auto"
-                                                        onClick={()=>removeMember(teammate, i)}
-                                                    >Remove</button>
-                                                </div>
-                                            )
-                                        })}
-                                    </Fragment>}
-                                </div>
-                            </div>
-                        </div>
+                        {/*<div className="tripMainImageDiv mb-5">*/}
+                        {/*    <div className="tripHeader row">*/}
+                        {/*        <div className="col-1 text-center">*/}
+                        {/*            <h1 className="headerNum">1</h1>*/}
+                        {/*        </div>*/}
+                        {/*        <h1 className="text-left col-11">Upload new image of your trip</h1>*/}
+                        {/*    </div>*/}
+                        {/*    <div className="form-group">*/}
+                        {/*        <label htmlFor="tripImage" className="label">*/}
+                        {/*            <p className="title"><i className="far fa-file-image"/>  Upload image</p>*/}
+                        {/*            <input*/}
+                        {/*                type="file"*/}
+                        {/*                name="tripImage"*/}
+                        {/*                id="tripImage"*/}
+                        {/*                accept="image/*"*/}
+                        {/*                onChange={(e)=> onChangeTripImage(e, "tripMain")}*/}
+                        {/*            />*/}
+                        {/*        </label>*/}
+                        {/*    </div>*/}
+                        {/*    <div className="croper">*/}
+                        {/*        {imageForm.tripImgSrc?(<Fragment>*/}
+                        {/*            <ReactCrop*/}
+                        {/*                className="float-left mb-5"*/}
+                        {/*                src={imageForm.tripImgSrc}*/}
+                        {/*                crop={crop.tripImageCrop}*/}
+                        {/*                ruleOfThirds*/}
+                        {/*                onImageLoaded={(image)=>onTripImageLoaded(image)}*/}
+                        {/*                onChange={newCrop => setCrop({...crop, tripImageCrop: newCrop})}*/}
+                        {/*                onComplete={(crop)=>onTripCropComplete(crop, "tripMain")}*/}
+                        {/*            />*/}
+                        {/*        </Fragment>):null }*/}
+                        {/*    </div>*/}
+                        {/*</div>*/}
 
-                        <div className="tripRouteDiv">
-                            <div className="tripHeader row">
-                                <div className="col-1 text-center">
-                                    <h1 className="headerNum">4</h1>
-                                </div>
-                                <h1 className="text-left col-11">Create route</h1>
-                            </div>
-                            <div className="routePlan p-3">
-                                <button
-                                    type="button"
-                                    className="btn btn-lg btn-outline-secondary addCampBtn"
-                                    onClick={()=>addCamp()}
-                                >Add point</button>
-                                <div className="routeTrack my-3">
-                                    <input
-                                        type="radio"
-                                        value="st_point"
-                                        name="displayedPoint"
-                                        onClick={(e)=>setDisplayedPoint({val: e.target.value})}
-                                    />
-                                    <div className="pointRadiosDiv">
-                                        {
-                                            campContent.map((camp,i)=>{
-                                                return(
-                                                    <Fragment key={i}>
-                                                       <span className="waySpanRadio">---
-                                                           <input
-                                                               type="radio"
-                                                               value={"camp" + i}
-                                                               name="displayedPoint"
-                                                               onClick={(e)=>setDisplayedPoint({val: e.target.value})}
-                                                           />
-                                                       </span>
-                                                    </Fragment>
-                                                )
-                                            })
-                                        }
-                                    </div>
-                                    <span className="waySpanRadio">---
-                                        <input
-                                            type="radio"
-                                            name="displayedPoint"
-                                            value="fn_destination"
-                                            onClick={(e)=>setDisplayedPoint({val: e.target.value})}
-                                        />
-                                    </span>
-                                </div>
-                                {displayedPoint &&
-                                <div className="card mb-3" >
-                                    {displayedPoint.val === "st_point"  ?(
-                                        <Fragment>
-                                            <h3 className="ml-2">Starting Point</h3>
-                                            <div className="row no-gutters">
-                                                <div className="col-md-3">
-                                                    <div id="tripImage" className="upload-image">
-                                                        <div className="form-group">
-                                                            <label htmlFor="sp_image" className="label" style={{backgroundPosition: "center", backgroundSize: "cover", backgroundImage: `url(${sp_image})`}}>
-                                                                <i className="far fa-file-image"/>
-                                                                <span className="title">Add image</span>
-                                                                <input
-                                                                    type="file"
-                                                                    name="sp_image"
-                                                                    id="sp_image"
-                                                                    accept="image/*"
-                                                                    onChange={(e)=> onChangeImage(e)}
-                                                                />
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="col-md-4">
-                                                    <div className="card-body p-0">
-                                                        <input
-                                                            type="text"
-                                                            className="form-control"
-                                                            name="sp_title"
-                                                            id="sp_title"
-                                                            autoComplete="off"
-                                                            placeholder="Title"
-                                                            value={sp_title}
-                                                            onChange={(e)=>onChangeStPoint(e)}
-                                                        />
-                                                        <textarea
-                                                            className="form-control"
-                                                            name="sp_description"
-                                                            id="sp_description"
-                                                            autoComplete="off"
-                                                            placeholder="Description"
-                                                            value={sp_description}
-                                                            onChange={(e)=>onChangeStPoint(e)}
-                                                        />
-                                                    </div>
-                                                    <div className="row card-body">
-                                                        <div className="col-6 p-0">
-                                                            <input
-                                                                type="text"
-                                                                className="form-control"
-                                                                name="sp_latitude"
-                                                                placeholder="Write latitude"
-                                                                autoComplete="off"
-                                                                id="sp_latitude"
-                                                                value={sp_latitude}
-                                                                onChange={(e)=>onChangeStPoint(e)}
-                                                            />
-                                                            <input
-                                                                type="text"
-                                                                className="form-control"
-                                                                name="sp_longitude"
-                                                                placeholder="Write longitude"
-                                                                autoComplete="off"
-                                                                id="sp_longitude"
-                                                                value={sp_longitude}
-                                                                onChange={(e)=>onChangeStPoint(e)}
-                                                            />
-                                                        </div>
-                                                        <div className="col-6">
-                                                            <p id="sp_latitude_span"/>
-                                                            <p id="sp_longitude_span"/>
-                                                        </div>
-                                                    </div>
-                                                    <button
-                                                        type="button"
-                                                        className="btn btn-sm btn-outline-secondary"
-                                                        onClick={()=>getPosition("sp_latitude_span","sp_longitude_span")}
-                                                    >Get current position</button>
-                                                    <button
-                                                        type="button"
-                                                        className="btn btn-sm btn-outline-secondary"
-                                                        onClick={()=>togglePanel("st_point_map")}
-                                                    >Choose on map</button>
-                                                </div>
-                                                <div className="col-md-5">
+                        {/*<div className="mainTripInfo mb-5">*/}
+                        {/*    <div className="tripHeader row">*/}
+                        {/*        <div className="col-1 text-center">*/}
+                        {/*            <h1 className="headerNum">2</h1>*/}
+                        {/*        </div>*/}
+                        {/*        <h1 className="text-left col-11">Update main information</h1>*/}
+                        {/*    </div>*/}
+                        {/*    <div className="form-group row" style={{width: "60%"}}>*/}
+                        {/*        <label htmlFor="title" className="col-sm-3 col-form-label">Trip's title</label>*/}
+                        {/*        <input*/}
+                        {/*            type="text"*/}
+                        {/*            className="form-control col-sm-9"*/}
+                        {/*            name="title"*/}
+                        {/*            id="title"*/}
+                        {/*            autoComplete="off"*/}
+                        {/*            value={title}*/}
+                        {/*            onChange={(e)=>onChange(e)}*/}
+                        {/*        />*/}
+                        {/*    </div>*/}
+                        {/*    <div className="form-group row" style={{width: "60%"}}>*/}
+                        {/*        <label htmlFor="title" className="col-sm-3 col-form-label">Description</label>*/}
+                        {/*        <textarea*/}
+                        {/*            className="form-control col-sm-9"*/}
+                        {/*            name="trip_description"*/}
+                        {/*            id="description"*/}
+                        {/*            value={trip_description}*/}
+                        {/*            onChange={(e)=>onChange(e)}*/}
+                        {/*        />*/}
+                        {/*    </div>*/}
+                        {/*    <div className="form-group row" style={{width: "60%"}}>*/}
+                        {/*        <label htmlFor="title" className="col-sm-3 col-form-label">Start date</label>*/}
+                        {/*        <input*/}
+                        {/*            type="date"*/}
+                        {/*            className="form-control col-sm-9"*/}
+                        {/*            name="from"*/}
+                        {/*            id="from"*/}
+                        {/*            value={from}*/}
+                        {/*            onChange={(e)=>onChange(e)}*/}
+                        {/*        />*/}
+                        {/*    </div>*/}
+                        {/*    {isCompleted === "yes"  ?(*/}
+                        {/*        <div className="form-group row" style={{width: "60%"}}>*/}
+                        {/*            <label htmlFor="to" className="col-sm-3 col-form-label">End date</label>*/}
+                        {/*            <input*/}
+                        {/*                type="date"*/}
+                        {/*                className="form-control col-sm-9"*/}
+                        {/*                name="to"*/}
+                        {/*                id="to"*/}
+                        {/*                value={to}*/}
+                        {/*                onChange={(e)=>onChange(e)}*/}
+                        {/*            />*/}
+                        {/*        </div>*/}
+                        {/*    ):(*/}
+                        {/*        <Fragment>*/}
+                        {/*            <p>Trip is still in progress</p>*/}
+                        {/*        </Fragment>*/}
+                        {/*    )}*/}
+                        {/*    <p>Is trip completed completed?</p>*/}
+                        {/*    <div>*/}
+                        {/*        <label htmlFor="isCompleted1">Yes</label>*/}
+                        {/*        <input*/}
+                        {/*            type="radio"*/}
+                        {/*            name="isCompleted"*/}
+                        {/*            id="isCompleted1"*/}
+                        {/*            value="yes"*/}
+                        {/*            onChange={(e)=>onChange(e)}*/}
+                        {/*        />*/}
 
-                                                </div>
-                                            </div>
-                                            {displayMap.st_point_map && <div className="googleMapDiv st_point_MapPanel">
-                                                <Map el1={"sp_latitude_span"} el2={"sp_longitude_span"} setMapPosition={setMapPosition}/>
-                                            </div>}
-                                        </Fragment>
-                                    ):null}
-                                    {displayedPoint.val === "fn_destination" && <Fragment>
-                                        <h3 className="ml-2">Final Destination</h3>
-                                        <div className="row no-gutters">
-                                            <div className="col-md-3">
-                                                <div id="tripImage" className="upload-image">
-                                                    <div className="form-group">
-                                                        <label htmlFor="fd_image" className="label" style={{backgroundPosition: "center", backgroundSize: "cover", backgroundImage: `url(${fd_image})`}}>
-                                                            <i className="far fa-file-image"/>
-                                                            <span className="title">Add image</span>
-                                                            <input
-                                                                type="file"
-                                                                name="fd_image"
-                                                                id="fd_image"
-                                                                accept="image/*"
-                                                                onChange={(e)=> onChangeImage(e)}
-                                                            />
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="col-md-4">
-                                                <div className="card-body p-0">
-                                                    <input
-                                                        type="text"
-                                                        className="form-control"
-                                                        name="fd_title"
-                                                        id="fd_title"
-                                                        autoComplete="off"
-                                                        placeholder="Title"
-                                                        value={fd_title}
-                                                        onChange={(e)=>onChangeFnDestination(e)}
-                                                    />
-                                                    <textarea
-                                                        className="form-control"
-                                                        name="fd_description"
-                                                        id="fd_description"
-                                                        autoComplete="off"
-                                                        placeholder="Description"
-                                                        value={fd_description}
-                                                        onChange={(e)=>onChangeFnDestination(e)}
-                                                    />
-                                                </div>
-                                                <div className="row card-body">
-                                                    <div className="col-6 p-0">
-                                                        <input
-                                                            type="text"
-                                                            className="form-control"
-                                                            name="fd_latitude"
-                                                            placeholder="Write latitude"
-                                                            autoComplete="off"
-                                                            id="fd_latitude"
-                                                            value={fd_latitude}
-                                                            onChange={(e)=>onChangeFnDestination(e)}
-                                                        />
-                                                        <input
-                                                            type="text"
-                                                            className="form-control"
-                                                            name="fd_longitude"
-                                                            placeholder="Write longitude"
-                                                            autoComplete="off"
-                                                            id="fd_longitude"
-                                                            value={fd_longitude}
-                                                            onChange={(e)=>onChangeFnDestination(e)}
-                                                        />
-                                                    </div>
-                                                    <div className="col-6">
-                                                        <p id="fd_latitude_span"/>
-                                                        <p id="fd_longitude_span"/>
-                                                    </div>
-                                                </div>
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-sm btn-outline-secondary"
-                                                    onClick={()=>getPosition("fd_latitude_span","fd_longitude_span")}
-                                                >Get current position</button>
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-sm btn-outline-secondary"
-                                                    onClick={()=>togglePanel("fn_destination_map")}
-                                                >Choose on map</button>
-                                            </div>
-                                            <div className="col-md-5">
+                        {/*        <label htmlFor="isCompleted2">No</label>*/}
+                        {/*        <input*/}
+                        {/*            type="radio"*/}
+                        {/*            name="isCompleted"*/}
+                        {/*            id="isCompleted2"*/}
+                        {/*            value="no"*/}
+                        {/*            onChange={(e)=>onChange(e)}*/}
+                        {/*        />*/}
 
-                                            </div>
-                                        </div>
-                                        {displayMap.fn_destination_map && <div className="googleMapDiv fn_destination_MapPanel">
-                                            <Map el1={"fd_latitude_span"} el2={"fd_longitude_span"} setMapPosition={setMapPosition}/>
-                                        </div>}
-                                    </Fragment>}
-                                    {campContent.map((el,i)=>{
-                                        return(
-                                            <Fragment key={i}>
-                                                {displayedPoint.val === "camp"+i && <Fragment>
-                                                    <h3 className="ml-2">Camp {i+1}</h3>
-                                                    <div className="row no-gutters">
-                                                        <div className="col-md-3 text-center">
-                                                            <div id="tripImage" className="upload-image">
-                                                                <div className="form-group">
-                                                                    <label htmlFor={"campImage"+i} className="label" style={{backgroundPosition: "center", backgroundSize: "cover", backgroundImage: `url(${el.campImage})`}}>
-                                                                        <i className="far fa-file-image"/>
-                                                                        <span className="title">Add image</span>
-                                                                        <input
-                                                                            type="file"
-                                                                            name="campImage"
-                                                                            id={"campImage"+i}
-                                                                            accept="image/*"
-                                                                            onChange={(e)=>  onChangeCampImage(e,i)}
-                                                                        />
-                                                                    </label>
-                                                                </div>
-                                                            </div>
-                                                            <button type="button"
-                                                                className="btn btn-sm btn-outline-danger" onClick={()=>removeCamp(i)}>
-                                                                Delete camp
-                                                            </button>
-                                                        </div>
-                                                        <div className="col-md-4">
-                                                            <div className="card-body p-0">
-                                                                <input
-                                                                    type="text"
-                                                                    className="form-control"
-                                                                    name="campTitle"
-                                                                    id={"campTitle" + i}
-                                                                    autoComplete="off"
-                                                                    placeholder="Title"
-                                                                    value={campContent[i].campTitle}
-                                                                    onChange={(e)=>onChangeCamp(e,i)}
-                                                                />
-                                                                <textarea
-                                                                    className="form-control"
-                                                                    name="campDescription"
-                                                                    id={"campDescription" + i}
-                                                                    autoComplete="off"
-                                                                    placeholder="Description"
-                                                                    value={campContent[i].campDescription}
-                                                                    onChange={(e)=>onChangeCamp(e,i)}
-                                                                />
-                                                            </div>
-                                                            <div className="row card-body">
-                                                                <div className="col-6 p-0">
-                                                                    <input
-                                                                        type="text"
-                                                                        className="form-control"
-                                                                        name="campLatitude"
-                                                                        placeholder="Write latitude"
-                                                                        autoComplete="off"
-                                                                        id={"campLatitude" + i}
-                                                                        value={campContent[i].campLatitude}
-                                                                        onChange={(e)=>onChangeCamp(e,i)}
-                                                                    />
-                                                                    <input
-                                                                        type="text"
-                                                                        className="form-control"
-                                                                        name="campLongitude"
-                                                                        placeholder="Write longitude"
-                                                                        autoComplete="off"
-                                                                        id={"campLongitude" +i}
-                                                                        value={campContent[i].campLongitude}
-                                                                        onChange={(e)=>onChangeCamp(e,i)}
-                                                                    />
-                                                                </div>
-                                                                <div className="col-6">
-                                                                    <p id={"camp_latitude_span" + i}/>
-                                                                    <p id={"camp_longitude_span" + i}/>
-                                                                </div>
-                                                            </div>
-                                                            <button
-                                                                type="button"
-                                                                className="btn btn-sm btn-outline-secondary"
-                                                                onClick={()=>getPosition("camp_latitude_span" + i,"camp_longitude_span" + i)}
-                                                            >Get current position</button>
-                                                            <button
-                                                                type="button"
-                                                                className="btn btn-sm btn-outline-secondary"
-                                                                onClick={()=>toggleCampPanel("campMap"+i,i)}
-                                                            >Choose on map</button>
-                                                        </div>
-                                                        <div className="col-md-5">
+                        {/*    </div>*/}
+                        {/*</div>*/}
+                        {/*<div className="tripTeamDiv mb-5">*/}
+                        {/*    <div className="tripHeader row">*/}
+                        {/*        <div className="col-1 text-center">*/}
+                        {/*            <h1 className="headerNum">3</h1>*/}
+                        {/*        </div>*/}
+                        {/*        <h1 className="text-left col-11">Assemble a team</h1>*/}
+                        {/*    </div>*/}
+                        {/*    <div className="searchTeammateDiv mb-4">*/}
+                        {/*        <input*/}
+                        {/*            type="text"*/}
+                        {/*            placeholder="Write name"*/}
+                        {/*            className="form-control searchTeamInput"*/}
+                        {/*            onChange={(e)=>searchTeammates(e)}*/}
+                        {/*        />*/}
+                        {/*        {teammates.length > 0 && !displayList && <ul className="searchedTeammateList">*/}
+                        {/*            {teammates.map((teammate, i)=>{*/}
+                        {/*                return(*/}
+                        {/*                    <li key={i} className="my-3">*/}
+                        {/*                        <div className="row">*/}
+                        {/*                            <div className="col-1">*/}
+                        {/*                                <img alt="" className="rounded-circle" style={{width: "50px", height: "50px"}} src={teammate.imageUrl}/>*/}
+                        {/*                            </div>*/}
+                        {/*                            <div className="col-3 ">*/}
+                        {/*                                <p>{teammate.user.firstname} {teammate.user.secondname}</p>*/}
+                        {/*                            </div>*/}
+                        {/*                            <div className="col-2">*/}
+                        {/*                                <p>{teammate.status ? teammate.status : "No status"}</p>*/}
+                        {/*                            </div>*/}
+                        {/*                            <div className="col-2">*/}
+                        {/*                                {teammate.preferences.length > 0 && <div className="row">*/}
+                        {/*                                    {teammate.preferences.map((preference, i) => {*/}
+                        {/*                                        return(*/}
+                        {/*                                            <div key={i} className="col-1"><i className={preference.iconClass}/></div>*/}
+                        {/*                                        )*/}
+                        {/*                                    })}*/}
+                        {/*                                </div>}*/}
+                        {/*                            </div>*/}
+                        {/*                            <div className="col-2">*/}
 
-                                                        </div>
-                                                    </div>
-                                                    <div id={"camp_MapPanel"+i} className="tripBlockPart">
-                                                        {displayCampMap[i] && <div className="googleMapDiv">
-                                                            <Map el1={"camp_latitude_span" + i} el2={"camp_longitude_span" + i} setMapPosition={setMapPosition}/>
-                                                        </div>}
-                                                    </div>
-                                                </Fragment>}
-                                            </Fragment>
-                                        )
-                                    })}
-                                </div>}
-                            </div>
-                        </div>
-                        <div className="text-center">
-                            <button type="submit" className="btn btn-outline-primary btn-lg my-5">Submit</button>
-                        </div>
+                        {/*                            </div>*/}
+                        {/*                            <div className="col-2">*/}
+                        {/*                                {teammate.status === "ready for trip" ? (*/}
+                        {/*                                    <button type="button" className="btn btn-outline-success" onClick={()=>addTeammate(teammate)}>Add teammate</button>*/}
+                        {/*                                ) : (*/}
+                        {/*                                    <button type="button" className="btn btn-outline-secondary">Add teammate</button>*/}
+                        {/*                                )}*/}
+                        {/*                            </div>*/}
+                        {/*                        </div>*/}
+                        {/*                        <hr/>*/}
+                        {/*                    </li>*/}
+                        {/*                )*/}
+                        {/*            })}*/}
+                        {/*        </ul>*/}
+                        {/*        }*/}
+                        {/*    </div>*/}
+                        {/*    <div className="teammatesHeaderDiv text-center">*/}
+                        {/*        <h3 className="m-0">Trip's members</h3>*/}
+                        {/*    </div>*/}
+                        {/*    <div className="assemblesTeammatesDiv mb-3">*/}
+                        {/*        <div className="row p-3">*/}
+                        {/*            {assembledTeammates && assembledTeammates.length > 0 && <Fragment>*/}
+                        {/*                {assembledTeammates.map((teammate, i)=>{*/}
+                        {/*                    return(*/}
+                        {/*                        <div key={i} className="assembledMember col-2 mb-3 text-center">*/}
+                        {/*                            <img*/}
+                        {/*                                className="rounded-circle mb-2"*/}
+                        {/*                                alt="" src={teammate.avatar}*/}
+                        {/*                                style={{width: "100px", height: "100px"}}*/}
+                        {/*                            />*/}
+                        {/*                            <button*/}
+                        {/*                                type="button"*/}
+                        {/*                                className="btn btn-sm btn-outline-danger d-block mx-auto"*/}
+                        {/*                                onClick={()=>removeMember(teammate, i)}*/}
+                        {/*                            >Remove</button>*/}
+                        {/*                        </div>*/}
+                        {/*                    )*/}
+                        {/*                })}*/}
+                        {/*            </Fragment>}*/}
+                        {/*        </div>*/}
+                        {/*    </div>*/}
+                        {/*</div>*/}
+
+                        {/*<div className="tripRouteDiv">*/}
+                        {/*    <div className="tripHeader row">*/}
+                        {/*        <div className="col-1 text-center">*/}
+                        {/*            <h1 className="headerNum">4</h1>*/}
+                        {/*        </div>*/}
+                        {/*        <h1 className="text-left col-11">Create route</h1>*/}
+                        {/*    </div>*/}
+                        {/*    <div className="routePlan p-3">*/}
+                        {/*        <button*/}
+                        {/*            type="button"*/}
+                        {/*            className="btn btn-lg btn-outline-secondary addCampBtn"*/}
+                        {/*            onClick={()=>addCamp()}*/}
+                        {/*        >Add point</button>*/}
+                        {/*        <div className="routeTrack my-3">*/}
+                        {/*            <input*/}
+                        {/*                type="radio"*/}
+                        {/*                value="st_point"*/}
+                        {/*                name="displayedPoint"*/}
+                        {/*                onClick={(e)=>setDisplayedPoint({val: e.target.value})}*/}
+                        {/*            />*/}
+                        {/*            <div className="pointRadiosDiv">*/}
+                        {/*                {*/}
+                        {/*                    campContent.map((camp,i)=>{*/}
+                        {/*                        return(*/}
+                        {/*                            <Fragment key={i}>*/}
+                        {/*                               <span className="waySpanRadio">---*/}
+                        {/*                                   <input*/}
+                        {/*                                       type="radio"*/}
+                        {/*                                       value={"camp" + i}*/}
+                        {/*                                       name="displayedPoint"*/}
+                        {/*                                       onClick={(e)=>setDisplayedPoint({val: e.target.value})}*/}
+                        {/*                                   />*/}
+                        {/*                               </span>*/}
+                        {/*                            </Fragment>*/}
+                        {/*                        )*/}
+                        {/*                    })*/}
+                        {/*                }*/}
+                        {/*            </div>*/}
+                        {/*            <span className="waySpanRadio">---*/}
+                        {/*                <input*/}
+                        {/*                    type="radio"*/}
+                        {/*                    name="displayedPoint"*/}
+                        {/*                    value="fn_destination"*/}
+                        {/*                    onClick={(e)=>setDisplayedPoint({val: e.target.value})}*/}
+                        {/*                />*/}
+                        {/*            </span>*/}
+                        {/*        </div>*/}
+                        {/*        {displayedPoint &&*/}
+                        {/*        <div className="card mb-3" >*/}
+                        {/*            {displayedPoint.val === "st_point"  ?(*/}
+                        {/*                <Fragment>*/}
+                        {/*                    <h3 className="ml-2">Starting Point</h3>*/}
+                        {/*                    <div className="row no-gutters">*/}
+                        {/*                        <div className="col-md-3">*/}
+                        {/*                            <div id="tripImage" className="upload-image">*/}
+                        {/*                                <div className="form-group">*/}
+                        {/*                                    <label htmlFor="sp_image" className="label" style={{backgroundPosition: "center", backgroundSize: "cover", backgroundImage: `url(${sp_image})`}}>*/}
+                        {/*                                        <i className="far fa-file-image"/>*/}
+                        {/*                                        <span className="title">Add image</span>*/}
+                        {/*                                        <input*/}
+                        {/*                                            type="file"*/}
+                        {/*                                            name="sp_image"*/}
+                        {/*                                            id="sp_image"*/}
+                        {/*                                            accept="image/*"*/}
+                        {/*                                            onChange={(e)=> onChangeImage(e)}*/}
+                        {/*                                        />*/}
+                        {/*                                    </label>*/}
+                        {/*                                </div>*/}
+                        {/*                            </div>*/}
+                        {/*                        </div>*/}
+                        {/*                        <div className="col-md-4">*/}
+                        {/*                            <div className="card-body p-0">*/}
+                        {/*                                <input*/}
+                        {/*                                    type="text"*/}
+                        {/*                                    className="form-control"*/}
+                        {/*                                    name="sp_title"*/}
+                        {/*                                    id="sp_title"*/}
+                        {/*                                    autoComplete="off"*/}
+                        {/*                                    placeholder="Title"*/}
+                        {/*                                    value={sp_title}*/}
+                        {/*                                    onChange={(e)=>onChangeStPoint(e)}*/}
+                        {/*                                />*/}
+                        {/*                                <textarea*/}
+                        {/*                                    className="form-control"*/}
+                        {/*                                    name="sp_description"*/}
+                        {/*                                    id="sp_description"*/}
+                        {/*                                    autoComplete="off"*/}
+                        {/*                                    placeholder="Description"*/}
+                        {/*                                    value={sp_description}*/}
+                        {/*                                    onChange={(e)=>onChangeStPoint(e)}*/}
+                        {/*                                />*/}
+                        {/*                            </div>*/}
+                        {/*                            <div className="row card-body">*/}
+                        {/*                                <div className="col-6 p-0">*/}
+                        {/*                                    <input*/}
+                        {/*                                        type="text"*/}
+                        {/*                                        className="form-control"*/}
+                        {/*                                        name="sp_latitude"*/}
+                        {/*                                        placeholder="Write latitude"*/}
+                        {/*                                        autoComplete="off"*/}
+                        {/*                                        id="sp_latitude"*/}
+                        {/*                                        value={sp_latitude}*/}
+                        {/*                                        onChange={(e)=>onChangeStPoint(e)}*/}
+                        {/*                                    />*/}
+                        {/*                                    <input*/}
+                        {/*                                        type="text"*/}
+                        {/*                                        className="form-control"*/}
+                        {/*                                        name="sp_longitude"*/}
+                        {/*                                        placeholder="Write longitude"*/}
+                        {/*                                        autoComplete="off"*/}
+                        {/*                                        id="sp_longitude"*/}
+                        {/*                                        value={sp_longitude}*/}
+                        {/*                                        onChange={(e)=>onChangeStPoint(e)}*/}
+                        {/*                                    />*/}
+                        {/*                                </div>*/}
+                        {/*                                <div className="col-6">*/}
+                        {/*                                    <p id="sp_latitude_span"/>*/}
+                        {/*                                    <p id="sp_longitude_span"/>*/}
+                        {/*                                </div>*/}
+                        {/*                            </div>*/}
+                        {/*                            <button*/}
+                        {/*                                type="button"*/}
+                        {/*                                className="btn btn-sm btn-outline-secondary"*/}
+                        {/*                                onClick={()=>getPosition("sp_latitude_span","sp_longitude_span")}*/}
+                        {/*                            >Get current position</button>*/}
+                        {/*                            <button*/}
+                        {/*                                type="button"*/}
+                        {/*                                className="btn btn-sm btn-outline-secondary"*/}
+                        {/*                                onClick={()=>togglePanel("st_point_map")}*/}
+                        {/*                            >Choose on map</button>*/}
+                        {/*                        </div>*/}
+                        {/*                        <div className="col-md-5">*/}
+
+                        {/*                        </div>*/}
+                        {/*                    </div>*/}
+                        {/*                    {displayMap.st_point_map && <div className="googleMapDiv st_point_MapPanel">*/}
+                        {/*                        <Map el1={"sp_latitude_span"} el2={"sp_longitude_span"} setMapPosition={setMapPosition}/>*/}
+                        {/*                    </div>}*/}
+                        {/*                </Fragment>*/}
+                        {/*            ):null}*/}
+                        {/*            {displayedPoint.val === "fn_destination" && <Fragment>*/}
+                        {/*                <h3 className="ml-2">Final Destination</h3>*/}
+                        {/*                <div className="row no-gutters">*/}
+                        {/*                    <div className="col-md-3">*/}
+                        {/*                        <div id="tripImage" className="upload-image">*/}
+                        {/*                            <div className="form-group">*/}
+                        {/*                                <label htmlFor="fd_image" className="label" style={{backgroundPosition: "center", backgroundSize: "cover", backgroundImage: `url(${fd_image})`}}>*/}
+                        {/*                                    <i className="far fa-file-image"/>*/}
+                        {/*                                    <span className="title">Add image</span>*/}
+                        {/*                                    <input*/}
+                        {/*                                        type="file"*/}
+                        {/*                                        name="fd_image"*/}
+                        {/*                                        id="fd_image"*/}
+                        {/*                                        accept="image/*"*/}
+                        {/*                                        onChange={(e)=> onChangeImage(e)}*/}
+                        {/*                                    />*/}
+                        {/*                                </label>*/}
+                        {/*                            </div>*/}
+                        {/*                        </div>*/}
+                        {/*                    </div>*/}
+                        {/*                    <div className="col-md-4">*/}
+                        {/*                        <div className="card-body p-0">*/}
+                        {/*                            <input*/}
+                        {/*                                type="text"*/}
+                        {/*                                className="form-control"*/}
+                        {/*                                name="fd_title"*/}
+                        {/*                                id="fd_title"*/}
+                        {/*                                autoComplete="off"*/}
+                        {/*                                placeholder="Title"*/}
+                        {/*                                value={fd_title}*/}
+                        {/*                                onChange={(e)=>onChangeFnDestination(e)}*/}
+                        {/*                            />*/}
+                        {/*                            <textarea*/}
+                        {/*                                className="form-control"*/}
+                        {/*                                name="fd_description"*/}
+                        {/*                                id="fd_description"*/}
+                        {/*                                autoComplete="off"*/}
+                        {/*                                placeholder="Description"*/}
+                        {/*                                value={fd_description}*/}
+                        {/*                                onChange={(e)=>onChangeFnDestination(e)}*/}
+                        {/*                            />*/}
+                        {/*                        </div>*/}
+                        {/*                        <div className="row card-body">*/}
+                        {/*                            <div className="col-6 p-0">*/}
+                        {/*                                <input*/}
+                        {/*                                    type="text"*/}
+                        {/*                                    className="form-control"*/}
+                        {/*                                    name="fd_latitude"*/}
+                        {/*                                    placeholder="Write latitude"*/}
+                        {/*                                    autoComplete="off"*/}
+                        {/*                                    id="fd_latitude"*/}
+                        {/*                                    value={fd_latitude}*/}
+                        {/*                                    onChange={(e)=>onChangeFnDestination(e)}*/}
+                        {/*                                />*/}
+                        {/*                                <input*/}
+                        {/*                                    type="text"*/}
+                        {/*                                    className="form-control"*/}
+                        {/*                                    name="fd_longitude"*/}
+                        {/*                                    placeholder="Write longitude"*/}
+                        {/*                                    autoComplete="off"*/}
+                        {/*                                    id="fd_longitude"*/}
+                        {/*                                    value={fd_longitude}*/}
+                        {/*                                    onChange={(e)=>onChangeFnDestination(e)}*/}
+                        {/*                                />*/}
+                        {/*                            </div>*/}
+                        {/*                            <div className="col-6">*/}
+                        {/*                                <p id="fd_latitude_span"/>*/}
+                        {/*                                <p id="fd_longitude_span"/>*/}
+                        {/*                            </div>*/}
+                        {/*                        </div>*/}
+                        {/*                        <button*/}
+                        {/*                            type="button"*/}
+                        {/*                            className="btn btn-sm btn-outline-secondary"*/}
+                        {/*                            onClick={()=>getPosition("fd_latitude_span","fd_longitude_span")}*/}
+                        {/*                        >Get current position</button>*/}
+                        {/*                        <button*/}
+                        {/*                            type="button"*/}
+                        {/*                            className="btn btn-sm btn-outline-secondary"*/}
+                        {/*                            onClick={()=>togglePanel("fn_destination_map")}*/}
+                        {/*                        >Choose on map</button>*/}
+                        {/*                    </div>*/}
+                        {/*                    <div className="col-md-5">*/}
+
+                        {/*                    </div>*/}
+                        {/*                </div>*/}
+                        {/*                {displayMap.fn_destination_map && <div className="googleMapDiv fn_destination_MapPanel">*/}
+                        {/*                    <Map el1={"fd_latitude_span"} el2={"fd_longitude_span"} setMapPosition={setMapPosition}/>*/}
+                        {/*                </div>}*/}
+                        {/*            </Fragment>}*/}
+                        {/*            {campContent.map((el,i)=>{*/}
+                        {/*                return(*/}
+                        {/*                    <Fragment key={i}>*/}
+                        {/*                        {displayedPoint.val === "camp"+i && <Fragment>*/}
+                        {/*                            <h3 className="ml-2">Camp {i+1}</h3>*/}
+                        {/*                            <div className="row no-gutters">*/}
+                        {/*                                <div className="col-md-3 text-center">*/}
+                        {/*                                    <div id="tripImage" className="upload-image">*/}
+                        {/*                                        <div className="form-group">*/}
+                        {/*                                            <label htmlFor={"campImage"+i} className="label" style={{backgroundPosition: "center", backgroundSize: "cover", backgroundImage: `url(${el.campImage})`}}>*/}
+                        {/*                                                <i className="far fa-file-image"/>*/}
+                        {/*                                                <span className="title">Add image</span>*/}
+                        {/*                                                <input*/}
+                        {/*                                                    type="file"*/}
+                        {/*                                                    name="campImage"*/}
+                        {/*                                                    id={"campImage"+i}*/}
+                        {/*                                                    accept="image/*"*/}
+                        {/*                                                    onChange={(e)=>  onChangeCampImage(e,i)}*/}
+                        {/*                                                />*/}
+                        {/*                                            </label>*/}
+                        {/*                                        </div>*/}
+                        {/*                                    </div>*/}
+                        {/*                                    <button type="button"*/}
+                        {/*                                        className="btn btn-sm btn-outline-danger" onClick={()=>removeCamp(i)}>*/}
+                        {/*                                        Delete camp*/}
+                        {/*                                    </button>*/}
+                        {/*                                </div>*/}
+                        {/*                                <div className="col-md-4">*/}
+                        {/*                                    <div className="card-body p-0">*/}
+                        {/*                                        <input*/}
+                        {/*                                            type="text"*/}
+                        {/*                                            className="form-control"*/}
+                        {/*                                            name="campTitle"*/}
+                        {/*                                            id={"campTitle" + i}*/}
+                        {/*                                            autoComplete="off"*/}
+                        {/*                                            placeholder="Title"*/}
+                        {/*                                            value={campContent[i].campTitle}*/}
+                        {/*                                            onChange={(e)=>onChangeCamp(e,i)}*/}
+                        {/*                                        />*/}
+                        {/*                                        <textarea*/}
+                        {/*                                            className="form-control"*/}
+                        {/*                                            name="campDescription"*/}
+                        {/*                                            id={"campDescription" + i}*/}
+                        {/*                                            autoComplete="off"*/}
+                        {/*                                            placeholder="Description"*/}
+                        {/*                                            value={campContent[i].campDescription}*/}
+                        {/*                                            onChange={(e)=>onChangeCamp(e,i)}*/}
+                        {/*                                        />*/}
+                        {/*                                    </div>*/}
+                        {/*                                    <div className="row card-body">*/}
+                        {/*                                        <div className="col-6 p-0">*/}
+                        {/*                                            <input*/}
+                        {/*                                                type="text"*/}
+                        {/*                                                className="form-control"*/}
+                        {/*                                                name="campLatitude"*/}
+                        {/*                                                placeholder="Write latitude"*/}
+                        {/*                                                autoComplete="off"*/}
+                        {/*                                                id={"campLatitude" + i}*/}
+                        {/*                                                value={campContent[i].campLatitude}*/}
+                        {/*                                                onChange={(e)=>onChangeCamp(e,i)}*/}
+                        {/*                                            />*/}
+                        {/*                                            <input*/}
+                        {/*                                                type="text"*/}
+                        {/*                                                className="form-control"*/}
+                        {/*                                                name="campLongitude"*/}
+                        {/*                                                placeholder="Write longitude"*/}
+                        {/*                                                autoComplete="off"*/}
+                        {/*                                                id={"campLongitude" +i}*/}
+                        {/*                                                value={campContent[i].campLongitude}*/}
+                        {/*                                                onChange={(e)=>onChangeCamp(e,i)}*/}
+                        {/*                                            />*/}
+                        {/*                                        </div>*/}
+                        {/*                                        <div className="col-6">*/}
+                        {/*                                            <p id={"camp_latitude_span" + i}/>*/}
+                        {/*                                            <p id={"camp_longitude_span" + i}/>*/}
+                        {/*                                        </div>*/}
+                        {/*                                    </div>*/}
+                        {/*                                    <button*/}
+                        {/*                                        type="button"*/}
+                        {/*                                        className="btn btn-sm btn-outline-secondary"*/}
+                        {/*                                        onClick={()=>getPosition("camp_latitude_span" + i,"camp_longitude_span" + i)}*/}
+                        {/*                                    >Get current position</button>*/}
+                        {/*                                    <button*/}
+                        {/*                                        type="button"*/}
+                        {/*                                        className="btn btn-sm btn-outline-secondary"*/}
+                        {/*                                        onClick={()=>toggleCampPanel("campMap"+i,i)}*/}
+                        {/*                                    >Choose on map</button>*/}
+                        {/*                                </div>*/}
+                        {/*                                <div className="col-md-5">*/}
+
+                        {/*                                </div>*/}
+                        {/*                            </div>*/}
+                        {/*                            <div id={"camp_MapPanel"+i} className="tripBlockPart">*/}
+                        {/*                                {displayCampMap[i] && <div className="googleMapDiv">*/}
+                        {/*                                    <Map el1={"camp_latitude_span" + i} el2={"camp_longitude_span" + i} setMapPosition={setMapPosition}/>*/}
+                        {/*                                </div>}*/}
+                        {/*                            </div>*/}
+                        {/*                        </Fragment>}*/}
+                        {/*                    </Fragment>*/}
+                        {/*                )*/}
+                        {/*            })}*/}
+                        {/*        </div>}*/}
+                        {/*    </div>*/}
+                        {/*</div>*/}
+                        {/*<div className="text-center">*/}
+                        {/*    <button type="submit" className="btn btn-outline-primary btn-lg my-5">Submit</button>*/}
+                        {/*</div>*/}
                     </form>
                 </Fragment>):null}
             </Fragment>)}

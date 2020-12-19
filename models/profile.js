@@ -43,6 +43,12 @@ const profileSchema = mongoose.Schema({
     level:{
       type: Number
     },
+    trips: [
+        {
+            type: mongoose.Schema.Types.ObjectID,
+            ref: "Trip"
+        }
+    ],
     bio: {
         type: String
     },
