@@ -91,6 +91,7 @@ export const login = (email, password) => async dispatch =>{
         })
 
         dispatch(loadUser())
+        dispatch(setAlert(`Welcome back`,"success"))
     }catch (e) {
         const errors = e.response.data.errors;
         console.log(errors);
@@ -107,6 +108,7 @@ export const logout = ()=> async dispatch =>{
     dispatch({
         type: CLEAR_PROFILE
     })
+    dispatch(setAlert(`You have been successfully logged out`,"danger"))
     dispatch({
         type: LOGOUT
     })

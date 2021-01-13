@@ -6,8 +6,7 @@ const initialState = {
     profiles: [],
     loading: true,
     error: {},
-    isUpdated: false,
-    activeTab: "skills"
+    isUpdated: null
 }
 
 export default (state = initialState, action) => {
@@ -23,6 +22,7 @@ export default (state = initialState, action) => {
         case GET_PROFILE:
             return {
                 ...state,
+                isUpdated: null,
                 profile: payload,
                 loading: false
             }

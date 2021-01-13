@@ -11,6 +11,7 @@ import {
     NOT_READY_TRIP
 } from "./types";
 import axios from "axios";
+import {setAlert} from "./alert";
 // import {setAlert} from "./alert";
 
 
@@ -179,6 +180,7 @@ export const createTrip = (
                 type: NEW_TRIP_SUCCESS,
                 payload: res.data
             })
+            dispatch(setAlert("Trip is created","success"))
         }else if(dir === "edit"){
             console.log("edit")
             const res = await axios.put("/trips/"+id, body, config);
@@ -186,6 +188,7 @@ export const createTrip = (
                 type: NEW_TRIP_SUCCESS,
                 payload: res.data
             })
+            dispatch(setAlert("Trip is updated","success"))
         }
     }catch (e) {
         // const errors = e.response.data.errors;
@@ -213,52 +216,9 @@ export const reachPoint = (tripId, pointId) => async dispatch =>{
             type: NEW_TRIP_SUCCESS,
             payload: res.data
         })
+        dispatch(setAlert("You reach new point","success"))
     }catch (e) {
         console.log(e.message)
-    }
-}
-
-//Immediately complete trip
-export const completeTrip = (id) => async dispatch => {
-    const today = new Date();
-    const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-    const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds()+".000+00:00";
-    const dateTime = date+'T'+time;
-    console.log(dateTime)
-
-    const config = {
-        headers: {
-            "Content-Type": "application/json"
-        }
-    }
-    const body = JSON.stringify({
-        isCompleted: true,
-        to: dateTime
-    })
-
-    console.log(body)
-    try {
-        const res = await axios.put("/trips/"+id+"/complete", body, config);
-        dispatch({
-            type: NEW_TRIP_SUCCESS,
-            payload: res.data
-        })
-    }
-    catch (e) {
-            console.log(e.message)
-    }
-}
-
-//Delete trip
-export const removeTrip = (id) => async dispatch =>{
-    try {
-        const res = await axios.delete("/trips/"+id)
-        dispatch({
-            type: NEW_PROFILE,
-            payload: res.data
-        })
-    } catch (e) {
-        console.log(e)
     }
 }
 
@@ -285,6 +245,7 @@ export const createComment = (text, id, profileImage, username) =>async dispatch
             type: NEW_TRIP_SUCCESS,
             payload: res.data
         })
+        dispatch(setAlert("Comment has been successfully created","success"))
     }catch (e) {
         console.log(e.message)
     }
@@ -306,6 +267,7 @@ export const editComment = (text, trip_id, comment_id) => async dispatch =>{
             type: NEW_TRIP_SUCCESS,
             payload: res.data
         })
+        dispatch(setAlert("Comment has been successfully updated","success"))
     }catch (e) {
         console.log(e)
     }
@@ -332,6 +294,7 @@ export const createReply = (text, id, commentId, profileImage, username) =>async
             type: NEW_TRIP_SUCCESS,
             payload: res.data
         })
+        dispatch(setAlert("Reply has been successfully created","success"))
     }catch (e) {
         console.log(e.message)
     }
@@ -391,12 +354,14 @@ export const removeCommentReply = (id, index, tripId, commentId,) => async dispa
                 type: NEW_TRIP_SUCCESS,
                 payload: res.data
             })
+            dispatch(setAlert("Comment has been successfully removed","success"))
         }else if(id==="reply"){
             const res = await axios.delete("/trips/show/"+tripId+"/posts/"+commentId+"/reply/"+index, config)
             dispatch({
                 type: NEW_TRIP_SUCCESS,
                 payload: res.data
             })
+            dispatch(setAlert("Reply has been successfully removed","success"))
         }
     }catch (e) {
         console.log(e.message)

@@ -3,7 +3,7 @@ import {Link} from "react-router-dom"
 import {connect} from "react-redux";
 import Spinner from "../layout/Spinner";
 import {getCurrentProfile, changeTab, setProfileStatus} from "../../actions/profile";
-import {getAllMyTrips, removeTrip, getCurrentTrip, completeTrip} from "../../actions/trips";
+import {getAllMyTrips, getCurrentTrip} from "../../actions/trips";
 import PropTypes from "prop-types";
 import {DropdownButton, InputGroup, Carousel} from "react-bootstrap";
 
@@ -300,7 +300,6 @@ const Dashboard = ({getCurrentProfile, getAllMyTrips, getCurrentTrip, completeTr
 Dashboard.propTypes = {
     getCurrentProfile: PropTypes.func.isRequired,
     getCurrentTrip: PropTypes.func.isRequired,
-    completeTrip: PropTypes.func.isRequired,
     getAllMyTrips: PropTypes.func.isRequired,
     changeTab: PropTypes.func.isRequired,
     setProfileStatus: PropTypes.func.isRequired,
@@ -315,4 +314,4 @@ const mapStateToProps = state => ({
     trips: state.trips
 })
 
-export default connect(mapStateToProps, {getCurrentProfile, getCurrentTrip, changeTab, getAllMyTrips, removeTrip, setProfileStatus, completeTrip})(Dashboard);
+export default connect(mapStateToProps, {getCurrentProfile, getCurrentTrip, changeTab, getAllMyTrips,setProfileStatus})(Dashboard);

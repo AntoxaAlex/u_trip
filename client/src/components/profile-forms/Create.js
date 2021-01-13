@@ -329,14 +329,13 @@ const Create = ({createProfile, profile:{isUpdated}, auth:{user, loading}}) => {
             pinterest,
             website
         )
-
-        if(isUpdated){
-            return <Redirect to="/n/dashboard"/>
-        }
+    }
+    if(isUpdated){
+        return <Redirect to="/n/dashboard"/>
     }
     return(
         <Fragment>
-            {user === null && loading ?(<Spinner/>):(
+            {!user && loading ?(<Spinner/>):(
                 <form id="createProfileForm" encType="multipart/form-data" className="p-3" onSubmit={e=>onSubmit(e)}>
                     <h1 className="text-center my-5">Create profile</h1>
                     <div className="profileCreate row">
@@ -369,14 +368,16 @@ const Create = ({createProfile, profile:{isUpdated}, auth:{user, loading}}) => {
                             />
                         </div>
                         <div className="mainInfoProfile col-12 col-md-8 col-lg-10 order-1">
-                            <div className="row">
-                                <p className="col-sm-3"><i className="fas fa-user-check"/>  First Name</p>
-                                <p className="col-sm-9">{user.firstname}</p>
-                            </div>
-                            <div className="form-group row">
-                                <p className="col-sm-3"><i className="fas fa-user-check"/>  Last Name</p>
-                                <p className="col-sm-9">{user.secondname}</p>
-                            </div>
+                            {user && <Fragment>
+                                <div className="row">
+                                    <p className="col-sm-3"><i className="fas fa-user-check"/>  First Name</p>
+                                    <p className="col-sm-9">{user.firstname}</p>
+                                </div>
+                                <div className="form-group row">
+                                    <p className="col-sm-3"><i className="fas fa-user-check"/>  Last Name</p>
+                                    <p className="col-sm-9">{user.secondname}</p>
+                                </div>
+                            </Fragment>}
                             <div className="form-group row">
                                 <label htmlFor="dob" className="col-sm-3 col-form-label"><i
                                     className="fas fa-calendar-day"/>  Date of birth</label>
@@ -422,6 +423,7 @@ const Create = ({createProfile, profile:{isUpdated}, auth:{user, loading}}) => {
                                         className="form-control"
                                         name="place"
                                         id="place"
+                                        placeholder="Optional"
                                         autoComplete="off"
                                         value={place}
                                         onChange={(e)=>onChange(e)}
@@ -436,6 +438,7 @@ const Create = ({createProfile, profile:{isUpdated}, auth:{user, loading}}) => {
                                         className="form-control"
                                         name="job"
                                         id="job"
+                                        placeholder="Optional"
                                         autoComplete="off"
                                         value={job}
                                         onChange={(e)=>onChange(e)}
@@ -449,6 +452,7 @@ const Create = ({createProfile, profile:{isUpdated}, auth:{user, loading}}) => {
                                         className="form-control"
                                         name="website"
                                         id="website"
+                                        placeholder="Optional"
                                         autoComplete="off"
                                         value={website}
                                         onChange={(e)=>onChange(e)}
@@ -549,6 +553,7 @@ const Create = ({createProfile, profile:{isUpdated}, auth:{user, loading}}) => {
                                             className="form-control"
                                             name="instagram"
                                             id="instagram"
+                                            placeholder="Optional"
                                             autoComplete="off"
                                             value={instagram}
                                             onChange={(e)=>onChange(e)}
@@ -562,6 +567,7 @@ const Create = ({createProfile, profile:{isUpdated}, auth:{user, loading}}) => {
                                             className="form-control"
                                             name="facebook"
                                             id="facebook"
+                                            placeholder="Optional"
                                             autoComplete="off"
                                             value={facebook}
                                             onChange={(e)=>onChange(e)}
@@ -575,6 +581,7 @@ const Create = ({createProfile, profile:{isUpdated}, auth:{user, loading}}) => {
                                             className="form-control"
                                             name="vk"
                                             id="vk"
+                                            placeholder="Optional"
                                             autoComplete="off"
                                             value={vk}
                                             onChange={(e)=>onChange(e)}
@@ -588,6 +595,7 @@ const Create = ({createProfile, profile:{isUpdated}, auth:{user, loading}}) => {
                                             className="form-control"
                                             name="pinterest"
                                             id="pinterest"
+                                            placeholder="Optional"
                                             autoComplete="off"
                                             value={pinterest}
                                             onChange={(e)=>onChange(e)}

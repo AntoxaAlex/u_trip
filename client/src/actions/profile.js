@@ -88,7 +88,7 @@ export const createProfile = (
 
     try {
         console.log(avatar)
-        const imageUrl = await axios.post("/profile/avatar", avatar);
+        const imageUrl = typeof avatar === "string" ? avatar : await axios.post("/profile/avatar", avatar);
         console.log(imageUrl)
         const body = JSON.stringify({
             imageUrl: imageUrl.data,
@@ -106,13 +106,15 @@ export const createProfile = (
         })
         console.log(body)
         const res = await axios.post("/profile", body, config);
-        dispatch({
+        dispatch(
+            {
             type: NEW_PROFILE,
             payload: res.data
-        })
+            })
+        dispatch(setAlert("Profile is updated","success"))
     }catch (e) {
         const errors = e.response.data.errors;
-        console.log(errors);
+        console.log(errors)
         errors.forEach(error=>dispatch(setAlert(error.msg, "danger"))
         );
         dispatch({

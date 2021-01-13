@@ -1,7 +1,7 @@
 import React, {useEffect, useState, Fragment }from 'react';
 import {connect} from "react-redux";
 import {getAllProfiles, getCurrentProfile} from "../actions/profile";
-import {getAllTrips, getCurrentTrip,completeTrip, confirmTrip} from "../actions/trips";
+import {getAllTrips, getCurrentTrip,confirmTrip} from "../actions/trips";
 import Spinner from "./layout/Spinner";
 import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
@@ -29,7 +29,7 @@ const Home = ({getAllProfiles, getCurrentProfile, getAllTrips, getCurrentTrip,co
         getCurrentTrip()
         getAllProfiles()
         getAllTrips()
-    },[getAllProfiles, getAllTrips, getCurrentProfile, getCurrentTrip])
+    },[])
 
 
     if (navigator.geolocation) {
@@ -259,4 +259,4 @@ const mapStateToProps = state => ({
     profile: state.profile,
     auth: state.auth
 })
-export default connect(mapStateToProps, {getAllProfiles, getAllTrips, getCurrentProfile, getCurrentTrip, completeTrip,confirmTrip})(Home);
+export default connect(mapStateToProps, {getAllProfiles, getAllTrips, getCurrentProfile, getCurrentTrip,confirmTrip})(Home);

@@ -330,11 +330,10 @@ const EditProfile = ({getCurrentProfile, createProfile, deleteUser,logout, profi
         const imageForm = new FormData()
         imageForm.append('avatar', avatar)
         createProfile(
-            imageForm,
+            typeof avatar === "string" ? avatar : imageForm,
             dob,
             place,
             job,
-            tripdays,
             preferences,
             gender,
             bio,
@@ -344,17 +343,16 @@ const EditProfile = ({getCurrentProfile, createProfile, deleteUser,logout, profi
             pinterest,
             website
         )
-
-        if(isUpdated === true){
-            return <Redirect to="/n/dashboard"/>
-        }
+    }
+    if(isUpdated){
+        return <Redirect to="/n/dashboard"/>
     }
     return(
         <Fragment>
             {profile === null && loading && auth.loading ? <Spinner/> : (
                 <Fragment>
                     {profile !== null && auth.user!==null ? (<Fragment>
-                        <form encType="multipart/form-data" className="p-3" onSubmit={e=>onSubmit(e)}>
+                        <form encType="multipart/form-data" className="p-3" noValidate onSubmit={e=>onSubmit(e)}>
                             <h2 className="text-center my-5">Edit Profile</h2>
                             <div className="profileCreate row">
                                 <div className="upload-image col-12 col-md-4 col-lg-2 order-0">
@@ -427,13 +425,6 @@ const EditProfile = ({getCurrentProfile, createProfile, deleteUser,logout, profi
                                                 onChange={(e)=>onChange(e)}
                                             />
                                             <label htmlFor="female"><i className="fas fa-female"/></label>
-                                            <input
-                                                type="radio"
-                                                id="other"
-                                                name="gender"
-                                                value="Other"
-                                                onChange={(e)=>onChange(e)}
-                                            />
                                         </div>
                                     </div>
                                     <div className="form-group row">

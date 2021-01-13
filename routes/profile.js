@@ -71,14 +71,13 @@ router.get("/me",auth, async (req, res)=>{
 router.post("/", [
     auth,
     [
-        body("dob", "This field is required").not().isEmpty(),
-        body("preferences", "This field is required").not().isEmpty(),
-        body("gender", "Please choose gender").not().isEmpty()
+        body("dob", "Date of birth is required").not().isEmpty(),
+        body("bio", "Bio is required").not().isEmpty(),
+        body("gender", "Gender is required").not().isEmpty()
     ]
 ], async (req, res)=>{
     const errors = validationResult(req);
     if(!errors.isEmpty()){
-        console.log(errors);
         return res.status(400).json({errors: errors.array()})
     }
 
@@ -126,13 +125,16 @@ router.post("/", [
         //    Update profile
             profile = await Profile.findOneAndUpdate({user: req.user.id}, {$set: profileObj}, {new: true})
             profile.save()
+            res.json(profile)
+        } else {
+            //Create profile if not
+            profileObj.tripdays = 0;
+            profileObj.level = 0;
+            profile = new Profile(profileObj);
+            profile.save();
+            res.json(profile)
         }
-        //Create profile if not
-        profileObj.tripdays = 0;
-        profileObj.level = 0;
-        profile = new Profile(profileObj);
-        profile.save();
-        res.json(profile)
+
 
     }catch (e) {
         res.status(500).send("Server error")

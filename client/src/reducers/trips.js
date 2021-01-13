@@ -14,7 +14,7 @@ const initialState ={
     currentTrip: null,
     loading: true,
     status: null,
-    isCreated: false,
+    isCreated: null,
     errors: {},
     positionObj: null,
     posId: null
@@ -69,7 +69,7 @@ export default (state = initialState, action) =>{
                 ...state,
                 // errors: payload,
                 loading: false,
-                isCreated: false,
+                isCreated: null,
                 status: null
             }
         case NOT_READY_TRIP:
