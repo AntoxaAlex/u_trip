@@ -1,5 +1,5 @@
 import React, {useEffect, useState, Fragment} from "react";
-import {Link, Redirect} from "react-router-dom"
+import {Link} from "react-router-dom"
 import {connect} from "react-redux";
 import Spinner from "../layout/Spinner";
 import {getCurrentProfile, changeTab, setProfileStatus} from "../../actions/profile";
@@ -7,12 +7,31 @@ import {getAllMyTrips, removeTrip, getCurrentTrip, completeTrip} from "../../act
 import PropTypes from "prop-types";
 import {DropdownButton, InputGroup, Carousel} from "react-bootstrap";
 
-const Dashboard = ({getCurrentProfile, getAllMyTrips, getCurrentTrip, completeTrip, removeTrip, setProfileStatus, auth, profile:{profile, loading}, trips:{trips, currentTrip}}) => {
+const Dashboard = ({getCurrentProfile, getAllMyTrips, getCurrentTrip, completeTrip, setProfileStatus, auth, profile:{profile, loading}, trips:{trips, currentTrip}}) => {
+
+    const[tripFriends, setTripFriends] = useState([])
+
     useEffect(()=>{
         getCurrentProfile()
         getCurrentTrip()
         getAllMyTrips()
-    },[loading, trips.loading])
+        if(trips && profile){
+            const newTeam = []
+            trips.map(trip=>{
+                trip.team.map(teammate=>{
+                    if(profile._id !== teammate._id)
+                    newTeam.push(teammate)
+                })
+            })
+            const newFriendsArr = Array.from(new Set(newTeam.map(teammate=>teammate.user._id))).map(id=>{
+                return{
+                    id: id,
+                    image: newTeam.find(teammate=>teammate.user._id === id).imageUrl
+                }
+            })
+            setTripFriends(newFriendsArr)
+        }
+    },[trips])
 
     const [profileStatus, setPrStatus] =useState({
         status: ""
@@ -43,7 +62,7 @@ const Dashboard = ({getCurrentProfile, getAllMyTrips, getCurrentTrip, completeTr
         document.getElementById("iconsTips").classList.toggle("fadeOut")
     }
 
-    const removeIconTip = (index) =>{
+    const removeIconTip = () =>{
         document.getElementById("iconsTips").classList.toggle("fadeOut")
     }
 
@@ -56,7 +75,7 @@ const Dashboard = ({getCurrentProfile, getAllMyTrips, getCurrentTrip, completeTr
                     {profile && auth.user ? (
                         <div id="dashboard">
                             <div id="infoBox" className="row">
-                                <div id="firstColumn" className="col-3">
+                                <div id="firstColumn" className="col-12 col-md-4 col-lg-2 order-0">
                                     <div id="avatarBox">
                                         <img
                                             className="rounded-circle"
@@ -65,7 +84,7 @@ const Dashboard = ({getCurrentProfile, getAllMyTrips, getCurrentTrip, completeTr
                                         />
 
                                     </div>
-                                    <div id="preferenceDiv" className="row p-3">
+                                    <div id="preferenceDiv" className="row p-3 d-none d-sm-flex">
                                         {profile.preferences.map((preference, i)=>{
                                             return(
                                                 <div key={i} className="col-2 p-0">
@@ -74,15 +93,15 @@ const Dashboard = ({getCurrentProfile, getAllMyTrips, getCurrentTrip, completeTr
                                             )
                                         })}
                                     </div>
-                                    <div id="iconsTips" className="fadeIn">
+                                    <div id="iconsTips" className="fadeIn d-none d-sm-block">
                                         {selectedIcon && <p>{selectedIcon.value}</p>}
                                     </div>
                                 </div>
-                                <div id="secondColumn" className="col-9">
+                                <div id="secondColumn" className="col-12 col-md-8 col-lg-10 order-1">
                                     <div id="nameBox">
-                                        <p id="dashboardName">{auth.user.firstname} {auth.user.secondname}</p>
-                                        <InputGroup size="sm" className="mb-3" style={{width: "40%"}}>
-                                            <p id="statusString" style={{width: "140px"}}>
+                                        <p id="dashboardName" className="text-center text-md-left">{auth.user.firstname} {auth.user.secondname}</p>
+                                        <InputGroup size="sm" className="mb-3 mx-auto mx-md-0" style={{width: "50%"}}>
+                                            <p id="statusString" style={{width: "140px", textAlign: "center"}}>
                                                 {!profile.status ? "Set status" : profile.status}
                                             </p>
 
@@ -101,13 +120,13 @@ const Dashboard = ({getCurrentProfile, getAllMyTrips, getCurrentTrip, completeTr
                                     </div>
                                     <div id="mainInfo">
                                         <div className="row">
-                                            <div className="col-2">
+                                            <div className="col-4 col-lg-2">
                                                 <p><i className="far fa-calendar-alt"/>  Birthday</p>
                                                 <p><i className="fas fa-venus-mars"/>  Gender</p>
                                                 <p><i className="fas fa-user-tie"/>  Job</p>
                                                 <p><i className="fas fa-map-marker-alt"/>  Location</p>
                                             </div>
-                                            <div className="col-10">
+                                            <div className="col-8 col-lg-10">
                                                 <p>{profile.dob}</p>
                                                 <p id="gender">{profile.gender}</p>
                                                 <p>{profile.job}</p>
@@ -122,14 +141,14 @@ const Dashboard = ({getCurrentProfile, getAllMyTrips, getCurrentTrip, completeTr
                                     >Social Networks</button>
                                     {displayLinks && <div id="socialNetDiv">
                                         <div className="row">
-                                            <div className="col-2">
-                                                {profile.website && <p><i className="fas fa-desktop"/>  Website</p>}
-                                                {profile.instagram && <p><i className="fab fa-instagram"/>  Instagram</p>}
-                                                {profile.facebook && <p><i className="fab fa-facebook-f"/> Facebook</p>}
-                                                {profile.vk && <p><i className="fab fa-vk"/>  Vkontakte</p>}
-                                                {profile.pinterest && <p><i className="fab fa-pinterest-p"/>  Pinterest</p>}
+                                            <div className="col-1">
+                                                {profile.website && <p><i className="fas fa-desktop"/></p>}
+                                                {profile.instagram && <p><i className="fab fa-instagram"/></p>}
+                                                {profile.facebook && <p><i className="fab fa-facebook-f"/></p>}
+                                                {profile.vk && <p><i className="fab fa-vk"/></p>}
+                                                {profile.pinterest && <p><i className="fab fa-pinterest-p"/></p>}
                                             </div>
-                                            <div className="col-10">
+                                            <div className="col-11">
                                                 {profile.website && <p><a href={profile.website} target="_blank" rel="noopener noreferrer">{profile.website}</a></p>}
                                                 {profile.instagram && <p><a href={profile.instagram} target="_blank" rel="noopener noreferrer">{profile.instagram}</a></p>}
                                                 {profile.facebook && <p><a href={profile.facebook} target="_blank" rel="noopener noreferrer">{profile.facebook}</a></p>}
@@ -186,42 +205,51 @@ const Dashboard = ({getCurrentProfile, getAllMyTrips, getCurrentTrip, completeTr
                                                     </li>
                                                 </ul>
                                                 {trips.length > 0  ? (
-                                                    <Carousel className="mb-4">
-                                                        {trips.map((trip,i)=>{
-                                                            return(
-                                                                    // <div key= {i} className="card col-4">
-                                                                    //     <img src={trip.tripImage} className="card-img-top"
-                                                                    //          alt="..."/>
-                                                                    //          <div className="card-body">
-                                                                    //              <h5 className="card-title">{trip.title}</h5>
-                                                                    //              <p className="card-text">{trip.description}</p>
-                                                                    //              <Link to={"/n/trips/show/"+trip._id} className="btn btn-primary">See more</Link>
-                                                                    //              {trip.user === auth.user._id ?(<Fragment>
-                                                                    //                  <div className="edit_delete_trip_div">
-                                                                    //                      <Link className="btn btm-sm btn-outline-warning" to={"/n/trips/edit/"+trip._id} >Edit</Link>
-                                                                    //                      <button
-                                                                    //                          type="button"
-                                                                    //                          className="btn btm-sm btn-outline-danger"
-                                                                    //                          onClick={()=>removeTrip(trip._id)}
-                                                                    //                      >Delete</button>
-                                                                    //                  </div>
-                                                                    //              </Fragment>):null}
-                                                                    //          </div>
-                                                                    // </div>
-                                                                <Carousel.Item key={i}>
-                                                                    <img
-                                                                        className="d-block w-100"
-                                                                        src={trip.tripImage}
-                                                                        alt="First slide"
-                                                                    />
-                                                                    <Carousel.Caption>
-                                                                        <h1><Link className="nav-link text-white" to={"/n/trips/show/"+trip._id}>{trip.title}</Link></h1>
-                                                                        <p>{trip.trip_description.slice(0,140)+"..."}</p>
-                                                                    </Carousel.Caption>
-                                                                </Carousel.Item>
-                                                            )
+                                                        <div id="dashboardCarousel" style={{gridTemplateColumns: `repeat(${trips.length}, calc(50%))`}}>
+                                                            {trips.map((trip,i)=>{
+                                                                return(
+                                                                    <Carousel key={i} controls={false} className="mb-5">
+                                                                        <Carousel.Item>
+                                                                            <img
+                                                                                className="d-block w-100"
+                                                                                src={trip.st_point.sp_image}
+                                                                                alt="First slide"
+                                                                            />
+                                                                            <Carousel.Caption>
+                                                                                <h1><Link className="nav-link text-white" to={"/n/trips/show/"+trip._id}>{trip.title}</Link></h1>
+                                                                                <p>{trip.trip_description.slice(0,140)+"..."}</p>
+                                                                            </Carousel.Caption>
+                                                                        </Carousel.Item>
+                                                                        {trip.campContent.map((camp,i)=>{
+                                                                            return(
+                                                                                <Carousel.Item key={i}>
+                                                                                    <img
+                                                                                        className="d-block w-100"
+                                                                                        src={camp.campImage}
+                                                                                        alt="First slide"
+                                                                                    />
+                                                                                    <Carousel.Caption>
+                                                                                        <h1><Link className="nav-link text-white" to={"/n/trips/show/"+trip._id}>{trip.title}</Link></h1>
+                                                                                        <p>{trip.trip_description.slice(0,140)+"..."}</p>
+                                                                                    </Carousel.Caption>
+                                                                                </Carousel.Item>
+                                                                            )
+                                                                        })}
+                                                                        <Carousel.Item>
+                                                                            <img
+                                                                                className="d-block w-100"
+                                                                                src={trip.fn_destination.fd_image}
+                                                                                alt="First slide"
+                                                                            />
+                                                                            <Carousel.Caption>
+                                                                                <h1><Link className="nav-link text-white" to={"/n/trips/show/"+trip._id}>{trip.title}</Link></h1>
+                                                                                <p>{trip.trip_description.slice(0,140)+"..."}</p>
+                                                                            </Carousel.Caption>
+                                                                        </Carousel.Item>
+                                                                    </Carousel>
+                                                                )
                                                             })}
-                                                    </Carousel>
+                                                        </div>
                                                 ) : (
                                                     <div>
                                                         <p>You have not any trip</p>
@@ -230,21 +258,22 @@ const Dashboard = ({getCurrentProfile, getAllMyTrips, getCurrentTrip, completeTr
                                             </Fragment>
                                         )}
                                     </div>
-                                    <div id="allTripFriends">
-                                        {trips.map((trip, i)=>{
-                                            return(
-                                                <Fragment key={i}>
-                                                    {trip.team.map((teammate, i)=>{
-                                                        return(
-                                                            <Link key={i} to={"/n/dashboard/"+teammate._id}>
-                                                                <img alt="" key={i+0.1} src={teammate.avatar} className="rounded-circle friendDiv" style={{width: "100px", height: "100px"}}/>
-                                                            </Link>
-                                                        )
-                                                    })}
-                                                </Fragment>
-                                            )
-                                        })}
-                                    </div>
+                                    <ul className="nav nav-tabs">
+                                        <li className="nav-item">
+                                            <Link className="nav-link active" to="#">My teammates</Link>
+                                        </li>
+                                    </ul>
+                                    {tripFriends.length > 0 ? (
+                                        <div id="friendsDiv" style={{gridTemplateColumns: `repeat(${tripFriends.length}, calc(30%))`}}>
+                                            {tripFriends.map((friend, i)=>{
+                                                return(
+                                                    <Link key={i+0.1} className="nav-link" to={`/n/dashboard/${friend.id}`}>
+                                                        <img alt="" src={friend.image} className="rounded-circle friendDiv" style={{width: "100px", height: "100px"}}/>
+                                                    </Link>
+                                                )
+                                            })}
+                                        </div>
+                                    ) : null}
                                 </div>
                             </div>
 

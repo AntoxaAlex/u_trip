@@ -169,7 +169,7 @@ router.post("/avatar", auth, upload.single("avatar"), async (req, res, next)=>{
 })
 
 //Get all profiles
-router.get("/",auth, async (req, res)=>{
+router.get("/", async (req, res)=>{
     try {
         const profiles = await  Profile.find().populate("user");
         res.json(profiles)
@@ -193,9 +193,9 @@ router.get("/except",auth, async (req, res)=>{
 })
 
 //Get profile by id
-router.get("/user/:id",auth, async (req, res)=>{
+router.get("/user/:id",async (req, res)=>{
     try {
-        const profile = await  Profile.findOne({user: req.params.id}).populate("user",["name"]);
+        const profile = await  Profile.findOne({user: req.params.id}).populate("user");
         if(!profile){
             return res.status(404).json({msg:"Profile not found"})
         }
@@ -214,14 +214,31 @@ router.get("/user/:id",auth, async (req, res)=>{
 //Delete user and profile by id
 router.delete("/",auth, async (req, res)=>{
     try {
+        const trips = await Trip.find({"team.user": {$eq: req.user.id}}).populate({
+            path: "team",
+            populate: [{
+                path: "user",
+                model: "User"
+            }]
+        });
+        await trips.map(trip=>{
+            trip.team.map((teammate,i)=>{
+                if(teammate.user._id.toString() === req.user.id){
+                    console.log(teammate.user._id)
+                    console.log(req.user.id)
+                    trip.team.splice(i,1)
+                    trip.save()
+                }
+            })
+        })
+        res.json({msg: "User removed"})
         await Profile.findOneAndRemove({user: req.user.id});
         await User.findOneAndRemove({_id: req.user.id});
-        await Trip.findOneAndRemove({user: req.user._id})
-        await Comment.findOneAndRemove({user: req.user._id})
-        res.json({msg: "User removed"})
+        await Comment.findOneAndRemove({user: req.user.id});
+
 
     }catch (e) {
-        console.log(e.message);
+        console.log(e);
         if(e.kind === "ObjectId"){
             return res.status(404).json({msg:"Profile not found"})
         }

@@ -338,11 +338,11 @@ const Create = ({createProfile, profile:{isUpdated}, auth:{user, loading}}) => {
         <Fragment>
             {user === null && loading ?(<Spinner/>):(
                 <form id="createProfileForm" encType="multipart/form-data" className="p-3" onSubmit={e=>onSubmit(e)}>
-                    <div className="profileHeader">
-                        <h1>Create profile</h1>
-                        <div className="upload-image row">
-                            <div className="form-group col-3">
-                                <label htmlFor="image" className="label rounded-circle" style={{ backgroundImage: !avatarFile.avatarSrc ? "url()" : "url("+avatarFile.avatarSrc+")", backgroundSize: "cover", backgroundPosition: "center"}}>
+                    <h1 className="text-center my-5">Create profile</h1>
+                    <div className="profileCreate row">
+                        <div className="upload-image col-12 col-md-4 col-lg-2 order-0">
+                            <div className="form-group">
+                                <label htmlFor="image" className="label rounded-circle" style={{width: "200px", height: "200px", backgroundImage: !avatarFile.avatarSrc ? "url()" : "url("+avatarFile.avatarSrc+")", backgroundSize: "cover", backgroundPosition: "center"}}>
                                     <i className="far fa-file-image"/>
                                     <span className="title">Add avatar</span>
                                     <input
@@ -368,98 +368,97 @@ const Create = ({createProfile, profile:{isUpdated}, auth:{user, loading}}) => {
                                 onCropCompleteModal={(crop)=>onCropComplete(crop)}
                             />
                         </div>
-                    </div>
-                    <div className="mainInfoProfile">
-                        <div className="row">
-                            <p className="col-sm-3"><i className="fas fa-user-check"/>  First Name</p>
-                            <p className="col-sm-9">{user.firstname}</p>
-                        </div>
-                        <div className="form-group row">
-                            <p className="col-sm-3"><i className="fas fa-user-check"/>  Last Name</p>
-                            <p className="col-sm-9">{user.secondname}</p>
-                        </div>
-                        <div className="form-group row">
-                            <label htmlFor="dob" className="col-sm-3 col-form-label"><i
-                                className="fas fa-calendar-day"/>  Date of birth</label>
-                            <div className="col-sm-9">
-                                <input
-                                    type="date"
-                                    className="form-control"
-                                    name="dob"
-                                    id="dob"
-                                    autoComplete="off"
-                                    value={dob}
-                                    onChange={(e)=>onChange(e)}
-                                />
+                        <div className="mainInfoProfile col-12 col-md-8 col-lg-10 order-1">
+                            <div className="row">
+                                <p className="col-sm-3"><i className="fas fa-user-check"/>  First Name</p>
+                                <p className="col-sm-9">{user.firstname}</p>
                             </div>
-                        </div>
-                        <div className="gender-form form-group row">
-                            <p className="col-sm-3 col-form-label"><i className="fas fa-venus-mars"/> Gender</p>
-                            <div className="col-sm-9">
-                                <input
-                                    type="radio"
-                                    id="male"
-                                    name="gender"
-                                    value="Male"
-                                    onChange={(e)=>onChange(e)}
-                                />
-                                <label htmlFor="male"><i className="fas fa-male"/></label>
-                                <input
-                                    type="radio"
-                                    id="female"
-                                    name="gender"
-                                    value="Female"
-                                    onChange={(e)=>onChange(e)}
-                                />
-                                <label htmlFor="female"><i className="fas fa-female"/></label>
+                            <div className="form-group row">
+                                <p className="col-sm-3"><i className="fas fa-user-check"/>  Last Name</p>
+                                <p className="col-sm-9">{user.secondname}</p>
                             </div>
-                        </div>
-                        <div className="form-group row">
-                            <label htmlFor="place" className="col-sm-3 col-form-label"><i
-                                className="fas fa-street-view"/>  City</label>
-                            <div className="col-sm-9">
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    name="place"
-                                    id="place"
-                                    autoComplete="off"
-                                    value={place}
-                                    onChange={(e)=>onChange(e)}
-                                />
+                            <div className="form-group row">
+                                <label htmlFor="dob" className="col-sm-3 col-form-label"><i
+                                    className="fas fa-calendar-day"/>  Date of birth</label>
+                                <div className="col-sm-9">
+                                    <input
+                                        type="date"
+                                        className="form-control"
+                                        name="dob"
+                                        id="dob"
+                                        autoComplete="off"
+                                        value={dob}
+                                        onChange={(e)=>onChange(e)}
+                                    />
+                                </div>
                             </div>
-                        </div>
-                        <div className="form-group row">
-                            <label htmlFor="job" className="col-sm-3 col-form-label"><i className="fas fa-user-tie"/>  Job</label>
-                            <div className="col-sm-9">
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    name="job"
-                                    id="job"
-                                    autoComplete="off"
-                                    value={job}
-                                    onChange={(e)=>onChange(e)}
-                                />
+                            <div className="gender-form form-group row">
+                                <p className="col-sm-3 col-form-label"><i className="fas fa-venus-mars"/> Gender</p>
+                                <div className="col-sm-9">
+                                    <input
+                                        type="radio"
+                                        id="male"
+                                        name="gender"
+                                        value="Male"
+                                        onChange={(e)=>onChange(e)}
+                                    />
+                                    <label htmlFor="male"><i className="fas fa-male"/></label>
+                                    <input
+                                        type="radio"
+                                        id="female"
+                                        name="gender"
+                                        value="Female"
+                                        onChange={(e)=>onChange(e)}
+                                    />
+                                    <label htmlFor="female"><i className="fas fa-female"/></label>
+                                </div>
                             </div>
-                        </div>
-                        <div className="form-group row">
-                            <label htmlFor="website" className="col-sm-3 col-form-label"><i className="fas fa-desktop"/>  Website</label>
-                            <div className="col-sm-9">
-                                <input
-                                    className="form-control"
-                                    name="website"
-                                    id="website"
-                                    autoComplete="off"
-                                    value={website}
-                                    onChange={(e)=>onChange(e)}
-                                />
+                            <div className="form-group row">
+                                <label htmlFor="place" className="col-sm-3 col-form-label"><i
+                                    className="fas fa-street-view"/>  City</label>
+                                <div className="col-sm-9">
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        name="place"
+                                        id="place"
+                                        autoComplete="off"
+                                        value={place}
+                                        onChange={(e)=>onChange(e)}
+                                    />
+                                </div>
                             </div>
-                        </div>
-                        <div className="form-group row">
-                            <label htmlFor="bio" className="col-sm-3 col-form-label"><i
-                                className="fas fa-file-signature"/>  About you</label>
-                            <div className="col-sm-9">
+                            <div className="form-group row">
+                                <label htmlFor="job" className="col-sm-3 col-form-label"><i className="fas fa-user-tie"/>  Job</label>
+                                <div className="col-sm-9">
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        name="job"
+                                        id="job"
+                                        autoComplete="off"
+                                        value={job}
+                                        onChange={(e)=>onChange(e)}
+                                    />
+                                </div>
+                            </div>
+                            <div className="form-group row">
+                                <label htmlFor="website" className="col-sm-3 col-form-label"><i className="fas fa-desktop"/>  Website</label>
+                                <div className="col-sm-9">
+                                    <input
+                                        className="form-control"
+                                        name="website"
+                                        id="website"
+                                        autoComplete="off"
+                                        value={website}
+                                        onChange={(e)=>onChange(e)}
+                                    />
+                                </div>
+                            </div>
+                            <div className="form-group row">
+                                <label htmlFor="bio" className="col-sm-3 col-form-label"><i
+                                    className="fas fa-file-signature"/>  About you</label>
+                                <div className="col-sm-9">
                             <textarea
                                 className="form-control"
                                 name="bio"
@@ -468,134 +467,135 @@ const Create = ({createProfile, profile:{isUpdated}, auth:{user, loading}}) => {
                                 value={bio}
                                 onChange={(e)=>onChange(e)}
                             />
-                            </div>
-                        </div>
-                        <div className="form-group row">
-                            <p className="col-sm-3"><i className="fas fa-skiing"/>  Preferences</p>
-                            <DropdownButton className="col-sm-9" variant="light" id="dropdown-checkbox" size="sm"  title="Choose your preferences">
-                                <div className="checkbox_div">
-                                    <h5>Region</h5>
-                                    {preferenceForm.region.map((region, i)=>{
-                                        return(
-                                            <div key={i} className="preferencesType">
-                                                <input type="checkbox" id={region.pr_id}  value={region.val} onChange={(e)=>onChangePreferences(e,region.pr_id, region.iconClass)}/>
-                                                <label htmlFor={region.pr_id}><i className={region.iconClass}/>  {region.val}</label>
-                                            </div>
-                                        )
-                                    })}
-                                    <Dropdown.Divider />
-                                    <br/>
-                                    <h5>Camping</h5>
-                                    {preferenceForm.camping.map((camping, i)=>{
-                                        return(
-                                            <div key={i} className="preferencesType">
-                                                <input type="checkbox" id={camping.pr_id}  value={camping.val} onChange={(e)=>onChangePreferences(e,camping.pr_id, camping.iconClass)}/>
-                                                <label htmlFor={camping.pr_id}><i className={camping.iconClass}/>  {camping.val}</label>
-                                            </div>
-                                        )
-                                    })}
-                                    <Dropdown.Divider />
-                                    <br/>
-                                    <h5>Sport</h5>
-                                    {preferenceForm.sport.map((sport, i)=>{
-                                        return(
-                                            <div key={i} className="preferencesType">
-                                                <input type="checkbox" id={sport.pr_id}  value={sport.val} onChange={(e)=>onChangePreferences(e,sport.pr_id, sport.iconClass)}/>
-                                                <label htmlFor={sport.pr_id}><i className={sport.iconClass}/>  {sport.val}</label>
-                                            </div>
-                                        )
-                                    })}
-                                    <Dropdown.Divider />
-                                    <br/>
-                                    <h5>Art</h5>
-                                    {preferenceForm.art.map((art, i)=>{
-                                        return(
-                                            <div key={i} className="preferencesType">
-                                                <input type="checkbox" id={art.pr_id}  value={art.val} onChange={(e)=>onChangePreferences(e,art.pr_id, art.iconClass)}/>
-                                                <label htmlFor={art.pr_id}><i className={art.iconClass}/>  {art.val}</label>
-                                            </div>
-                                        )
-                                    })}
-                                    <Dropdown.Divider />
-                                    <br/>
-                                    <h5>City</h5>
-                                    {preferenceForm.cities.map((cities, i)=>{
-                                        return(
-                                            <div key={i} className="preferencesType">
-                                                <input type="checkbox" id={cities.pr_id}  value={cities.val} onChange={(e)=>onChangePreferences(e,cities.pr_id, cities.iconClass)}/>
-                                                <label htmlFor={cities.pr_id}><i className={cities.iconClass}/>  {cities.val}</label>
-                                            </div>
-                                        )
-                                    })}
-                                    <Dropdown.Divider />
-                                    <br/>
                                 </div>
-                            </DropdownButton>
-                        </div>
-                        <div className="form-group">
-                            <button
-                                className="btn btn-outline-primary btn-sm"
-                                type="button"
-                                onClick={()=>toggleLinks(!displayLinks)}>
-                                Add social media links
-                            </button>
-                        </div>
+                            </div>
+                            <div className="form-group row">
+                                <p className="col-sm-3"><i className="fas fa-skiing"/>  Preferences</p>
+                                <DropdownButton className="col-sm-9" variant="light" id="dropdown-checkbox" size="sm"  title="Choose your preferences">
+                                    <div className="checkbox_div">
+                                        <h5>Region</h5>
+                                        {preferenceForm.region.map((region, i)=>{
+                                            return(
+                                                <div key={i} className="preferencesType">
+                                                    <input type="checkbox" id={region.pr_id}  value={region.val} onChange={(e)=>onChangePreferences(e,region.pr_id, region.iconClass)}/>
+                                                    <label htmlFor={region.pr_id}><i className={region.iconClass}/>  {region.val}</label>
+                                                </div>
+                                            )
+                                        })}
+                                        <Dropdown.Divider />
+                                        <br/>
+                                        <h5>Camping</h5>
+                                        {preferenceForm.camping.map((camping, i)=>{
+                                            return(
+                                                <div key={i} className="preferencesType">
+                                                    <input type="checkbox" id={camping.pr_id}  value={camping.val} onChange={(e)=>onChangePreferences(e,camping.pr_id, camping.iconClass)}/>
+                                                    <label htmlFor={camping.pr_id}><i className={camping.iconClass}/>  {camping.val}</label>
+                                                </div>
+                                            )
+                                        })}
+                                        <Dropdown.Divider />
+                                        <br/>
+                                        <h5>Sport</h5>
+                                        {preferenceForm.sport.map((sport, i)=>{
+                                            return(
+                                                <div key={i} className="preferencesType">
+                                                    <input type="checkbox" id={sport.pr_id}  value={sport.val} onChange={(e)=>onChangePreferences(e,sport.pr_id, sport.iconClass)}/>
+                                                    <label htmlFor={sport.pr_id}><i className={sport.iconClass}/>  {sport.val}</label>
+                                                </div>
+                                            )
+                                        })}
+                                        <Dropdown.Divider />
+                                        <br/>
+                                        <h5>Art</h5>
+                                        {preferenceForm.art.map((art, i)=>{
+                                            return(
+                                                <div key={i} className="preferencesType">
+                                                    <input type="checkbox" id={art.pr_id}  value={art.val} onChange={(e)=>onChangePreferences(e,art.pr_id, art.iconClass)}/>
+                                                    <label htmlFor={art.pr_id}><i className={art.iconClass}/>  {art.val}</label>
+                                                </div>
+                                            )
+                                        })}
+                                        <Dropdown.Divider />
+                                        <br/>
+                                        <h5>City</h5>
+                                        {preferenceForm.cities.map((cities, i)=>{
+                                            return(
+                                                <div key={i} className="preferencesType">
+                                                    <input type="checkbox" id={cities.pr_id}  value={cities.val} onChange={(e)=>onChangePreferences(e,cities.pr_id, cities.iconClass)}/>
+                                                    <label htmlFor={cities.pr_id}><i className={cities.iconClass}/>  {cities.val}</label>
+                                                </div>
+                                            )
+                                        })}
+                                        <Dropdown.Divider />
+                                        <br/>
+                                    </div>
+                                </DropdownButton>
+                            </div>
+                            <div className="form-group">
+                                <button
+                                    className="btn btn-outline-primary btn-sm"
+                                    type="button"
+                                    onClick={()=>toggleLinks(!displayLinks)}>
+                                    Add social media links
+                                </button>
+                            </div>
 
-                        {displayLinks && <Fragment>
-                            <div className="form-group row">
-                                <label htmlFor="instagram" className="col-sm-3 col-form-label"><i className="fab fa-instagram"/>  Instagram</label>
-                                <div className="col-sm-9">
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        name="instagram"
-                                        id="instagram"
-                                        autoComplete="off"
-                                        value={instagram}
-                                        onChange={(e)=>onChange(e)}
-                                    />
+                            {displayLinks && <Fragment>
+                                <div className="form-group row">
+                                    <label htmlFor="instagram" className="col-sm-3 col-form-label"><i className="fab fa-instagram"/>  Instagram</label>
+                                    <div className="col-sm-9">
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            name="instagram"
+                                            id="instagram"
+                                            autoComplete="off"
+                                            value={instagram}
+                                            onChange={(e)=>onChange(e)}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="form-group row">
-                                <label htmlFor="facebook" className="col-sm-3 col-form-label"><i className="fab fa-facebook-f"/>  Facebook</label>
-                                <div className="col-sm-9">
-                                    <input
-                                        className="form-control"
-                                        name="facebook"
-                                        id="facebook"
-                                        autoComplete="off"
-                                        value={facebook}
-                                        onChange={(e)=>onChange(e)}
-                                    />
+                                <div className="form-group row">
+                                    <label htmlFor="facebook" className="col-sm-3 col-form-label"><i className="fab fa-facebook-f"/>  Facebook</label>
+                                    <div className="col-sm-9">
+                                        <input
+                                            className="form-control"
+                                            name="facebook"
+                                            id="facebook"
+                                            autoComplete="off"
+                                            value={facebook}
+                                            onChange={(e)=>onChange(e)}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="form-group row">
-                                <label htmlFor="vk" className="col-sm-3 col-form-label"><i className="fab fa-vk"/>  Vk</label>
-                                <div className="col-sm-9">
-                                    <input
-                                        className="form-control"
-                                        name="vk"
-                                        id="vk"
-                                        autoComplete="off"
-                                        value={vk}
-                                        onChange={(e)=>onChange(e)}
-                                    />
+                                <div className="form-group row">
+                                    <label htmlFor="vk" className="col-sm-3 col-form-label"><i className="fab fa-vk"/>  Vk</label>
+                                    <div className="col-sm-9">
+                                        <input
+                                            className="form-control"
+                                            name="vk"
+                                            id="vk"
+                                            autoComplete="off"
+                                            value={vk}
+                                            onChange={(e)=>onChange(e)}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="form-group row">
-                                <label htmlFor="pinterest" className="col-sm-3 col-form-label"><i className="fab fa-pinterest-p"/>  Pinterest</label>
-                                <div className="col-sm-9">
-                                    <input
-                                        className="form-control"
-                                        name="pinterest"
-                                        id="pinterest"
-                                        autoComplete="off"
-                                        value={pinterest}
-                                        onChange={(e)=>onChange(e)}
-                                    />
+                                <div className="form-group row">
+                                    <label htmlFor="pinterest" className="col-sm-3 col-form-label"><i className="fab fa-pinterest-p"/>  Pinterest</label>
+                                    <div className="col-sm-9">
+                                        <input
+                                            className="form-control"
+                                            name="pinterest"
+                                            id="pinterest"
+                                            autoComplete="off"
+                                            value={pinterest}
+                                            onChange={(e)=>onChange(e)}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                        </Fragment>}
+                            </Fragment>}
+                        </div>
                     </div>
                     <div className="text-center mt-5">
                         <button type="submit" className="btn btn-primary btn-lg">Submit</button>

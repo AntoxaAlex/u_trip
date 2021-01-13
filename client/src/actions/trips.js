@@ -5,15 +5,12 @@ import {
     GET_TRIP_BY_ID,
     PROFILE_ERROR,
     GET_ALL_MY_TRIPS,
-    GET_COMMENT_BY_ID,
-    COMMENT_FAILED,
     NEW_PROFILE,
     GET_CURRENT_TRIP,
     GET_ALL_TRIPS,
     NOT_READY_TRIP
 } from "./types";
 import axios from "axios";
-import React from "react";
 // import {setAlert} from "./alert";
 
 
@@ -21,7 +18,6 @@ import React from "react";
 export const getAllMyTrips = () => async dispatch =>{
     try {
         const res = await axios.get("/trips/me");
-        console.log(res)
         dispatch({
             type: GET_ALL_MY_TRIPS,
             payload: res.data
@@ -38,7 +34,6 @@ export const getAllMyTrips = () => async dispatch =>{
 export const getAllUserTrips = (id) => async dispatch =>{
     try {
         const res = await axios.get(`/trips/all/${id}`);
-        console.log(res)
         dispatch({
             type: GET_ALL_MY_TRIPS,
             payload: res.data
@@ -267,21 +262,6 @@ export const removeTrip = (id) => async dispatch =>{
     }
 }
 
-//Get comment by id
-export const getCommentById = (trip_id, comment_id) => async dispatch => {
-    try{
-        const res = await axios.get("/trips/show/"+trip_id+"/posts/"+comment_id)
-        dispatch({
-            type: GET_COMMENT_BY_ID,
-            payload: res.data
-        })
-    }catch (e) {
-        console.log(e)
-        dispatch({
-            type: COMMENT_FAILED,
-        })
-    }
-}
 
 //Create comment
 export const createComment = (text, id, profileImage, username) =>async dispatch=>{

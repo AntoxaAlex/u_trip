@@ -14,7 +14,7 @@ import {ProgressBar} from "react-bootstrap";
 import axios from "axios";
 import {useParams} from "react-router";
 
-const NewTrip = ({getTripById,createTrip, getAllProfilesExceptOwn, profile:{profile, profiles, loading}, isCreated,trips:{trip},tripsLoading}) => {
+const NewTrip = ({getTripById,createTrip, getAllProfilesExceptOwn, profile:{myProfile, profiles, loading}, isCreated,trips:{trip},tripsLoading}) => {
     //===================================================State===================================================
     const {id} = useParams()
 
@@ -430,7 +430,7 @@ const NewTrip = ({getTripById,createTrip, getAllProfilesExceptOwn, profile:{prof
         <Fragment>
             {profiles.length === 0 && loading  ? (<Spinner/>):(
                 <div className="newTripDiv">
-                    <h1 className="text-center my-5">Create trip</h1>
+                    <h1 className="text-center my-5 mainNewTripHeader">Create trip</h1>
                     <form onSubmit={e=>onSubmit(e)} encType="multipart/form-data" className="container">
                         <ProgressBar  id="pb1" variant="warning" label={`${progressBar}%`} animated now={progressBar} className="mb-5 bg-secondary"/>
                         {newTripPart.firstPart || newTripPart.secondPart  ? (<div id="tripPartDiv" className="text-center">
@@ -457,7 +457,7 @@ const NewTrip = ({getTripById,createTrip, getAllProfilesExceptOwn, profile:{prof
                                 teammates={teammates}
                                 displayList={displayList}
                                 addTeammate={(teammate)=>addTeammate(teammate)}
-                                profile={profile}
+                                myProfile={myProfile}
                                 assembledTeammates={assembledTeammates}
                                 removeMember={(teammate, i)=>removeMember(teammate, i)}
                             />

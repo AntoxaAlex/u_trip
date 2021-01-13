@@ -75,7 +75,7 @@ router.put("/:comment_id", [
         }
 
         try {
-            let comment =await Comment.findByIdAndUpdate(req.params.comment_id, req.body, {new: true});
+            await Comment.findByIdAndUpdate(req.params.comment_id, req.body, {new: true});
             console.log("Comment is updated")
 
             const trip = await Trip.findById(req.params.id).populate("comments");

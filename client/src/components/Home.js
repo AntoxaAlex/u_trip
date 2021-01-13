@@ -2,171 +2,250 @@ import React, {useEffect, useState, Fragment }from 'react';
 import {connect} from "react-redux";
 import {getAllProfiles, getCurrentProfile} from "../actions/profile";
 import {getAllTrips, getCurrentTrip,completeTrip, confirmTrip} from "../actions/trips";
+import Spinner from "./layout/Spinner";
 import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
+import ReactStars from "react-rating-stars-component";
+import moment from "moment";
 
-const Home = ({getAllProfiles, getCurrentProfile, getAllTrips, getCurrentTrip, completeTrip,confirmTrip, trips, profile}) => {
+const Home = ({getAllProfiles, getCurrentProfile, getAllTrips, getCurrentTrip,confirmTrip, trips, profile, auth}) => {
 
-    const[nearTripsArr, setNearTrips] = useState([])
+    const[nearTripsDist, setNearTripDist] = useState([])
     const[currentPosition, setCurrentPosition] = useState({
         lat: "",
         lng: ""
     })
-    const[bestTripsArr, setBestTrips] = useState([])
-    const[bestUsersArr, setBestUsers] = useState([])
 
     const calculateDistance = (lat1, lat2, lng1, lng2, r) =>{
 
-        const res =  Math.acos((Math.sin(lat1 *(Math.PI / 180)) * Math.sin(lat2 *(Math.PI / 180))) +
+        return Math.acos((Math.sin(lat1 *(Math.PI / 180)) * Math.sin(lat2 *(Math.PI / 180))) +
             (Math.cos(lat1 *(Math.PI / 180)) * Math.cos(lat2 *(Math.PI / 180)) * Math.cos((lng1 *(Math.PI / 180)) - (lng2 *(Math.PI / 180))))
         )*r
-        return res
 
     }
 
     useEffect(()=>{
         getCurrentProfile()
+        getCurrentTrip()
         getAllProfiles()
         getAllTrips()
-        getCurrentTrip()
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((position) =>{
-                setCurrentPosition({...currentPosition,lat: parseFloat(position.coords.latitude), lng: parseFloat(position.coords.longitude)})
-            });
-        } else {
-            console.log("Geolocation is not supported by this browser.");
-        }
+    },[getAllProfiles, getAllTrips, getCurrentProfile, getCurrentTrip])
 
-        if(currentPosition.lat !== "" && currentPosition.lng !== ""){
-            const nearTrips = trips.trips.filter(trip=> calculateDistance(parseFloat(trip.st_point.sp_latitude), currentPosition.lat, parseFloat(trip.st_point.sp_longitude), currentPosition.lng, 6371) < 500)
-            setNearTrips(nearTrips)
-        }
-        const bestTrips = trips.trips.sort((a,b)=>{
-            if(a.generalRating > b.generalRating) return -1;
-            if(a.generalRating < b.generalRating) return 1;
-            return 0
-        })
-        setBestTrips(bestTrips)
 
-        const bestUsers = profile.profiles.sort((a,b)=>{
-            if(a.level > b.level) return -1;
-            if(a.level < b.level) return 1;
-            return 0
-        })
-        setBestUsers(bestUsers)
-    },[trips.loading, profile.loading, getCurrentProfile,getCurrentTrip,getAllTrips,getAllProfiles])
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) =>{
+            setCurrentPosition({...currentPosition,lat: parseFloat(position.coords.latitude), lng: parseFloat(position.coords.longitude)})
+            if(currentPosition.lat && currentPosition.lng && currentPosition.lat !== "" && currentPosition.lng !== "" && !trips.loading){
+                const nearTrips = trips.trips.filter(trip=> calculateDistance(parseFloat(trip.st_point.sp_latitude), currentPosition.lat, parseFloat(trip.st_point.sp_longitude), currentPosition.lng, 6371) < 500);
+                setNearTripDist(nearTrips)
+            }
+        });
+    } else {
+        console.log("Geolocation is not supported by this browser.");
+    }
+
 
     return (
         <Fragment>
-            {trips.trips && !trips.loading  ? (
-                <Fragment>
-                    {profile.profiles && !profile.loading ? (
-                        <div id="mainHomeDiv" className="p-0">
-                            <div id="introDiv">
-                                {profile.profile && trips.status === "not ready" && <Fragment>
-                                    <h1 id="introHeader">Confirm the trip</h1>
+            {!trips.loading && !auth.loading ? (
+                <div id="mainHomeDiv" className="p-0">
+                    <header>
+                        <div id="introDiv">
+                            {profile.profile && trips.status === "not ready" && !trips.trip.isTripReady && <Fragment>
+                                <h1 id="introHeader" style={{marginBottom: "0"}}>Confirm the trip</h1>
+                                <div className="introDivBtn">
                                     <button
                                         type="button"
-                                        className="btn btn-outline-danger"
-                                        style={{width: "250px", height: "40px", borderRadius: "20px"}}
+                                        className="bg-transparent border-0 "
                                         onClick={()=>confirmTrip(trips.trip)}
-                                    >Confirm</button>
-                                </Fragment>}
-                                {profile.profile && trips.status === "you ready" && !trips.trip.isTripReady && <Fragment>
-                                    <h1 id="introHeader">Wait other people</h1>
-                                   <div className="row">
-                                       {trips.trip.team.map((teammate,i)=>{
-                                           return(
-                                               <div key={i} className="col-2">
-                                                   <img
-                                                       alt=""
-                                                       src={teammate.imageUrl}
-                                                       className="rounded-circle"
-                                                       style={{
-                                                           width: "100px",
-                                                           height: "100px",
-                                                           opacity: teammate.isReady ? "1" : "0.5"
-                                                       }}
-                                                   />
-                                               </div>
-                                           )
-                                       })}
-                                   </div>
-                                </Fragment>}
-                                {profile.profile && trips.currentTrip && !trips.status && <Fragment>
-                                    <h1 id="introHeader">Return to trip</h1>
-                                    <Link to={"/n/trips/show/"+trips.currentTrip._id} className="btn btn-outline-danger" style={{width: "250px", height: "40px", borderRadius: "20px"}}><h5>{trips.currentTrip.title}</h5></Link>
-                                </Fragment>}
-                                {profile.profile && !trips.currentTrip && !trips.status && <Fragment>
-                                    <h1 id="introHeader">Start new journey</h1>
-                                    <Link to="/n/trips/new" className="btn btn-outline-danger" style={{width: "250px", height: "40px", borderRadius: "20px"}}><h5>Create new trip</h5></Link>
-                                </Fragment>}
-                                {!profile.profile && !trips.status && <Fragment>
-                                    <h1 id="introHeader">Be a part of us</h1>
-                                    <Link to="/n/profile/new" className="btn btn-outline-danger" style={{width: "250px", height: "40px", borderRadius: "20px"}}><h5>Create profile</h5></Link>
-                                </Fragment>}
-                            </div>
-                            <div id="homeDivContent" className="p-3">
-                                {nearTripsArr.length > 0 && <Fragment>
-                                    <h5>Trips near you</h5>
+                                    ><h5>Confirm</h5></button>
+                                </div>
+                            </Fragment>}
+                            {trips.status === "you ready" && !trips.loading && !trips.trip.isTripReady && <Fragment>
+                                <h1 id="introHeader" style={{marginBottom: "0"}}>Wait other people</h1>
+                                <div id="showTripTeamDiv" style={{gridTemplateColumns: `repeat(${trips.trip.team.length}, calc(20%))`}}>
+                                    {trips.trip.team.map((teammate,i)=>{
+                                        return(
+                                            <div key={i} className="friendItem">
+                                                <img
+                                                    alt=""
+                                                    src={teammate.imageUrl}
+                                                    className="rounded-circle"
+                                                    style={{
+                                                        width: "100px",
+                                                        height: "100px",
+                                                        opacity: teammate.isReady ? "1" : "0.5"
+                                                    }}
+                                                />
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            </Fragment>}
+                            {!profile.loading && profile.profile && trips.currentTrip && !trips.status && <Fragment>
+                                <h1 id="introHeader">Return to trip</h1>
+                                <div className="introDivBtn">
+                                    <Link to={"/n/trips/show/"+trips.currentTrip._id}><h5>{trips.currentTrip.title}</h5></Link>
+                                </div>
+                            </Fragment>}
+                            {!profile.loading && profile.profile && !trips.loading && !trips.currentTrip && !trips.status && <Fragment>
+                                <h1 id="introHeader">Start new journey</h1>
+                                <div className="introDivBtn">
+                                    <Link to="/n/trips/new"><h5>Create new trip</h5></Link>
+                                </div>
+                            </Fragment>}
+                            {!profile.loading && !profile.profile && !trips.currentTrip && !trips.status && <Fragment>
+                                <h1 id="introHeader">Be a part of us</h1>
+                                <div className="introDivBtn">
+                                    <Link to="/n/auth/signup"><h5>Create profile</h5></Link>
+                                </div>
+                            </Fragment>}
+                        </div>
+                    </header>
+                    {!profile.loading && !trips.loading && <main>
+                        <div id="homeDivContent" className="p-3">
+                            {trips.trips && nearTripsDist.length > 0 ? (<Fragment>
+                                <div id="tripsNearYouContainer">
+                                    <h3 className="homeContentHeader">Trips near you</h3>
                                     <div id="tripsNearYou">
-                                        <div className="row">
-                                            {(bestTripsArr.filter((trip,i)=>i<6)).map((trip,i)=>{
-                                                return(
-                                                    <div key={i} className="col-4">
-                                                        <p>{trip.title}</p>
-                                                        <img alt="" src={trip.fn_destination.fd_image} style={{width: "100px", height: "100px"}}/>
-                                                    </div>
-                                                )
-                                            })}
-                                        </div>
-                                    </div>
-                                </Fragment>}
-                                {bestTripsArr.length > 0 && <Fragment>
-                                    <h5>Best trips</h5>
-                                    <div id="bestTripsDiv">
-                                        <div className="row">
-                                            {(bestTripsArr.filter((trip,i)=>i<6)).map((trip,i)=>{
-                                                return(
-                                                    <div key={i} className="col-4">
-                                                        <p>{trip.title}</p>
-                                                       <img alt="" src={trip.st_point.sp_image} style={{width: "100px", height: "100px"}}/>
-                                                    </div>
-                                                )
-                                            })}
-                                        </div>
-                                    </div>
-                                </Fragment>}
-                                {bestUsersArr.length > 0 && <Fragment>
-                                    <h5>Best users</h5>
-                                    <div id="bestUsersDiv">
-                                        <div className="row">
-                                            {(bestUsersArr.filter((user,i)=>i<6)).map((user,i)=>{
-                                                return(
-                                                    <div key={i} className="col-4">
-                                                        <p>{user.user.firstname}</p>
-                                                        <img alt="" src={user.imageUrl} style={{width: "100px", height: "100px"}}/>
-                                                        <p>{user.level}</p>
-                                                    </div>
-                                                )
-                                            })}
-                                        </div>
-                                    </div>
-                                </Fragment>}
-                            </div>
-                            <div id="bottomDiv">
+                                        {(nearTripsDist.filter((trip,i)=>i<6)).map((trip,i)=>{
+                                            return(
+                                                <div key={i} className="nearTripsGridItem">
+                                                    <img src={trip.st_point.sp_image} style={{width: "100px", height: "100px", borderRadius: "15px", marginRight: "10px"}} alt="..."/>
+                                                    <div className="tripsInformation">
+                                                        <h5 className="card-title">
+                                                            <Link className="nav-link text-secondary" to={"/n/trips/show/"+trip._id}>{trip.title}</Link>
+                                                        </h5>
+                                                        <p className="card-text"><small
+                                                            className="text-muted">{parseInt(calculateDistance(parseFloat(trip.st_point.sp_latitude), currentPosition.lat, parseFloat(trip.st_point.sp_longitude), currentPosition.lng, 6371))} km from you</small></p>
 
+                                                    </div>
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
+                                </div>
+                            </Fragment>) : null}
+                            {!profile.loading && profile.profiles? (<Fragment>
+                                <div id="bestUsersContainer">
+                                    <h3 className="homeContentHeader">Best users</h3>
+                                    <div id="bestUsersDiv">
+                                        {(profile.profiles.filter((user,i)=>i<6)).sort((a,b)=>{
+                                            if(a.level > b.level) return -1;
+                                            if(a.level < b.level) return 1;
+                                            return 0
+                                        }).map((user,i)=>{
+                                            return(
+                                                <div key={i} className="userGridItem">
+                                                    <img src={user.imageUrl} className="rounded-circle" style={{width: "100px", height: "100px", border: "green", marginBottom: "40px"}} alt="..."/>
+                                                    {i<3 && <img alt="" src={
+                                                        i=== 0 ? "https://res.cloudinary.com/antoxaalex/image/upload/v1609703106/backgrounds/medal-1622523_1280_wxji7z.png" : (
+                                                            i === 1 ? "https://res.cloudinary.com/antoxaalex/image/upload/v1609703118/backgrounds/medal-1622529_1280_swgnk4.png" : (
+                                                                i === 2 ? "https://res.cloudinary.com/antoxaalex/image/upload/v1609703115/backgrounds/medal-1622549_1280_xynwxz.png" : null
+                                                            )
+                                                        )
+                                                    } className="medalImage"/>}
+                                                    <div className="userInformation">
+                                                        <table>
+                                                            <tbody>
+                                                            <tr>
+                                                                <td><strong>Name:</strong></td>
+                                                                <td><Link className="nav-link d-inline text-info" to={`/n/dashboard/${auth.user && auth.user._id !== user.user._id ? user.user._id : ""}`}>{user.user.firstname}</Link></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><strong>Dob:</strong></td>
+                                                                <td className="userTableTd">{moment(user.dob).format("MM-DD-YYYY")}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><strong>Gender:</strong></td>
+                                                                <td className="userTableTd">{user.gender}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><strong>Level:</strong></td>
+                                                                <td className="userTableTd"><strong className="levelSpan">{user.level}</strong></td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
+                                </div>
+                            </Fragment>): null}
+                            {!trips.loading && trips.trips ? (<Fragment>
+                                <div id="bestTripsContainer">
+                                    <h3 className="homeContentHeader">Best trips</h3>
+                                    <div id="bestTripsDiv">
+                                        {(trips.trips.filter((trip,i)=>i<6)).sort((a,b)=>{
+                                            if(a.generalRating > b.generalRating) return -1;
+                                            if(a.generalRating < b.generalRating) return 1;
+                                            return 0
+                                        }).map((trip,i)=>{
+                                            return(
+                                                <div key={i} className="tripsGridItem">
+                                                    <img src={trip.st_point.sp_image} style={{width: "100%", borderRadius: "15px 15px 0 0"}} alt="..."/>
+
+                                                    <div className="tripsInformation" style={{width: "100%"}}>
+                                                        <h5 className="text-center">
+                                                            <Link className="nav-link text-white" to={"/n/trips/show/"+trip._id}>{trip.title}</Link>
+                                                        </h5>
+                                                        <div style={{width: "100%", padding: "10px 20px"}}>
+                                                            <small className="float-left">
+                                                                {trip.isCompleted && trip.st_point.departureDate && trip.fn_destination.arrivalDate ? `Duration: ${Math.floor(moment.duration( moment(trip.fn_destination.arrivalDate).diff(moment(trip.st_point.departureDate))).asDays())} days`
+                                                                    : "In progress"}
+                                                            </small>
+                                                            <small className="float-right">
+                                                                <ReactStars
+                                                                    className="my-5"
+                                                                    value={trip.generalRating}
+                                                                    count={5}
+                                                                    size={20}
+                                                                    activeColor="#ffd700"
+                                                                    isHalf={true}
+                                                                    emptyIcon={<i className="far fa-star"/>}
+                                                                    halfIcon={<i className="fas fa-star-half"/>}
+                                                                    fullIcon={<i className="fas fa-star"/>}
+                                                                />
+                                                            </small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
+                                </div>
+                            </Fragment>): <Spinner/>}
+                        </div>
+                    </main>}
+                    <footer>
+                        <div id="bottomDiv">
+                            <Link id="aboutLink" to="#">About</Link>
+                            <div id="contacts">
+                                <strong>Contacts</strong>
+                                <p>Tel: +380XXXXXXXXX</p>
+                                <p>Email: y-trip@xxx.com</p>
+                            </div>
+                            <div id="socialMedia">
+                                <strong>Social Media</strong>
+                                <div id="socialLinks">
+                                    <a href="!#" rel="noopener noreferrer"><i className="fab fa-instagram"/></a>
+                                    <a href="!#" rel="noopener noreferrer"><i className="fab fa-facebook-f"/></a>
+                                    <a href="!#" rel="noopener noreferrer"><i className="fab fa-vk"/></a>
+                                    <a href="!#" rel="noopener noreferrer"><i className="fab fa-pinterest-p"/></a>
+                                </div>
                             </div>
                         </div>
-                    ) : null}
-                </Fragment>
-            ):null}
+                    </footer>
+                </div>
+            ) : null}
         </Fragment>
     );
 }
 
 Home.propTypes = {
     trips: PropTypes.object.isRequired,
+    auth: PropTypes.object.isRequired,
     profile: PropTypes.object.isRequired,
     getCurrentProfile: PropTypes.func.isRequired,
     getAllProfiles: PropTypes.func.isRequired,
@@ -177,6 +256,7 @@ Home.propTypes = {
 
 const mapStateToProps = state => ({
     trips: state.trips,
-    profile: state.profile
+    profile: state.profile,
+    auth: state.auth
 })
 export default connect(mapStateToProps, {getAllProfiles, getAllTrips, getCurrentProfile, getCurrentTrip, completeTrip,confirmTrip})(Home);

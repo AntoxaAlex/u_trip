@@ -97,10 +97,12 @@ const ThirdPart = ({
                 <div className="col-1 text-center">
                     <h5 className="headerNum">3</h5>
                 </div>
-                <h5 className="text-left col-11">Create route</h5>
+                <div className="col-10">
+                    <h5 className="text-left ml-3">Create route</h5>
+                </div>
             </div>
             <div className="row">
-                <div id="createMap" className="mb-3 col-6">
+                <div id="createMap" className="mb-3 col-12 col-lg-6 order-0">
                     {currentPosition.lat !== "" && currentPosition.lng !== "" && campContent && <TripMap
                         center={
                             displayedPoint.val === "st_point" && sp_latitude !== "" && sp_longitude !== "" ? {
@@ -131,7 +133,7 @@ const ThirdPart = ({
                         setMapPosition={(lat, lng)=>setPointPosition(lat,lng)}
                     />}
                 </div>
-                <div className="routePlan p-3 col-6">
+                <div className="routePlan p-3 col-12 col-lg-6 order-1">
                     <button
                         type="button"
                         className="btn btn-lg btn-outline-secondary addCampBtn"
@@ -248,12 +250,12 @@ const ThirdPart = ({
                                             onClick={()=>manualSetPosition({...manualPosition, isOpen: !manualPosition.isOpen})}
                                         >Set manual position</button>
                                     </div>
-                                    {manualPosition.isOpen && <div className="row card-body">
-                                        <div className="col-3">
+                                    {manualPosition.isOpen && <div className="row pt-5">
+                                        <div className="d-none d-md-block col-sm-6">
                                             <p>Latitude</p>
                                             <p>Longitude</p>
                                         </div>
-                                        <div className="col-6 p-0">
+                                        <div className="col-12 col-md-6">
                                             <input
                                                 type="text"
                                                 className="form-control"
@@ -360,12 +362,12 @@ const ThirdPart = ({
                                         onClick={()=>manualSetPosition({...manualPosition, isOpen: !manualPosition.isOpen})}
                                     >Set manual position</button>
                                 </div>
-                                {manualPosition.isOpen && <div className="row card-body">
-                                    <div className="col-6">
+                                {manualPosition.isOpen && <div className="row pt-5">
+                                    <div className="d-none d-md-block col-sm-6">
                                         <p>Latitude</p>
                                         <p>Longitude</p>
                                     </div>
-                                    <div className="col-6 p-0">
+                                    <div className="col-12 col-md-6 p-0">
                                         <input
                                             type="text"
                                             className="form-control"
@@ -480,38 +482,38 @@ const ThirdPart = ({
                                                     onClick={()=>manualSetPosition({...manualPosition, isOpen: !manualPosition.isOpen})}
                                                 >Set manual position</button>
                                             </div>
-                                            {manualPosition.isOpen && <div className="row card-body">
-                                                <div className="col-6">
-                                                    <p>Latitude</p>
-                                                    <p>Longitude</p>
-                                                </div>
-                                                <div className="col-6 p-0">
-                                                    <input
-                                                        type="text"
-                                                        className="form-control"
-                                                        name="campLatitude"
-                                                        placeholder="Write latitude"
-                                                        autoComplete="off"
-                                                        id={"campLatitude" + i}
-                                                        onChange={(e)=>manualSetPosition({...manualPosition, lat: e.target.value})}
-                                                    />
-                                                    <input
-                                                        type="text"
-                                                        className="form-control"
-                                                        name="campLongitude"
-                                                        placeholder="Write longitude"
-                                                        autoComplete="off"
-                                                        id={"campLongitude" +i}
-                                                        onChange={(e)=>manualSetPosition({...manualPosition, lng: e.target.value})}
-                                                    />
-                                                </div>
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-sm btn-outline-secondary"
-                                                    onClick={()=>submitManualPosition()}
-                                                >Submit manual position</button>
-                                            </div>}
                                         </div>
+                                        {manualPosition.isOpen && <div className="row pt-5">
+                                            <div className="d-none d-md-block col-sm-6">
+                                                <p>Latitude</p>
+                                                <p>Longitude</p>
+                                            </div>
+                                            <div className="col-12 col-md-6 p-0">
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    name="campLatitude"
+                                                    placeholder="Write latitude"
+                                                    autoComplete="off"
+                                                    id={"campLatitude" + i}
+                                                    onChange={(e)=>manualSetPosition({...manualPosition, lat: e.target.value})}
+                                                />
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    name="campLongitude"
+                                                    placeholder="Write longitude"
+                                                    autoComplete="off"
+                                                    id={"campLongitude" +i}
+                                                    onChange={(e)=>manualSetPosition({...manualPosition, lng: e.target.value})}
+                                                />
+                                            </div>
+                                            <button
+                                                type="button"
+                                                className="btn btn-sm btn-outline-secondary"
+                                                onClick={()=>submitManualPosition()}
+                                            >Submit manual position</button>
+                                        </div>}
                                         {campImageCrop[i]?(
                                             <CroppModal
                                                 open={isCampModalOpen[i]}

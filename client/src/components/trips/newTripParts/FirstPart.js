@@ -10,13 +10,15 @@ const FirstPart = ({active, setProgressBar, formData, onChange, title, trip_desc
                 <div className="col-1 text-center">
                     <h5 className="headerNum">1</h5>
                 </div>
-                <h5 className="text-left col-11">Fill main information</h5>
+                <div className="col-10">
+                    <h5 className="text-left ml-3">Fill main information</h5>
+                </div>
             </div>
             <div className="form-group row">
-                <label htmlFor="dropdown-basic-button" className="col-sm-3 col-form-label">Trip's type</label>
+                <label htmlFor="dropdown-basic-button" className="col-3 col-form-label">Trip's type</label>
 
-                <div id="typeInputDiv" className="col-sm-9 row">
-                    <h5 className="col-4 border-secondary">{formData.tripType === "" ? "Choose trip location" : formData.tripType}</h5>
+                <div id="typeInputDiv" className="col-9 row">
+                    <p className="col-7 border-secondary tripTypeInput">{formData.tripType === "" ? "" : formData.tripType}</p>
                     <DropdownButton variant="light" id="dropdown-basic-button" className="col-1"  title="" style={{width: "100%", display: "inline", marginLeft: "10px"}}>
                         <div id="dropdownTypes">
                             <div className="tripTypesDiv">

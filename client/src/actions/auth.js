@@ -9,7 +9,7 @@ import {
     LOGIN_SUCCESS,
     LOGOUT,
     CLEAR_PROFILE,
-    GET_PROFILE
+    GET_MY_PROFILE
 } from "./types";
 import setAuthToken from "../utils/setAuthToken";
 
@@ -30,7 +30,7 @@ export const loadUser = () => async dispatch => {
             payload: resUser.data
         })
         dispatch({
-            type: GET_PROFILE,
+            type: GET_MY_PROFILE,
             payload: resProfile.data
         })
     }catch (e) {

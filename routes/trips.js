@@ -54,7 +54,13 @@ function checkFileType(file, cb) {
 //Find and display my trips
 router.get("/me",auth, async (req, res)=>{
     try{
-        const trips = await Trip.find({user: req.user.id});
+        const trips = await Trip.find({user: req.user.id}).populate({
+            path: "team",
+            populate: [{
+                path: "user",
+                model: "User"
+            }]
+        });
         res.json(trips);
     }catch (e) {
         res.status(500).send("Server error")
@@ -62,19 +68,23 @@ router.get("/me",auth, async (req, res)=>{
 })
 
 //Find and display current trip
-router.get("/current",auth, async (req, res)=>{
+router.get("/current", auth, async (req, res)=>{
     try{
+        if(!req.user.id){
+            res.json(null)
+        }
         const trip = await Trip.findOne({"team.user": {$eq: req.user.id}, isCompleted: false, isTripReady: true})
         if(!trip){
             const notReadyTrip = await Trip.findOne({"team.user": {$eq: req.user.id}, isCompleted: false, isTripReady: false})
             if(notReadyTrip){
-                res.json({id: notReadyTrip._id, status: "not ready"})
+                res.json({id: notReadyTrip, status: "not ready"})
             }
         } else {
             res.json(trip)
         }
     }catch (e) {
         res.status(500).send("Server error")
+        console.log(e.message)
     }
 })
 
@@ -91,7 +101,6 @@ router.put("/:id/confirm",[
         console.log("1")
         if(trip){
             trip.team.filter(teammate=>teammate.user.toString() === req.user.id).map(teammate=>{
-                console.log("2")
                 teammate.isReady = true
             })
             await trip.save()
@@ -111,17 +120,17 @@ router.put("/:id/confirm",[
 })
 
 //Find and display current trip by user id
-router.get("/:id/current",auth, async (req, res)=>{
+router.get("/:id/current", async (req, res)=>{
     try{
-        const trips = await Trip.findOne({user: req.params.id, isCompleted: false});
-        res.json(trips);
+        const trip = await Trip.findOne({user: req.params.id, isCompleted: false});
+        res.json(trip);
     }catch (e) {
         res.status(500).send("Server error")
     }
 })
 
 //Find all trips
-router.get("/",auth, async (req, res)=>{
+router.get("/", async (req, res)=>{
     try{
         const trips = await Trip.find();
         res.json(trips);
@@ -130,9 +139,15 @@ router.get("/",auth, async (req, res)=>{
     }
 })
 //Find all user's trips
-router.get("/all/:id",auth, async (req, res)=>{
+router.get("/all/:id", async (req, res)=>{
     try{
-        const trips = await Trip.find({user: req.params.id});
+        const trips = await Trip.find({"team.user": {$eq: req.params.id}}).populate({
+            path: "team",
+            populate: [{
+                path: "user",
+                model: "User"
+            }]
+        });
         res.json(trips);
     }catch (e) {
         res.status(500).send("Server error")
@@ -216,48 +231,6 @@ router.post("/uploadImage", auth, upload.single("file"), async (req,res)=>{
     }
 })
 
-
-//Upload main trip image
-router.post("/tripImage", auth, upload.single("tripImage"), async (req, res, next)=>{
-    try {
-        // await cloudinary.v2.uploader.upload(req.file.path, (error, result) => {
-        //     if(error){
-        //         console.log(error)
-        //     }
-        //     res.json(result.secure_url);
-        // })
-        console.log(req.file)
-    }catch (e) {
-        console.log(e)
-    }
-})
-
-router.post("/sp_image", auth, upload.single("sp_image"), async (req, res, next)=>{
-    try {
-        await cloudinary.v2.uploader.upload(req.file.path, (error, result) => {
-            if(error){
-                console.log(error)
-            }
-            res.json(result.secure_url);
-        })
-    }catch (e) {
-        console.log(e)
-    }
-})
-
-router.post("/fd_image", auth, upload.single("fd_image"), async (req, res, next)=>{
-    try {
-        await cloudinary.v2.uploader.upload(req.file.path, (error, result) => {
-            if(error){
-                console.log(error)
-            }
-            res.json(result.secure_url);
-        })
-    }catch (e) {
-        console.log(e)
-    }
-})
-
 //Upload camp images
 router.post("/campImage", auth, upload.single("campImage"), async (req, res, next)=>{
     try {
@@ -275,7 +248,13 @@ router.post("/campImage", auth, upload.single("campImage"), async (req, res, nex
 //Show trip with a specific id
 router.get("/:id", auth, async (req, res)=>{
     try{
-        let trip = await Trip.findById(req.params.id).populate("comments user");
+        let trip = await Trip.findById(req.params.id).populate({
+            path: "team",
+            populate: [{
+                path: "user",
+                model: "User"
+            }]
+        }).populate("comments user");
         if(!trip){
             res.status(404).send("Trip not found")
         }
@@ -317,6 +296,11 @@ router.put("/:id/reachPoint",  auth, async (req, res)=>{
             trip.fn_destination.isFdReached = true;
             trip.isCompleted = true;
             trip.fn_destination.arrivalDate = Date.now()
+            trip.team.map(teammate=>{
+                console.log(teammate.level)
+                teammate.level +=1
+                console.log(teammate.level)
+            })
         } else {
             trip.campContent.filter((camp,i)=>parseInt(pointId) === i).map(camp=>{
                 camp.isCampReached = true

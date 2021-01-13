@@ -5,81 +5,98 @@ import Spinner from "../layout/Spinner";
 import {getProfileById} from "../../actions/profile";
 import {getAllUserTrips, getUserCurrentTrip} from "../../actions/trips";
 import PropTypes from "prop-types";
-import {DropdownButton, InputGroup, Carousel} from "react-bootstrap";
+import {Carousel} from "react-bootstrap";
 import {useParams} from "react-router";
 
-const DashboardById = ({getProfileById, getAllUserTrips, getUserCurrentTrip, completeTrip, removeTrip, setProfileStatus, auth, profile:{profile, loading}, trips:{trips, currentTrip}}) => {
+const DashboardById = ({getProfileById, getAllUserTrips, getUserCurrentTrip, auth, profile, trips:{trips, loading, currentTrip}}) => {
     const {id} = useParams()
+    const[tripFriends, setTripFriends] = useState([])
+
     useEffect(()=>{
         getProfileById(id)
         getUserCurrentTrip(id)
         getAllUserTrips(id)
-    },[loading])
+        const newTeam = []
+        trips.map((trip)=>{
+            trip.team.map((teammate, )=>{
+                if(id !== teammate.user._id && teammate.user){
+                    newTeam.push(teammate)
+                }
+            })
+        })
+        const newFriendsArr =Array.from(new Set(newTeam.map(teammate=>teammate.user._id))).map(id=>{
+            return{
+                id: id,
+                image: newTeam.find(teammate=>teammate.user._id === id).imageUrl
+            }
+        })
+        setTripFriends(newFriendsArr)
+    },[id,trips])
 
-    const [profileStatus, setPrStatus] =useState({
-        status: ""
-    })
 
     const [displayLinks, setDisplay] =useState(false)
+    const[selectedIcon, setIconTip] = useState(null)
+
+    const addIconTip = (index) =>{
+        const activeIcon = profile.preferences.filter((preference ,i)=> i === index)
+        setIconTip(activeIcon[0])
+        document.getElementById("iconsTips").classList.toggle("fadeOut")
+    }
+
+    const removeIconTip = () =>{
+        document.getElementById("iconsTips").classList.toggle("fadeOut")
+    }
 
 
     return(
         <Fragment>
-            {profile === null && loading && auth.loading ? <Spinner/> : (
+            {!profile.profile && profile.loading && !auth.loading ?<Spinner/> : (
                 <Fragment>
-                    {profile !== null && auth.user!==null ? (
+                    {profile.profile ? (
                         <div id="dashboard">
                             <div id="infoBox" className="row">
-                                <div id="firstColumn" className="col-3">
+                                <div id="firstColumn" className="col-12 col-md-4 col-lg-2 order-0">
                                     <div id="avatarBox">
                                         <img
                                             className="rounded-circle"
-                                            src={profile.imageUrl}
+                                            src={profile.profile.imageUrl}
                                             alt="" width="200px" height="200px"
                                         />
 
                                     </div>
-                                    <div id="preferenceDiv" className="row p-3">
-                                        {profile.preferences.map((preference, i)=>{
+                                    <div id="preferenceDiv" className="row p-3 d-none d-sm-flex">
+                                        {profile.profile.preferences.map((preference, i)=>{
                                             return(
                                                 <div key={i} className="col-2 p-0">
-                                                    <i className={preference.iconClass}/>
+                                                    <i className={preference.iconClass} onMouseEnter={()=>addIconTip(i)} onMouseLeave={()=>removeIconTip()}/>
                                                 </div>
                                             )
                                         })}
                                     </div>
+                                    <div id="iconsTips" className="fadeIn d-none d-sm-block">
+                                        {selectedIcon && <p>{selectedIcon.value}</p>}
+                                    </div>
                                 </div>
-                                <div id="secondColumn" className="col-9">
+                                <div id="secondColumn" className="col-12 col-md-8 col-lg-10 order-1">
                                     <div id="nameBox">
-                                        <p id="dashboardName">{auth.user.firstname} {auth.user.secondname}</p>
-                                        <InputGroup size="sm" className="mb-3" style={{width: "40%"}}>
-                                            <p id="statusString" style={{width: "140px", color: profile.status === "in trip" ? "green" : (profile.status === "ready for trip" ? "orange": "red")}}>
-                                                {profile.status}
+                                        <p id="dashboardName" className="text-center text-md-left">{profile.profile.user.firstname} {profile.profile.user.secondname}</p>
+                                            <p id="statusString" className="mb-3 mx-auto mx-md-0" style={{width: "140px", textAlign: "center"}}>
+                                                {!profile.profile.status ? "No status" : profile.profile.status}
                                             </p>
-
-                                            <DropdownButton
-                                                menuAlign="right"
-                                                as={InputGroup.Append}
-                                                variant="outline-light"
-                                                id="input-group-dropdown-2"
-                                            >
-
-                                            </DropdownButton>
-                                        </InputGroup>
                                     </div>
                                     <div id="mainInfo">
                                         <div className="row">
-                                            <div className="col-2">
+                                            <div className="col-4 col-lg-2">
                                                 <p><i className="far fa-calendar-alt"/>  Birthday</p>
                                                 <p><i className="fas fa-venus-mars"/>  Gender</p>
                                                 <p><i className="fas fa-user-tie"/>  Job</p>
                                                 <p><i className="fas fa-map-marker-alt"/>  Location</p>
                                             </div>
-                                            <div className="col-10">
-                                                <p>{profile.dob}</p>
-                                                <p id="gender">{profile.gender}</p>
-                                                <p>{profile.job}</p>
-                                                <p>{profile.place}</p>
+                                            <div className="col-8 col-lg-10">
+                                                <p>{profile.profile.dob}</p>
+                                                <p id="gender">{profile.profile.gender}</p>
+                                                <p>{profile.profile.job}</p>
+                                                <p>{profile.profile.place}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -90,19 +107,19 @@ const DashboardById = ({getProfileById, getAllUserTrips, getUserCurrentTrip, com
                                     >Social Networks</button>
                                     {displayLinks && <div id="socialNetDiv">
                                         <div className="row">
-                                            <div className="col-2">
-                                                {profile.website && <p><i className="fas fa-desktop"/>  Website</p>}
-                                                {profile.instagram && <p><i className="fab fa-instagram"/>  Instagram</p>}
-                                                {profile.facebook && <p><i className="fab fa-facebook-f"/> Facebook</p>}
-                                                {profile.vk && <p><i className="fab fa-vk"/>  Vkontakte</p>}
-                                                {profile.pinterest && <p><i className="fab fa-pinterest-p"/>  Pinterest</p>}
+                                            <div className="col-1">
+                                                {profile.profile.website && <p><i className="fas fa-desktop"/></p>}
+                                                {profile.profile.instagram && <p><i className="fab fa-instagram"/></p>}
+                                                {profile.profile.facebook && <p><i className="fab fa-facebook-f"/></p>}
+                                                {profile.profile.vk && <p><i className="fab fa-vk"/></p>}
+                                                {profile.profile.pinterest && <p><i className="fab fa-pinterest-p"/></p>}
                                             </div>
-                                            <div className="col-10">
-                                                {profile.website && <p><a href={profile.website} target="_blank" rel="noopener noreferrer">{profile.website}</a></p>}
-                                                {profile.instagram && <p><a href={profile.instagram} target="_blank" rel="noopener noreferrer">{profile.instagram}</a></p>}
-                                                {profile.facebook && <p><a href={profile.facebook} target="_blank" rel="noopener noreferrer">{profile.facebook}</a></p>}
-                                                {profile.vk && <p><a href={profile.vk} target="_blank" rel="noopener noreferrer">{profile.vk}</a></p>}
-                                                {profile.pinterest && <p><a href={profile.pinterest} target="_blank" rel="noopener noreferrer">{profile.pinterest}</a></p>}
+                                            <div className="col-11">
+                                                {profile.profile.website && <p><a href={profile.profile.website} target="_blank" rel="noopener noreferrer">{profile.profile.website}</a></p>}
+                                                {profile.profile.instagram && <p><a href={profile.profile.instagram} target="_blank" rel="noopener noreferrer">{profile.profile.instagram}</a></p>}
+                                                {profile.profile.facebook && <p><a href={profile.profile.facebook} target="_blank" rel="noopener noreferrer">{profile.profile.facebook}</a></p>}
+                                                {profile.profile.vk && <p><a href={profile.profile.vk} target="_blank" rel="noopener noreferrer">{profile.profile.vk}</a></p>}
+                                                {profile.profile.pinterest && <p><a href={profile.profile.pinterest} target="_blank" rel="noopener noreferrer">{profile.profile.pinterest}</a></p>}
                                             </div>
                                         </div>
                                     </div>}
@@ -120,76 +137,67 @@ const DashboardById = ({getProfileById, getAllUserTrips, getUserCurrentTrip, com
                                                     </div>
                                                     <div className="card-body">
                                                         <p className="card-text">{currentTrip.trip_description}</p>
-                                                        <div className="row">
-                                                            <div className="col-8">
-                                                                {currentTrip.user === auth.user._id ?(<Fragment>
-                                                                    <div className="edit_delete_trip_div d-inline">
-                                                                        <Link to={"/n/trips/show/"+currentTrip._id} className="btn btn-outline-primary">See more</Link>
-                                                                        <Link className="btn btm-sm btn-outline-warning" to={"/n/trips/edit/"+currentTrip._id} >Update</Link>
-                                                                        <button
-                                                                            type="button"
-                                                                            className="btn btm-sm btn-outline-danger"
-                                                                            onClick={()=>completeTrip(currentTrip._id)}
-                                                                        >Complete trip</button>
-                                                                    </div>
-                                                                </Fragment>):null}
-                                                            </div>
-                                                            <div className="col-4 text-right">
-                                                                <p>{currentTrip.comments.length} Comments</p>
-                                                            </div>
-                                                        </div>
                                                     </div>
                                                 </div>
                                             </Fragment>}
                                         </div>)}
                                     <div id="trips">
-                                        {trips ===null && loading ? <Spinner/> : (
+                                        {trips && loading ? <Spinner/> : (
                                             <Fragment>
                                                 <ul className="nav nav-tabs">
                                                     <li className="nav-item">
-                                                        <Link className="nav-link active" to="#">{profile.username}'s trips</Link>
+                                                        <Link className="nav-link active" to="#">My trips</Link>
                                                     </li>
                                                     <li className="nav-item">
                                                         <Link to="/n/trips/new" id="createTripButton" className="nav-link btn btn-outline-success"><i className="fas fa-plus"/> Create trip</Link>
                                                     </li>
                                                 </ul>
                                                 {trips.length > 0  ? (
-                                                    <Carousel className="mb-4">
+                                                    <div id="dashboardCarousel" style={{gridTemplateColumns: `repeat(${trips.length}, calc(50%))`}}>
                                                         {trips.map((trip,i)=>{
                                                             return(
-                                                                // <div key= {i} className="card col-4">
-                                                                //     <img src={trip.tripImage} className="card-img-top"
-                                                                //          alt="..."/>
-                                                                //          <div className="card-body">
-                                                                //              <h5 className="card-title">{trip.title}</h5>
-                                                                //              <p className="card-text">{trip.description}</p>
-                                                                //              <Link to={"/n/trips/show/"+trip._id} className="btn btn-primary">See more</Link>
-                                                                //              {trip.user === auth.user._id ?(<Fragment>
-                                                                //                  <div className="edit_delete_trip_div">
-                                                                //                      <Link className="btn btm-sm btn-outline-warning" to={"/n/trips/edit/"+trip._id} >Edit</Link>
-                                                                //                      <button
-                                                                //                          type="button"
-                                                                //                          className="btn btm-sm btn-outline-danger"
-                                                                //                          onClick={()=>removeTrip(trip._id)}
-                                                                //                      >Delete</button>
-                                                                //                  </div>
-                                                                //              </Fragment>):null}
-                                                                //          </div>
-                                                                // </div>
-                                                                <Carousel.Item key={i}>
-                                                                    <img
-                                                                        className="d-block w-100"
-                                                                        src={trip.tripImage}
-                                                                        alt="First slide"
-                                                                    />
-                                                                    <Carousel.Caption>
-                                                                        <h1><Link className="nav-link text-white" to={"/n/trips/show/"+trip._id}>{trip.title}</Link></h1>
-                                                                        <p>{trip.trip_description.slice(0,140)+"..."}</p>
-                                                                    </Carousel.Caption>
-                                                                </Carousel.Item>
+                                                                <Carousel key={i} controls={false} className="mb-5">
+                                                                    <Carousel.Item>
+                                                                        <img
+                                                                            className="d-block w-100"
+                                                                            src={trip.st_point.sp_image}
+                                                                            alt="First slide"
+                                                                        />
+                                                                        <Carousel.Caption>
+                                                                            <h1><Link className="nav-link text-white" to={"/n/trips/show/"+trip._id}>{trip.title}</Link></h1>
+                                                                            <p>{trip.trip_description.slice(0,140)+"..."}</p>
+                                                                        </Carousel.Caption>
+                                                                    </Carousel.Item>
+                                                                    {trip.campContent.map((camp,i)=>{
+                                                                        return(
+                                                                            <Carousel.Item key={i}>
+                                                                                <img
+                                                                                    className="d-block w-100"
+                                                                                    src={camp.campImage}
+                                                                                    alt="First slide"
+                                                                                />
+                                                                                <Carousel.Caption>
+                                                                                    <h1><Link className="nav-link text-white" to={"/n/trips/show/"+trip._id}>{trip.title}</Link></h1>
+                                                                                    <p>{trip.trip_description.slice(0,140)+"..."}</p>
+                                                                                </Carousel.Caption>
+                                                                            </Carousel.Item>
+                                                                        )
+                                                                    })}
+                                                                    <Carousel.Item>
+                                                                        <img
+                                                                            className="d-block w-100"
+                                                                            src={trip.fn_destination.fd_image}
+                                                                            alt="First slide"
+                                                                        />
+                                                                        <Carousel.Caption>
+                                                                            <h1><Link className="nav-link text-white" to={"/n/trips/show/"+trip._id}>{trip.title}</Link></h1>
+                                                                            <p>{trip.trip_description.slice(0,140)+"..."}</p>
+                                                                        </Carousel.Caption>
+                                                                    </Carousel.Item>
+                                                                </Carousel>
                                                             )
                                                         })}
-                                                    </Carousel>
+                                                    </div>
                                                 ) : (
                                                     <div>
                                                         <p>You have not any trip</p>
@@ -198,33 +206,27 @@ const DashboardById = ({getProfileById, getAllUserTrips, getUserCurrentTrip, com
                                             </Fragment>
                                         )}
                                     </div>
-                                    <div id="allTripFriends">
-                                        {trips.map((trip, i)=>{
-                                            return(
-                                                <Fragment>
-                                                    {trip.team.map((teammate, i)=>{
-                                                        return(
-                                                            <Link to="#">
-                                                                <img alt="" key={i+0.1} src={teammate.avatar} className="rounded-circle friendDiv" style={{width: "100px", height: "100px"}}/>
-                                                            </Link>
-                                                        )
-                                                    })}
-                                                </Fragment>
-                                            )
-                                        })}
-                                    </div>
+                                    <ul className="nav nav-tabs">
+                                        <li className="nav-item">
+                                            <Link className="nav-link active" to="#">My teammates</Link>
+                                        </li>
+                                    </ul>
+                                    {tripFriends.length > 0? (
+                                        <div id="friendsDiv" style={{gridTemplateColumns: `repeat(${tripFriends.length}, calc(30%))`}}>
+                                            {tripFriends.map((friend, i)=>{
+                                                return(
+                                                    <Link key={i+0.1} className="nav-link" to={`/n/dashboard/${auth.user._id !== friend.id ? friend.id : ""}`}>
+                                                        <img alt="" src={friend.image} className="rounded-circle friendDiv" style={{width: "100px", height: "100px"}}/>
+                                                    </Link>
+                                                )
+                                            })}
+                                        </div>
+                                    ) : null}
                                 </div>
                             </div>
 
                         </div>
-                    ) : (
-                        <Fragment>
-                            <p>You have not yet setup a profile, please add some info</p>
-                            <Link to="/n/profile/new" className="btn btn-primary my-1">
-                                Create Profile
-                            </Link>
-                        </Fragment>
-                    )
+                    ) : null
                     }
                 </Fragment>
             )
@@ -244,6 +246,7 @@ DashboardById.propTypes = {
 }
 
 const mapStateToProps = state => ({
+    auth: state.auth,
     profile: state.profile,
     trips: state.trips
 })

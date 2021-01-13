@@ -7,10 +7,9 @@ import TripMap from "../map/TripMap";
 import {addLike} from "../../actions/trips";
 import Spinner from "../layout/Spinner";
 import {Link} from "react-router-dom";
-import moment from "moment";
 import ReactStars from "react-rating-stars-component";
 
-const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, removeCommentReply, reachPoint, editComment, trips:{trip, loading}, profile:{profile}, profileLoading, auth:{user}, userLoading}) => {
+const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, removeCommentReply, reachPoint, editComment, trips:{trip, loading}, profile:{myProfile}, profileLoading, auth:{user}, userLoading}) => {
 
     const {id} = useParams()
 
@@ -64,7 +63,7 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
                 )
             })
         }
-    },[loading])
+    },[trip, myProfile, userLoading, loading])
 
     const [displayInfo, setInfo] =useState({
         st_point_card: false,
@@ -91,13 +90,16 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
         reply_text: ""
     })
 
-    const [reply, setReply] = useState(false)
-    const [friendsDiv, openFriendsDiv] = useState({
-        isOpen: false,
-        friend: null
+    const [reply, setReply] = useState({
+        index: null,
+        isActive: false
     })
 
     const showCamp = (id,index) =>{
+        if(document.getElementById("camp_information").classList.contains("showInfoClass")){
+            document.getElementById("camp_information").classList.remove("showInfoClass")
+            document.getElementById("camp_information").classList.add("showPhotoClass")
+        }
         if(id === "st_point" && displayInfo){
             setInfo({...displayInfo, st_point_card: true, fn_destination_card: false, camp_cards: false})
             setCenter({...centerMap,
@@ -130,6 +132,18 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
         }
     }
 
+    const rotateDiv = () =>{
+        const div = document.getElementById("camp_information")
+            if(div.classList.contains("showInfoClass")){
+                div.classList.remove("showInfoClass")
+                div.classList.add("showPhotoClass")
+            } else if(!div.classList.contains("showInfoClass")) {
+                div.classList.remove("showPhotoClass")
+                div.classList.add("showInfoClass")
+            }
+
+    }
+
     const{
         comment_text,
         reply_text
@@ -141,71 +155,64 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
 
     return (
         <Fragment>
-            {!trip && loading  && !profile ? (
+            {!trip && loading  && !myProfile && profileLoading  && !style.bg && !style.image  && style.bg === "" && style.image === "" ? (
                 <Spinner/>
             ): (<Fragment>
-                    {trip && user && profile && style.bg !== "" && style.image !== ""  ?(<Fragment>
-                        <div className="trip_container" style={{background: style.bg}}>
-                            <div id="showTripHeader" className="container-fluid mb-4" style={{backgroundImage: style.image, backgroundSize: "cover"}}>
+                    {trip && !loading && user && myProfile && style.bg !== "" && style.image !== ""  ? (<Fragment>
+                        <div className="trip_container" style={{background: style.bg, padding: "10px"}}>
+                            <div id="showTripHeader" className="container-fluid mb-4" style={{backgroundImage: style.image}}>
                                 <div id="trip_title_div" className="container">
-                                    <h1 className="">{trip.title}
-                                    <Link style={{fontSize: "20px"}} className="nav-link" to={"/n/trips/edit/"+id}>
-                                        <i className="fas fa-cog float-right"/>
-                                    </Link></h1>
+                                    <h1 className="">{trip.title}</h1>
+                                    <p>
+                                        <Link className="nav-link" to={"/n/trips/edit/"+id}>
+                                            <i className="fas fa-cog"/>
+                                        </Link>
+                                    </p>
                                 </div>
-                                <div id="desc_rate_row" className="row">
-                                    <div id="trip_description_div" className="col-lg-4 order-lg-0 mb-3">
-                                        <p>{trip.trip_description}</p>
-                                    </div>
-                                    <div className="col-2 col-xl-3 order-lg-1"/>
-                                    <div className="col-lg-6 col-xl-5 order-lg-2">
-                                        <div id="ratingRow" className="row">
-                                            <div className="col-2">
-                                                {(trip.ratings.filter(rating=>rating.user === profile.user._id).length>0) ? (
-                                                    <h4 style={{fontFamily: "'Gochi Hand', cursive"}} className="float-right mt-4">Rating</h4>
-                                                ) : (
-                                                    <h4 style={{fontFamily: "'Gochi Hand', cursive"}} className="float-right mt-4">Rate this trip</h4>
-                                                )}
-                                            </div>
-                                            <div className="col-10">
-                                                <ReactStars
-                                                    className="my-5"
-                                                    value={trip.generalRating ? trip.generalRating : null}
-                                                    count={5}
-                                                    size={40}
-                                                    edit={(trip.ratings.filter(rating=>rating.user === profile.user._id).length>0) ? false : true}
-                                                    onChange={ratingChanged}
-                                                    activeColor="#ffd700"
-                                                    isHalf={true}
-                                                    emptyIcon={<i className="far fa-star"/>}
-                                                    halfIcon={<i className="fas fa-star-half"/>}
-                                                    fullIcon={<i className="fas fa-star"/>}
-                                                />
-                                            </div>
-                                        </div>
+                                <div id="ratingRow">
+                                    <div>
+                                        <ReactStars
+                                            className="my-5"
+                                            value={trip.generalRating ? trip.generalRating : null}
+                                            count={5}
+                                            size={40}
+                                            edit={(trip.ratings.filter(rating=>rating.user === myProfile.user._id).length>0) ? false : true}
+                                            onChange={ratingChanged}
+                                            activeColor="#ffd700"
+                                            isHalf={true}
+                                            emptyIcon={<i className="far fa-star"/>}
+                                            halfIcon={<i className="fas fa-star-half"/>}
+                                            fullIcon={<i className="fas fa-star"/>}
+                                        />
                                     </div>
                                 </div>
                             </div>
-                            <div id="showTripContent" className="px-5">
-                                <div id="friendsRow" className="row bg-transparent">
-                                    <div id="showTripTeamDiv" className="col-xs-3 row mr-4">
+                            <div id="showTripContent" className="px-3">
+                                <div id="desc_rate_row" className="mb-3">
+                                    <div id="showTripTeamDiv" style={{gridTemplateColumns: `repeat(${trip.team.length}, calc(20%))`}}>
                                         {trip.team.map((teammate, i)=>{
                                             return(
-                                                <div key={i} className="col-4">
+                                                <div key={i} className="friendItem">
                                                     <Link
-                                                        to={"/n/dashboard/"+teammate._id}
+                                                        to={"/n/dashboard/"+teammate.user._id}
                                                         className="btn nav-link p-0"
                                                     >
-                                                        <img alt="" className="rounded-circle" style={{width: "50px", height: "50px"}} src={teammate.imageUrl}/>
+                                                        <img alt="" className="rounded-circle" style={{width: "70px", height: "70px"}} src={teammate.imageUrl}/>
                                                     </Link>
                                                 </div>
                                             )
                                         })}
                                     </div>
+                                    <div id="trip_description_div" className="col-12 col-md-6 order-0 mb-3">
+                                        <h3 className="mb-3">Description</h3>
+                                        <p>{trip.trip_description}</p>
+                                    </div>
                                 </div>
+
                                 <div id="mapCampRow" className="row mb-5 bg-transparent">
-                                    <div id="tripMapDiv" className="col-8" >
+                                    <div id="tripMapDiv" className="mb-3 col-12 col-lg-6 order-0">
                                         <img
+                                            alt=""
                                             src="https://res.cloudinary.com/antoxaalex/image/upload/v1607177511/backgrounds/pushpin-147918_640_y0u3dz.png"
                                             style={{
                                                 width: "50px",
@@ -217,6 +224,7 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
                                             }}
                                         />
                                         <img
+                                            alt=""
                                             src="https://res.cloudinary.com/antoxaalex/image/upload/v1607177511/backgrounds/pushpin-147918_640_y0u3dz.png"
                                             style={{
                                                 width: "50px",
@@ -236,9 +244,10 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
                                             trip={trip}
                                         />
                                     </div>
-                                    <div  id="tripCampsDiv" className="col-4">
+                                    <div id="tripCampsDiv" className="col-12 col-lg-5 order-1 ml-lg-2">
                                         <ul>
                                             <img
+                                                alt=""
                                                 src="https://res.cloudinary.com/antoxaalex/image/upload/v1607177511/backgrounds/pushpin-147918_640_y0u3dz.png"
                                                 style={{
                                                     width: "70px",
@@ -250,10 +259,10 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
                                                 }}
                                             />
                                             <li className="row showPointDiv" style={{color: trip.st_point.isSpReached ? "green" : "gray"}}>
-                                                <div className="col-1">
+                                                <div className="col-2">
                                                     <i className="far fa-flag"/>
                                                 </div>
-                                                <div className="col-9">
+                                                <div className="col-7">
                                                     <button
                                                         type="button"
                                                         className="btn btn-sm bg-transparent"
@@ -274,7 +283,7 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
                                                             reachPoint(id, name)
                                                         }}
                                                     />
-                                                </form>) : (<i className="fas fa-check" style={{color: "green"}}/>)}
+                                                </form>) : (<i className="fas fa-check col-2" style={{color: "green"}}/>)}
                                             </li>
                                             <li className="verticalBorder"/>
                                             {trip.campContent.map((camp, i)=> {
@@ -282,10 +291,10 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
                                                 return(
                                                     <Fragment key={i}>
                                                         <li className="row showPointDiv" style={{color: camp.isCampReached ? "green" : "gray"}}>
-                                                            <div className="col-1">
+                                                            <div className="col-2">
                                                                 <i className="fas fa-map-pin"/>
                                                             </div>
-                                                            <div className="col-9">
+                                                            <div className="col-7">
                                                                 <button
                                                                     type="button"
                                                                     className="btn btn-sm bg-transparent"
@@ -306,17 +315,17 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
                                                                         reachPoint(id, name)
                                                                     }}
                                                                 />
-                                                            </form>) : (<i className="fas fa-check" style={{color: "green"}}/>)}
+                                                            </form>) : (<i className="fas fa-check col-2" style={{color: "green"}}/>)}
                                                         </li>
                                                         <li className="verticalBorder"/>
                                                     </Fragment>
                                                 )
                                             })}
                                             <li className="row showPointDiv" style={{color: trip.fn_destination.isFdReached ? "green" : "gray"}}>
-                                                <div className="col-1">
+                                                <div className="col-2">
                                                     <i className="far fa-flag"/>
                                                 </div>
-                                                <div className="col-9">
+                                                <div className="col-7">
                                                     <button
                                                         type="button"
                                                         className="btn btn-sm bg-transparent"
@@ -337,112 +346,97 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
                                                             reachPoint(id, name)
                                                         }}
                                                     />
-                                                </form>) : (<i className="fas fa-check" style={{color: "green"}}/>)}
+                                                </form>) : (<i className="fas fa-check col-2" style={{color: "green"}}/>)}
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
-                                <div id="camp_information bg-transparent">
+                                <div id="camp_information" className="mx-auto my-5 showPhotoClass" onClick={()=>rotateDiv()}>
                                     {displayInfo.st_point_card &&  <Fragment>
-                                        <div className="row">
-                                            <div className="col-6">
-                                                <div className="card p-4 m-auto" style={{width: "18rem", position: "relative", transform: "rotate(30deg)"}}>
-                                                    <img
-                                                        src="https://res.cloudinary.com/antoxaalex/image/upload/v1607177511/backgrounds/pushpin-147918_640_y0u3dz.png"
-                                                        style={{
-                                                            width: "50px",
-                                                            height: "50px",
-                                                            position: "absolute",
-                                                            top: "0",
-                                                            right: "50%",
-                                                            zIndex: "1000"
-                                                        }}
-                                                    />
-                                                    <img src={trip.st_point.sp_image} className="card-img-top" alt="..."/>
-                                                    <div className="card-body">
-                                                        <h5 className="card-title">{trip.st_point.sp_title}</h5>
-                                                    </div>
+                                        <div className="card m-auto p-3" style={{width: "18rem", position: "relative", transform: "rotate(10deg)"}}>
+                                            {document.getElementById("camp_information").classList.contains("showPhotoClass") &&
+                                            document.getElementById("camp_information").getAnimations() ? (<Fragment>
+                                                <img
+                                                    alt=""
+                                                    src="https://res.cloudinary.com/antoxaalex/image/upload/v1607177511/backgrounds/pushpin-147918_640_y0u3dz.png"
+                                                    style={{
+                                                        width: "50px",
+                                                        height: "50px",
+                                                        position: "absolute",
+                                                        top: "0",
+                                                        right: "50%",
+                                                        zIndex: "1000"
+                                                    }}
+                                                />
+                                                <img src={trip.st_point.sp_image} className="card-img-top" alt="..."/>
+                                                <div className="card-body">
+                                                    <h5 className="card-title text-center">{trip.st_point.sp_title}</h5>
                                                 </div>
-                                            </div>
-                                            <div className="col-6">
-                                                <div className="pointDescription" style={{
-                                                    width: "400px",
-                                                    height: "400px",
-                                                    padding: "60px 80px 30px 40px",
-                                                    backgroundImage: "url('https://res.cloudinary.com/antoxaalex/image/upload/v1607197401/backgrounds/post-it-150262_1280_ql6bcj.png')",
-                                                    backgroundSize: "cover"
-                                                }}>
-                                                    {trip.st_point.sp_description}
+                                            </Fragment>): (<Fragment>
+                                                <div className="pointDescription">
+                                                    <p>
+                                                        {trip.st_point.sp_description}
+                                                    </p>
                                                 </div>
-                                            </div>
+                                            </Fragment>)}
                                         </div>
                                     </Fragment>}
                                     {displayInfo.fn_destination_card &&  <Fragment>
-                                        <div className="row">
-                                            <div className="col-6">
-                                                <div className="card p-4 m-auto" style={{width: "18rem", position: "relative", transform: "rotate(30deg)"}}>
-                                                    <img
-                                                        src="https://res.cloudinary.com/antoxaalex/image/upload/v1607177511/backgrounds/pushpin-147918_640_y0u3dz.png"
-                                                        style={{
-                                                            width: "50px",
-                                                            height: "50px",
-                                                            position: "absolute",
-                                                            top: "0",
-                                                            right: "50%",
-                                                            zIndex: "1000"
-                                                        }}
-                                                    />
-                                                    <img src={trip.fn_destination.fd_image} className="card-img-top" alt="..."/>
-                                                    <div className="card-body">
-                                                        <h5 className="card-title">{trip.fn_destination.fd_title}</h5>
-                                                    </div>
+                                        <div className="card m-auto p-3" style={{width: "18rem", position: "relative", transform: "rotate(10deg)"}}>
+                                            {document.getElementById("camp_information").classList.contains("showPhotoClass") &&
+                                            document.getElementById("camp_information").getAnimations() ? (<Fragment>
+                                                <img
+                                                    alt=""
+                                                    src="https://res.cloudinary.com/antoxaalex/image/upload/v1607177511/backgrounds/pushpin-147918_640_y0u3dz.png"
+                                                    style={{
+                                                        width: "50px",
+                                                        height: "50px",
+                                                        position: "absolute",
+                                                        top: "0",
+                                                        right: "50%",
+                                                        zIndex: "1000"
+                                                    }}
+                                                />
+                                                <img src={trip.fn_destination.fd_image} className="card-img-top" alt="..."/>
+                                                <div className="card-body">
+                                                    <h5 className="card-title text-center">{trip.fn_destination.fd_title}</h5>
                                                 </div>
-                                            </div>
-                                            <div className="col-6">
-                                                <div className="pointDescription" style={{
-                                                    width: "400px",
-                                                    height: "400px",
-                                                    padding: "60px 80px 30px 40px",
-                                                    backgroundImage: "url('https://res.cloudinary.com/antoxaalex/image/upload/v1607197401/backgrounds/post-it-150262_1280_ql6bcj.png')",
-                                                    backgroundSize: "cover"
-                                                }}>
-                                                    {trip.fn_destination.fd_description}
+                                            </Fragment>): (<Fragment>
+                                                <div className="pointDescription">
+                                                    <p>
+                                                        {trip.fn_destination.fd_description}
+                                                    </p>
                                                 </div>
-                                            </div>
+                                            </Fragment>)}
                                         </div>
                                     </Fragment>}
                                     {displayInfo.camp_cards && <Fragment>
-                                        <div className="row">
-                                            <div className="col-6">
-                                                <div className="card p-4 m-auto" style={{width: "18rem", position: "relative", transform: "rotate(30deg)"}}>
-                                                    <img
-                                                        src="https://res.cloudinary.com/antoxaalex/image/upload/v1607177511/backgrounds/pushpin-147918_640_y0u3dz.png"
-                                                        style={{
-                                                            width: "50px",
-                                                            height: "50px",
-                                                            position: "absolute",
-                                                            top: "0",
-                                                            right: "50%",
-                                                            zIndex: "1000"
-                                                        }}
-                                                    />
-                                                    <img src={campInfo.image} className="card-img-top" alt="..."/>
-                                                    <div className="card-body">
-                                                        <h5 className="card-title">{campInfo.title}</h5>
-                                                    </div>
+                                        <div className="card m-auto p-3" style={{width: "18rem", position: "relative", transform: "rotate(10deg)"}}>
+                                            {document.getElementById("camp_information").classList.contains("showPhotoClass") &&
+                                            document.getElementById("camp_information").getAnimations() ? (<Fragment>
+                                                <img
+                                                    alt=""
+                                                    src="https://res.cloudinary.com/antoxaalex/image/upload/v1607177511/backgrounds/pushpin-147918_640_y0u3dz.png"
+                                                    style={{
+                                                        width: "50px",
+                                                        height: "50px",
+                                                        position: "absolute",
+                                                        top: "0",
+                                                        right: "50%",
+                                                        zIndex: "1000"
+                                                    }}
+                                                />
+                                                <img src={campInfo.image} className="card-img-top" alt="..."/>
+                                                <div className="card-body">
+                                                    <h5 className="card-title text-center">{campInfo.title}</h5>
                                                 </div>
-                                            </div>
-                                            <div className="col-6">
-                                                <div className="pointDescription" style={{
-                                                    width: "400px",
-                                                    height: "400px",
-                                                    padding: "60px 80px 30px 40px",
-                                                    backgroundImage: "url('https://res.cloudinary.com/antoxaalex/image/upload/v1607197401/backgrounds/post-it-150262_1280_ql6bcj.png')",
-                                                    backgroundSize: "cover"
-                                                }}>
-                                                    {campInfo.description}
+                                            </Fragment>): (<Fragment>
+                                                <div className="pointDescription">
+                                                    <p>
+                                                        {campInfo.description}
+                                                    </p>
                                                 </div>
-                                            </div>
+                                            </Fragment>)}
                                         </div>
                                     </Fragment>
                                     }
@@ -455,14 +449,14 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
                                                 return(
                                                     <div className="comment_replyDiv" key={i}>
                                                         <hr/>
-                                                        <div className="comment row">
-                                                            <div className="col-1">
+                                                        <div className="comment row mb-3">
+                                                            <div className="col-3 col-sm-2 col-lg-1">
                                                                 <img src={comment.profileImage} alt=""
                                                                      style={{width: "70px", height: "70px"}}
                                                                      className="rounded-circle"
                                                                 />
                                                             </div>
-                                                            <div id="commentText" className="col-4" >
+                                                            <div id="commentText" className="col-7 col-sm-8 col-lg-9" >
                                                                 {isCommentSelected.val && isCommentSelected.id === comment._id ? (
                                                                     <form
                                                                     onSubmit={(e)=>{
@@ -475,26 +469,27 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
                                                                             name="text"
                                                                             autoComplete="off"
                                                                             onChange={(e)=>editCommentForm({...commentForm, [e.target.name]: e.target.value})}
-                                                                            value={commentForm.text !== "" ? commentForm.text: ""}
+                                                                            value={commentForm.text !== "" ? commentForm.text : ""}
                                                                         />
                                                                     <button
                                                                         type="submit"
                                                                         className="btn btn-success"
                                                                     >Submit</button>
-                                                                </form>) : (
-                                                                    <div style={{margin: "auto"}}>
-                                                                        <p>{comment.text}</p>
-                                                                        <span className="float-right text-danger">
+                                                                </form>) : (<Fragment>
+                                                                        <div className="m-auto">
+                                                                            <p>{comment.text}</p>
+                                                                        </div>
+                                                                        <span className="text-danger float-right align-self-end">
                                                                     {comment.likes.length} <i className="far fa-heart"/>
-                                                                </span>
-                                                                    </div>
+                                                                    </span>
+                                                                </Fragment>
                                                                 )}
                                                             </div>
-                                                            <div className="col-1 p-0">
+                                                            <div className="col-2 p-0">
                                                                 <div id="commentBtns">
                                                                     <button className="btn btn-success"
                                                                             type="button"
-                                                                            onClick={() => {setReply(!reply)}}
+                                                                            onClick={() => {setReply({index: i, isActive: !reply.isActive})}}
                                                                     >
                                                                         <i className="fas fa-pen"/>
                                                                     </button>
@@ -511,7 +506,7 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
                                                                         <button
                                                                             type="button"
                                                                             className="btn btn-dark"
-                                                                            onClick={(e)=>removeCommentReply("comment",i, trip._id, comment._id)}
+                                                                            onClick={()=>removeCommentReply("comment",i, trip._id, comment._id)}
                                                                         ><i className="far fa-trash-alt"/></button>
                                                                     </Fragment>}
                                                                     <button className="btn btn-danger"
@@ -527,54 +522,48 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
                                                                 {comment.replies.map((reply,i)=>{
                                                                     return(
                                                                         <Fragment key={i}>
-                                                                            <div className="row mx-5">
-                                                                                <div className="col-1">
+                                                                            <div className="row mx-5 mb-3">
+                                                                                <div className="col-3 col-sm-2 col-lg-1">
                                                                                     <img src={reply.profileImage} alt=""
                                                                                          style={{width: "50px", height: "50px"}}
                                                                                          className="rounded-circle"/>
                                                                                 </div>
-                                                                                <div id="commentText" className="col-4" >
+                                                                                <div id="commentText" className="col-7 col-sm-8 col-lg-9" >
                                                                                     <div style={{margin: "auto"}}>
                                                                                         <p>{reply.text}</p>
                                                                                     </div>
                                                                                 </div>
-                                                                                <div className="col-1 p-0">
+                                                                                <div className="col-2 p-0">
                                                                                     {reply.user === user._id && <Fragment>
                                                                                         <div id="commentBtns">
                                                                                             <button
                                                                                                 type="button"
                                                                                                 className="btn btn-dark"
-                                                                                                onClick={(e)=>removeCommentReply("reply",i, trip._id,comment._id)}
+                                                                                                onClick={()=>removeCommentReply("reply",i, trip._id,comment._id)}
                                                                                             ><i className="far fa-trash-alt"/></button>
                                                                                         </div>
                                                                                     </Fragment>}
                                                                                 </div>
-                                                                                {/*<div className="col-11">*/}
-                                                                                {/*    <div className="comment_header">*/}
-                                                                                {/*        <Link to="">{reply.username}</Link>*/}
-                                                                                {/*        <p>{moment(reply.date).fromNow()}</p>*/}
-                                                                                {/*    </div>*/}
-                                                                                {/*    <p>{reply.text}</p>*/}
-                                                                                {/*</div>*/}
                                                                             </div>
                                                                         </Fragment>
                                                                     )
                                                                 })}
                                                             </Fragment>
                                                         ):null}
-                                                        {reply &&
+                                                        {reply.index === i && reply.isActive &&
                                                         <Fragment>
                                                             <div className="row mx-5">
-                                                                <div className="col-1">
+                                                                <div className="col-3">
                                                                     <img src={comment.profileImage} alt=""
                                                                          style={{width: "50px", height: "50px"}}
                                                                          className="rounded-circle"/>
                                                                 </div>
-                                                                <div className="col-11">
+                                                                <div className="col-9">
                                                                     <form onSubmit={(e)=>{
                                                                         e.preventDefault();
-                                                                        createReply(reply_text, id, comment._id ,profile.imageUrl, user.firstname + " " + user.secondname)
-                                                                        setReply(!reply)
+                                                                        createReply(reply_text, id, comment._id ,myProfile.imageUrl, user.firstname + " " + user.secondname)
+                                                                        setReply({index: null, isActive: false})
+                                                                        setComment({...comment, reply_text: ""})
                                                                     }}>
                                                                         <div className="input-group mb-3 my-4">
                                                                             <input
@@ -617,13 +606,14 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
                                 </div>
                                 {!profileLoading &&  <div id="commentsCreationForm">
                                     <div className="row">
-                                        <div className="col-1">
-                                            <img src={profile.imageUrl} alt="" style={{width: "50px", height: "50px"}} className="rounded-circle"/>
+                                        <div className="col-2 col-lg-1">
+                                            <img src={myProfile.imageUrl} alt="" style={{width: "50px", height: "50px"}} className="rounded-circle"/>
                                         </div>
-                                        <div className="col-11">
+                                        <div className="col-10 col-lg-11">
                                             <form onSubmit={(e)=>{
                                                 e.preventDefault();
-                                                createComment(comment_text, id, profile.imageUrl, user.firstname + " " + user.secondname)
+                                                createComment(comment_text, id, myProfile.imageUrl, user.firstname + " " + user.secondname)
+                                                setComment({...comment, comment_text: ""})
                                             }}>
                                                 <div className="input-group mb-3">
                                                     <input

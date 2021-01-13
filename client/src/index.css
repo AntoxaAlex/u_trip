@@ -13,17 +13,99 @@ code {
     monospace;
 }
 
-/*Navbar*/
+
+/*================================================LANDING====================================================*/
+
+.landing{
+  position: relative;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+}
+
+.landing-header {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+.landing-header h1 {
+  font-family: 'Sail', cursive;
+  color: #fff;
+}
+
+#landing_video{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  z-index: 1;
+}
+
+
+.fade-in {
+  animation: fadeIn ease 10s;
+  -webkit-animation: fadeIn ease 10s;
+  -moz-animation: fadeIn ease 10s;
+  -o-animation: fadeIn ease 10s;
+  -ms-animation: fadeIn ease 10s;
+}
+@keyframes fadeIn {
+  0% {
+    opacity:0;
+  }
+  100% {
+    opacity:1;
+  }
+}
+
+@-moz-keyframes fadeIn {
+  0% {
+    opacity:0;
+  }
+  100% {
+    opacity:1;
+  }
+}
+
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity:0;
+  }
+  100% {
+    opacity:1;
+  }
+}
+
+@-o-keyframes fadeIn {
+  0% {
+    opacity:0;
+  }
+  100% {
+    opacity:1;
+  }
+}
+
+@-ms-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/*================================================NAVBAR====================================================*/
+
 nav{
   z-index: 1;
   position: relative;
 }
 
-.navbar{
-  height: 70px;
-}
+
 
 .navbar-brand{
+  font-family: 'Sail', cursive;
   font-size: 2rem;
 }
 
@@ -32,20 +114,26 @@ nav{
 }
 
 .navbar-brand span{
-  color: blue;
+  color: greenyellow;
+  transition: ease;
 }
 
-/*SignIn/Register*/
+.signLinks{
+  color: black;
+  margin: 10px 10px 5px 10px;
+}
+
+.signLinks:hover{
+  color: greenyellow;
+  text-decoration: none;
+}
+
+/*=================================================SignIn/Register======================================================*/
 #registerContainer{
-  background-color: rgba(255, 255, 255,0.5);
-  margin: 150px auto;
   text-align: center;
-  padding: 50px 0;
 }
 
 .signIn_registerDiv{
-  width: 200px;
-  height: 300px;
   margin: auto;
 }
 
@@ -70,66 +158,182 @@ nav{
   box-shadow: none;
 }
 
-
-
 #mainContainer{
-  height: 950px;
   z-index: 2;
   position: relative;
   padding: 0;
+  background: linear-gradient(to right, rgba(1,239,100,0.5),rgba(5,121,226,0.5));
 }
 
-#findTripBox{
-  width: 100%;
-  height: 700px;
-  background-image: url("imgs/home/rana-sawalha-W_-6PWGbYaU-unsplash.jpg");
-  background-size: cover;
-}
 
 
 /*================================================HOME====================================================*/
 
 #introDiv{
   width: 100%;
-  height: 600px;
-  background-image: url("https://res.cloudinary.com/antoxaalex/image/upload/v1607170340/backgrounds/natural-4821583_tgztfm.png");
+  background-image: url("https://res.cloudinary.com/antoxaalex/image/upload/v1608755173/backgrounds/hiker-918473_1920_odqgz6.jpg");
   background-size: cover;
-  background-position: center;
+  background-position: bottom;
   text-align: center;
-  padding: 50px;
+  padding: 80px 50px;
   margin-bottom: 50px;
 }
 
-
 #introHeader{
-  font-size:8rem;
   color: white;
   font-family: 'Nerko One', cursive;
-  margin-bottom: 100px;
+  margin-bottom: 30px;
+}
+
+.introDivBtn{
+  margin: auto;
+  border-radius: 20px;
+  text-decoration: none;
+  border: 1px solid greenyellow;
+  background-color: transparent;
+  transition: ease;
+}
+
+.introDivBtn a, .introDivBtn button{
+  text-decoration: none;
+  color: greenyellow;
+  transition: ease;
+}
+.introDivBtn a:hover, .introDivBtn button:hover{
+  text-decoration: none;
+  color: white;
+}
+.introDivBtn:hover{
+   background-color: yellowgreen;
+  border: none;
+ }
+.introDivBtn h5{
+  height: 100%;
+  margin-bottom: 0;
+  padding-top: 5px;
+}
+
+#tripsNearYouContainer,#bestTripsContainer{
+  background-color: white;
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 50px;
+}
+
+#bestUsersContainer{
+  background-color: black;
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 50px;
+}
+
+.homeContentHeader{
+  margin-bottom: 40px;
+}
+
+#bestUsersContainer .homeContentHeader{
+  color: white;
 }
 
 #tripsNearYou{
-  width: 100%;
-  height: 300px;
-  margin-bottom: 50px;
+  overflow-x: auto;
+  display: grid;
+  grid-column-gap: 50px;
+  scroll-snap-type: x proximity;
+  grid-template-columns: repeat(3, calc(100% - 100px));
+  grid-template-rows: minmax(150px, 1fr);
 }
 
-#bestTripsDiv{
-  width: 100%;
-  height: 300px;
-  margin-bottom: 50px;
+#bestTripsDiv,#bestUsersDiv{
+  overflow-x: auto;
+  display: grid;
+  grid-gap: 15px;
+  scroll-snap-type: x proximity;
+  grid-template-columns: repeat(6, calc(100% - 60px));
+  grid-template-rows: minmax(150px, 1fr);
 }
 
-#bestUsersDiv{
-  width: 100%;
-  height: 300px;
-  margin-bottom: 50px;
+#tripsNearYou .nearTripsGridItem{
+  padding: 10px;
+  scroll-snap-align: center;
+  background-color: transparent;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  border-radius: 8px;
+}
+
+#bestTripsDiv .tripsGridItem{
+  position: relative;
+  background-color: black;
+  scroll-snap-align: center;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  border-radius: 15px;
+
+}
+
+#bestUsersDiv .userGridItem{
+  position: relative;
+  padding: 10px;
+  scroll-snap-align: center;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  border-radius: 8px;
+}
+
+#bestUsersDiv .userGridItem:nth-of-type(1) .levelSpan{
+  color: gold;
+  font-size: 1.5rem;
+}
+#bestUsersDiv .userGridItem:nth-of-type(2) .levelSpan{
+  color: silver;
+  font-size: 1.5rem;
+
+}
+#bestUsersDiv .userGridItem:nth-of-type(3) .levelSpan{
+  color: rgb(196,139,63);
+  font-size: 1.5rem;
+
+}
+
+.medalImage{
+  width: 60px;
+  height: 60px;
+  position: absolute;
+  top: 0;
+  left: 40px;
+}
+
+.userTableTd{
+  padding-left: 20px;
 }
 
 #bottomDiv{
-  background-color: cornflowerblue;
+  background-color: rgb(247,247,247);
   width: 100%;
-  height: 300px;
+  padding: 20px 50px;
+}
+
+#bottomDiv a{
+  color: black;
+}
+
+#contacts, #socialMedia{
+  margin: 20px auto;
+}
+
+#socialLinks{
+  display: flex;
+}
+#socialLinks a{
+  margin-right: 15px;
 }
 /*============================================CREATE PROFILE============================================*/
 .profileHeader{
@@ -162,7 +366,11 @@ nav{
 }
 
 #avatarBox{
-  padding: 0px 20px 20px 0px;
+  padding: 0 20px 20px 0;
+  display: flex;
+}
+#avatarBox img{
+  margin: 0 auto;
 }
 
 #preferenceDiv i{
@@ -203,7 +411,7 @@ nav{
 
 #dashboardName{
   font-size: 1.4rem;
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 
 
@@ -221,6 +429,13 @@ nav{
   margin-right: 15px;
 }
 
+#dashboardCarousel{
+  overflow-x: auto;
+  display: grid;
+  grid-column-gap: 50px;
+  scroll-snap-type: x proximity;
+}
+
 
 #allTripFriends{
   background: linear-gradient(to right,rgba(250,208,231,0.3), rgba(188,58,127,0.3));
@@ -231,15 +446,23 @@ nav{
   overflow-y: hidden;
 }
 
-.friendDiv{
-  margin: 0 10px 0 10px;
-  opacity: 0.5;
-  transition: 200ms ease;
+#friendsDiv{
+  overflow-x: auto;
+  display: grid;
+  grid-column-gap: 50px;
+  scroll-snap-type: x proximity;
 }
-.friendDiv:hover{
-  margin: 0 10px 0 10px;
-  opacity: 1;
+
+#friendsDiv img{
+  padding: 10px;
+  scroll-snap-align: center;
+  background-color: transparent;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  border-radius: 8px;
 }
+
 
 #createProfileBtn{
   height: 300px;
@@ -264,11 +487,14 @@ nav{
   padding: 50px 10px;
 }
 
+.mainNewTripHeader{
+  color: white;
+}
+
 #tripPartDiv{
   border-radius: 5px;
   border: 1px solid rgb(222,224,230);
   padding: 20px;
-  width: 60%;
   margin: auto;
   background-color: rgb(247,247,250);
 }
@@ -287,8 +513,6 @@ nav{
 }
 
 .headerNum{
-  width: 35px;
-  height: 35px;
   border: 2px solid rgb(143,149,168);
   border-radius: 50%;
   margin: 0;
@@ -304,6 +528,12 @@ nav{
   height: 100px;
   border-radius: 50%;
   font-size: 1.3rem;
+}
+
+.tripTypeInput{
+  background-color: white;
+  border: 1px solid rgb(222,224,230);
+  border-radius: 5px;
 }
 
 .tripMainImageDiv input[type=file]{outline:0;opacity:0;pointer-events:none;user-select:none;}
@@ -344,7 +574,7 @@ nav{
 }
 
 .searchTeamInput{
-  border-radius: 0px;
+  border-radius: 0;
   border: 1px solid rgb(144,152,184);
 }
 
@@ -530,44 +760,47 @@ nav{
 }
 
 #showTripHeader{
-  height: 500px;
+  height: 400px;
+  position: relative;
+  display: flex;
+  align-items: center;
   background-size: cover;
+  background-position: center;
   background-repeat: no-repeat;
   padding: 30px;
 }
 
-#trip_title_div h1{
+#trip_title_div h1, #trip_title_div p{
   text-align: center;
-  color: orangered;
-  font-family: 'Gochi Hand', cursive;
-  font-size: 10rem;
+  color: white;
 }
 
-@media (max-width: 1150px){
-  #trip_title_div h1{
-    font-size: 7rem;
-  }
+#trip_title_div i{
+  color: white;
+  transition: ease;
 }
-@media (max-width: 720px){
-  #trip_title_div h1{
-    font-size: 4rem;
-  }
+#trip_title_div i:hover{
+  color: gray;
 }
 
 
 #trip_description_div{
+  max-height: 250px;
+  overflow-y: auto;
+  overflow-x: hidden;
   text-wrap: normal;
   font-family: 'Gochi Hand', cursive;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   background-color: white;
   border-radius: 15px;
   padding: 10px;
 }
 
 #ratingRow{
+  position: absolute;
   background-color: white;
   border-radius: 15px;
-  margin: 10px;
+  right: 20px;
 }
 
 
@@ -605,8 +838,6 @@ nav{
 }
 
 #tripCampsDiv{
-  max-height: 500px;
-  height: 500px;
   overflow: auto;
   background-image: url("https://res.cloudinary.com/antoxaalex/image/upload/v1607197635/backgrounds/paper-1959384_1280_pbquvj.jpg");
   background-size: 100% 100%;
@@ -680,29 +911,51 @@ nav{
   float: right;
 }
 
+#camp_information{
+  width: 18rem;
+  height: 400px;
+}
 
-#camp_information h5, .pointDescription, .noDataDiv{
+#camp_information:empty{
+  height: 0;
+}
+
+.pointDescription{
+  height: 400px;
+}
+
+.pointDescription p{
+  font-size: 1rem;
+  text-decoration: underline;
+  padding: 5px;
+}
+
+#camp_information h5 .noDataDiv{
   font-family: 'Tangerine', cursive;
   font-size: 1.5rem;
 }
 
 
 #commentText{
-  height: 200px;
-  background-image: url("http://res.cloudinary.com/antoxaalex/image/upload/a_vflip/a_0/v1607258609/backgrounds/comment-150531_1280_tv7sna.png");
-  background-size: contain;
-  background-repeat: no-repeat;
-  padding: 50px 50px 40px 60px;
-  line-break: loose;
+  background-color: rgb(247,247,250);
+  border:2px solid rgb(222,224,230);
+  border-radius: 30px 0 0 30px;
+  position: relative;
+}
+
+#commentText span{
+  position: absolute;
+  bottom: 0;
+  right: 10px;
 }
 
 #commentBtns{
   background-color: rgb(247,247,250);
   border:2px solid rgb(222,224,230);
-  border-radius: 30px;
-  margin-top: 50px;
+  border-radius: 0 30px 30px 0;
   padding: 10px;
   width: 50px;
+  height: 100%;
  }
 
 #commentBtns button, #commentBtns a{
@@ -717,15 +970,28 @@ nav{
 #friendsRow{
   margin-bottom: 50px;
   font-family: 'Tangerine', cursive;
+  padding: 15px;
+  width: 100%;
 }
 
 #showTripTeamDiv{
-  margin-bottom: 50px;
-  overflow-y: auto;
-  overflow-x: inherit;
-  border-radius: 15px;
-  background-color: white;
-  padding: 15px;
+  max-width: 400px;
+  margin: 0 auto 40px auto;
+  overflow-x: auto;
+  display: grid;
+  grid-column-gap: 50px;
+  scroll-snap-type: x proximity;
+  grid-template-rows: minmax(70px, 1fr);
+}
+
+.friendItem{
+  padding: 10px;
+  scroll-snap-align: center;
+  background-color: transparent;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  border-radius: 8px;
 }
 
 #showTripTeamDiv button{
@@ -770,6 +1036,378 @@ nav{
 .fa-check{
   color: green;
 }
+
+/*=========================================MEDIA=========================================*/
+/*Phone Portrait*/
+@media (min-width: 300px) and (max-height: 850px){
+  .landing-header h1 {
+    font-size: 4rem;
+    margin-bottom: 100px;
+  }
+
+  .landing-header {
+    padding-top: 200px;
+  }
+
+  #mainContainer{
+    min-width: 414px;
+    min-height: 850px;
+  }
+
+  #registerContainer{
+    padding: 150px 0;
+  }
+
+  .signIn_registerDiv{
+    width: 200px;
+    height: 300px;
+  }
+
+  #introHeader{
+    font-size: 4rem;
+  }
+
+  .introDivBtn{
+    width: 150px;
+    height: 40px;
+  }
+
+  .headerNum {
+    width: 30px;
+    height: 30px;
+  }
+
+  .headerNum, .tripHeader .col-10 h5 {
+    font-size: 1.3rem;
+  }
+
+  .mainNewTripHeader{
+    font-size: 3rem;
+  }
+
+  .assembledMember img{
+    width:70px;
+    height: 70px;
+  }
+
+  #trip_title_div h1{
+    font-size: 4rem;
+    margin: 0 auto;
+  }
+ #trip_title_div a{
+   font-size: 2rem;
+ }
+
+ #ratingRow{
+   bottom: 30px;
+ }
+
+}
+/*Phone Landscape*/
+@media (min-width: 560px) and (max-height: 420px){
+  .landing-header h1 {
+    font-size: 4rem;
+    margin-bottom: 50px;
+  }
+
+  .landing-header {
+    padding-top: 100px;
+  }
+
+  #registerContainer{
+    padding: 150px 0;
+  }
+
+  .signIn_registerDiv{
+    width: 200px;
+    height: 300px;
+  }
+
+  #introHeader{
+    font-size: 4rem;
+  }
+
+  .introDivBtn{
+    width: 150px;
+    height: 40px;
+  }
+  #tripsNearYou{
+    grid-template-columns: repeat(3, calc(100% - 250px));
+  }
+  #bestTripsDiv,#bestUsersDiv{
+    grid-template-columns: repeat(6, calc(100% - 400px));
+  }
+
+  .mainNewTripHeader{
+    font-size: 2rem;
+  }
+
+  .headerNum {
+    width: 40px;
+    height: 40px;
+  }
+
+  .headerNum, .tripHeader .col-10 h5 {
+    font-size: 1.6rem;
+  }
+
+
+  .mainNewTripHeader{
+    font-size: 4rem;
+  }
+
+  .assembledMember img{
+    width:100px;
+    height: 100px;
+  }
+
+  #friendsDiv{
+    grid-template-columns: repeat(6, calc(100% - 600px));
+  }
+
+  #showTripHeader{
+    height: 300px;
+  }
+
+  #trip_title_div h1{
+    font-size: 4rem;
+    margin: 0 auto;
+  }
+  #trip_title_div a{
+    font-size: 2rem;
+  }
+
+  #ratingRow{
+    bottom: 20px;
+  }
+
+}
+/*Tablet Portrait*/
+@media (min-width: 768px) and (min-height: 1024px){
+  .landing-header h1 {
+    font-size: 8rem;
+    margin-bottom: 100px;
+  }
+
+  .landing-header {
+    padding-top: 200px;
+  }
+
+  #mainContainer{
+    min-width: 768px;
+    min-height: 1370px;
+  }
+
+  #registerContainer{
+    padding: 200px 0;
+  }
+
+  .signIn_registerDiv{
+    width: 500px;
+    height: 500px;
+  }
+
+  #introHeader{
+    font-size: 8rem;
+  }
+
+  .introDivBtn{
+    width: 300px;
+    height: 70px;
+  }
+  .introDivBtn h5{
+    font-size: 2rem;
+    padding-top: 12px;
+  }
+
+  #tripsNearYou{
+    grid-template-columns: repeat(3, calc(100% - 400px));
+  }
+  #bestTripsDiv,#bestUsersDiv{
+    grid-template-columns: repeat(6, calc(100% - 400px));
+  }
+
+  .headerNum {
+    width: 60px;
+    height: 60px;
+  }
+
+  .headerNum, .tripHeader .col-10 h5 {
+    font-size: 2.5rem;
+  }
+
+
+  .mainNewTripHeader{
+    font-size: 5rem;
+  }
+
+  .assembledMember img{
+    width:100px;
+    height: 100px;
+  }
+
+  #trip_title_div h1{
+    font-size: 6rem;
+    margin: 0 auto;
+  }
+  #trip_title_div a{
+    font-size: 2rem;
+  }
+
+  #ratingRow{
+    bottom: 40px;
+  }
+}
+/*Tablet Landscape*/
+@media (min-width: 1024px) and (min-height: 768px){
+  .landing-header h1 {
+    font-size: 8rem;
+    margin-bottom: 100px;
+  }
+
+  .landing-header {
+    padding-top: 200px;
+  }
+
+  #trip_title_div h1{
+    font-size: 7rem;
+  }
+
+  #introDiv{
+    height: 600px;
+  }
+
+  #introHeader{
+    font-size: 8rem;
+    margin-bottom: 200px;
+  }
+
+  .introDivBtn{
+    width: 150px;
+    height: 40px;
+  }
+
+  .introDivBtn{
+      width: 300px;
+      height: 70px;
+  }
+  .introDivBtn h5{
+    font-size: 2rem;
+    padding-top: 12px;
+  }
+
+  #tripsNearYou{
+    grid-template-columns: repeat(3, calc(100% - 400px));
+  }
+  #bestTripsDiv{
+    grid-template-columns: repeat(6, calc(100% - 600px));
+  }
+  #bestUsersDiv{
+    grid-template-columns: repeat(6, calc(100% - 700px));
+  }
+
+  .mainNewTripHeader{
+    font-size: 5rem;
+  }
+  .headerNum {
+    width: 60px;
+    height: 60px;
+  }
+
+  .headerNum, .tripHeader .col-10 h5 {
+    font-size: 2.5rem;
+  }
+  #ratingRow{
+    bottom: 20px;
+  }
+
+}
+/*Desktop*/
+@media (min-width: 1400px) and (min-height: 900px){
+  .landing-header h1 {
+    font-size: 10rem;
+    margin-bottom: 100px;
+  }
+
+  .landing-header {
+    padding-top: 200px;
+  }
+
+  #mainContainer{
+    min-height: 1440px;
+  }
+
+  #registerContainer{
+    padding: 200px 0;
+  }
+
+  .signIn_registerDiv{
+    width: 300px;
+    height: 500px;
+  }
+
+  #introDiv{
+    height: 800px;
+  }
+
+  #introHeader{
+    font-size: 10rem;
+  }
+
+  .introDivBtn{
+    width: 250px;
+    height: 40px;
+  }
+
+  .introDivBtn h5{
+    padding-top: 0;
+  }
+
+  #tripsNearYou{
+    grid-template-columns: repeat(3, calc(33%));
+    overflow-x: hidden;
+  }
+  #bestTripsDiv{
+    grid-template-columns: repeat(6, calc(16%));
+    overflow-x: hidden;
+  }
+  #bestUsersDiv{
+    grid-template-columns: repeat(6, calc(16%));
+    overflow-x: hidden;
+  }
+  #bottomDiv{
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+
+  .mainNewTripHeader{
+    font-size: 5rem;
+  }
+
+  .assembledMember img{
+    width:100px;
+    height: 100px;
+  }
+  #friendsDiv, #dashboardCarousel{
+    overflow-x: hidden;
+  }
+
+  #trip_title_div h1{
+    font-size: 8rem;
+    margin: 0 auto;
+  }
+  #trip_title_div a{
+    font-size: 2rem;
+  }
+
+  #ratingRow{
+    bottom: 20px;
+  }
+
+}
+
+/*====================================Animations==========================================*/
 
 /*SCROLLBAR*/
 /* width */

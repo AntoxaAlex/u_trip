@@ -30,7 +30,7 @@ router.post("/", [
     }
 
 //    Retrieve values from body
-    const { name, email, password} = req.body;
+    const {email, password} = req.body;
     try {
         //Check if user is already exists
         let user = await User.findOne({email});

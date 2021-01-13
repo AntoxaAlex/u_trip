@@ -1,7 +1,7 @@
 import React from "react";
 import {connect} from "react-redux";
 
-const SecondPart = ({active, setProgressBar, searchTeammates, teammates, displayList, addTeammate, profile, assembledTeammates, removeMember}) =>{
+const SecondPart = ({active, setProgressBar, searchTeammates, teammates, displayList, addTeammate, myProfile, assembledTeammates, removeMember}) =>{
     if (!active) return null
     return(
         <div className="tripTeamDiv">
@@ -9,7 +9,9 @@ const SecondPart = ({active, setProgressBar, searchTeammates, teammates, display
                 <div className="col-1 text-center">
                     <h5 className="headerNum">2</h5>
                 </div>
-                <h5 className="text-left col-11">Assemble a team</h5>
+                <div className="col-10">
+                    <h5 className="text-left ml-3">Assemble a team</h5>
+                </div>
             </div>
             <div className="searchTeammateDiv mb-4">
                 <input
@@ -23,16 +25,16 @@ const SecondPart = ({active, setProgressBar, searchTeammates, teammates, display
                         return(
                             <li key={i} className="my-3">
                                 <div className="row">
-                                    <div className="col-1">
+                                    <div className="col-3 col-sm-2">
                                         <img alt="" className="rounded-circle" style={{width: "50px", height: "50px"}} src={teammate.imageUrl}/>
                                     </div>
-                                    <div className="col-3 ">
+                                    <div className="col-3 col-sm-2">
                                         <p>{teammate.user.firstname} {teammate.user.secondname}</p>
                                     </div>
-                                    <div className="col-2">
+                                    <div className="d-none d-sm-block col-sm-2">
                                         <p>{teammate.status ? teammate.status : "No status"}</p>
                                     </div>
-                                    <div className="col-2">
+                                    <div className="d-none d-lg-block col-sm-2">
                                         {teammate.preferences.length > 0 && <div className="row">
                                             {teammate.preferences.map((preference, i) => {
                                                 return(
@@ -41,16 +43,16 @@ const SecondPart = ({active, setProgressBar, searchTeammates, teammates, display
                                             })}
                                         </div>}
                                     </div>
-                                    <div className="col-2">
+                                    <div className="d-none d-sm-block col-2">
                                         <p>Level: {teammate.level}</p>
                                     </div>
                                     <div className="col-2">
                                         {teammate.status === "ready for trip" || "Set status" ? (
-                                            <button type="button" className="btn btn-outline-success" onClick={()=> {
+                                            <button type="button" className="btn btn-sm btn-outline-success" onClick={()=> {
                                                 addTeammate(teammate)
                                             }}>Add teammate</button>
                                         ) : (
-                                            <button type="button" className="btn btn-outline-secondary">Add teammate</button>
+                                            <button type="button" className="btn btn-sm btn-outline-secondary">Add teammate</button>
                                         )}
                                     </div>
                                 </div>
@@ -66,21 +68,21 @@ const SecondPart = ({active, setProgressBar, searchTeammates, teammates, display
             </div>
             <div className="assemblesTeammatesDiv mb-3">
                 <div className="row p-3">
-                    {profile !== null && <div className="assembledMember col-2 mb-3 text-center">
+                    {myProfile !== null && <div className="assembledMember col-4 col-sm-3 mb-3 text-center">
                         <img
                             className="rounded-circle"
-                            alt="" src={profile.imageUrl}
-                            style={{width: "100px", height: "100px"}}
+                            alt=""
+                            src={myProfile.imageUrl}
                         />
                         <p style={{fontStyle: "italic"}}>Guide</p>
                     </div>}
-                    {assembledTeammates.filter(team=>team._id !== profile._id).map((teammate, i)=>{
+                    {assembledTeammates.filter(team=>team._id !== myProfile._id).map((teammate, i)=>{
                         return(
-                            <div key={i} className="assembledMember col-2 mb-3 text-center">
+                            <div key={i} className="assembledMember col-4 col-sm-3 mb-3 text-center">
                                 <img
                                     className="rounded-circle mb-2"
-                                    alt="" src={teammate.imageUrl}
-                                    style={{width: "100px", height: "100px"}}
+                                    alt=""
+                                    src={teammate.imageUrl}
                                 />
                                 <button
                                     type="button"
@@ -96,7 +98,7 @@ const SecondPart = ({active, setProgressBar, searchTeammates, teammates, display
                 type="button"
                 className="btn-outline-primary btnNextPart"
                 onClick={()=>{
-                    addTeammate(profile)
+                    addTeammate(myProfile)
                     setProgressBar(66)
                 }}>
                 Next
