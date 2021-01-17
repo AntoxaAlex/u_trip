@@ -1,4 +1,3 @@
-/node_modules
-/config/default.json
-/client/src/config.json
-/.idea
+node_modules/
+config/default.json
+client/src/config.json
