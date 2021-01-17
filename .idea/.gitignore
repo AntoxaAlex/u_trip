@@ -3,7 +3,3 @@
 /workspace.xml
 # Editor-based HTTP Client requests
 /httpRequests/
-
-config/default.json
-
-client/src/config.json
