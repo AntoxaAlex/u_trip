@@ -4,11 +4,12 @@ const config = require("config");
 const connectDB = require("./config/db")
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const path = require("path")
 
 
 
 //Environment variables
-const port = config.get("PORT") || 4000;
+const port = process.env.PORT || 4000;
 
 //Middleware
 app.use(bodyParser.urlencoded({limit: "50mb", extended: true}));
@@ -25,6 +26,17 @@ app.use("/search", require("./routes/search"));
 
 //Set up data base
 connectDB();
+
+//Serve static assets in production
+if(process.env.NODE_ENV === "production"){
+    //Set static folder
+    app.use(express.static("client/build"));
+
+    app.get("*", (req,res)=>{
+        res.sendFile(path.resolve(__dirname,"client", "build", "index.html"))
+    })
+}
+
 //Listening
 app.listen(port,()=>{
     console.log("Server has been run on port: "+port)
