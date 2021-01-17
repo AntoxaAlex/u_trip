@@ -5,6 +5,7 @@ const Profile =require("../models/profile")
 const Comment = require("../models/comment");
 const auth = require("../middleware/auth");
 const config =require("config");
+const moment = require("moment")
 const { body, validationResult} = require("express-validator");
 const multer  = require("multer")
 const path = require("path")
@@ -296,10 +297,15 @@ router.put("/:id/reachPoint",  auth, async (req, res)=>{
             trip.fn_destination.isFdReached = true;
             trip.isCompleted = true;
             trip.fn_destination.arrivalDate = Date.now()
-            trip.team.map(teammate=>{
-                console.log(teammate.level)
-                teammate.level +=1
-                console.log(teammate.level)
+            trip.team.map(async teammate=>{
+                try{
+                    const profile = await Profile.findOne({user: teammate.user._id});
+                    profile.level +=1
+                    profile.tripdays += Math.floor(moment.duration( moment(trip.fn_destination.arrivalDate).diff(moment(trip.st_point.departureDate))).asDays())
+                    await profile.save()
+                }catch (e) {
+                    console.log(e.message)
+                }
             })
         } else {
             trip.campContent.filter((camp,i)=>parseInt(pointId) === i).map(camp=>{

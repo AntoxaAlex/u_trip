@@ -1,5 +1,6 @@
 body {
   margin: 0;
+  font-family: 'Poppins', sans-serif;
   background-size: cover;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -12,6 +13,12 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+h1,h2,h3,h4,h5{
+  font-family: 'Cormorant', serif;
+}
+
+
 
 
 /*================================================LANDING====================================================*/
@@ -162,8 +169,9 @@ nav{
   z-index: 2;
   position: relative;
   padding: 0;
-  background: linear-gradient(to right, rgba(1,239,100,0.5),rgba(5,121,226,0.5));
+  /*background: linear-gradient(to right, rgba(1,239,100,0.5),rgba(5,121,226,0.5));*/
 }
+
 
 
 
@@ -181,7 +189,6 @@ nav{
 
 #introHeader{
   color: white;
-  font-family: 'Nerko One', cursive;
   margin-bottom: 30px;
 }
 
@@ -213,15 +220,22 @@ nav{
   padding-top: 5px;
 }
 
-#tripsNearYouContainer,#bestTripsContainer{
-  background-color: white;
+#tripsNearYouContainer{
+  background: linear-gradient(to right, rgb(243,122,129), rgb(255,255,255));
   border-radius: 15px;
   padding: 20px;
   margin-bottom: 50px;
 }
 
 #bestUsersContainer{
-  background-color: black;
+  background: linear-gradient(to right, rgb(163,156,237), rgb(255,255,255));
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 50px;
+}
+
+#bestTripsContainer{
+  background: linear-gradient(to right, rgb(76,125,48), rgb(255,255,255));
   border-radius: 15px;
   padding: 20px;
   margin-bottom: 50px;
@@ -231,9 +245,6 @@ nav{
   margin-bottom: 40px;
 }
 
-#bestUsersContainer .homeContentHeader{
-  color: white;
-}
 
 #tripsNearYou{
   overflow-x: auto;
@@ -487,9 +498,6 @@ nav{
   padding: 50px 10px;
 }
 
-.mainNewTripHeader{
-  color: white;
-}
 
 #tripPartDiv{
   border-radius: 5px;
@@ -654,40 +662,12 @@ nav{
 }
 
 
-
-.tripBlock .form-group{
-  width: 50%;
-  display: flex;
-}
-.tripBlock .col-4{
-  width: 50%;
-  padding-left: 0;
-}
-
-.st_point_block{
-  border: 1px solid rgb(144,152,184);
-  border-radius: 15px;
-  background-color: rgb(247,247,250);
-}
-
-.st_point_block .card{
-  background-color: rgb(247,247,250);
-
-}
-
 #addCampBtn{
   width: 100px;
   height: 100px;
   margin: 10px;
 }
 
-.verticalLine{
-  width: 50%;
-  border-left: 1px solid green;
-  height: 100px;
-  margin: 0 0 0 50%;
-  top: 0;
-}
 
 .campGroup{
   margin: auto;
@@ -727,31 +707,6 @@ nav{
 .upload-image .label:hover{
   border:2px solid rgb(144,152,184)
 }
-
-
-
-#editTripMainImage input[type=file]{outline:0;opacity:0;pointer-events:none;user-select:none;}
-#editTripMainImage label{
-  width: 100%;
-  height: 200px;
-  border:2px solid rgb(222,224,230);
-  border-radius:15px;
-  background-color: rgb(247,247,250);
-  cursor:pointer;
-  text-align:center;
-  padding: 5% 10%;
-  font-size: 1.2rem;
-  color: white;
-}
-
-#editTripMainImage label i{
-  font-size: 3rem;
-  display: inline;
-}
-#editTripMainImage label span{
-  font-size: 3rem;
-}
-
 /*============================================SHOWTRIP============================================*/
 
 
@@ -764,7 +719,6 @@ nav{
   position: relative;
   display: flex;
   align-items: center;
-  background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   padding: 30px;
@@ -1050,7 +1004,6 @@ nav{
   }
 
   #mainContainer{
-    min-width: 414px;
     min-height: 850px;
   }
 
@@ -1101,6 +1054,10 @@ nav{
  #ratingRow{
    bottom: 30px;
  }
+
+  #dashboardCarousel a{
+    font-size: 1rem;
+  }
 
 }
 /*Phone Landscape*/
@@ -1181,6 +1138,10 @@ nav{
     bottom: 20px;
   }
 
+  #dashboardCarousel a{
+    font-size: 1.5rem;
+  }
+
 }
 /*Tablet Portrait*/
 @media (min-width: 768px) and (min-height: 1024px){
@@ -1257,6 +1218,10 @@ nav{
   #ratingRow{
     bottom: 40px;
   }
+
+  #dashboardCarousel a{
+    font-size: 2rem;
+  }
 }
 /*Tablet Landscape*/
 @media (min-width: 1024px) and (min-height: 768px){
@@ -1321,6 +1286,9 @@ nav{
     bottom: 20px;
   }
 
+  #dashboardCarousel a{
+    font-size: 2rem;
+  }
 }
 /*Desktop*/
 @media (min-width: 1400px) and (min-height: 900px){
@@ -1351,7 +1319,7 @@ nav{
   }
 
   #introHeader{
-    font-size: 10rem;
+    font-size: 12rem;
   }
 
   .introDivBtn{
@@ -1368,8 +1336,8 @@ nav{
     overflow-x: hidden;
   }
   #bestTripsDiv{
-    grid-template-columns: repeat(6, calc(16%));
-    overflow-x: hidden;
+    grid-template-columns: repeat(6, calc(20%));
+    overflow-x: auto;
   }
   #bestUsersDiv{
     grid-template-columns: repeat(6, calc(16%));
@@ -1389,9 +1357,6 @@ nav{
     width:100px;
     height: 100px;
   }
-  #friendsDiv, #dashboardCarousel{
-    overflow-x: hidden;
-  }
 
   #trip_title_div h1{
     font-size: 8rem;
@@ -1405,27 +1370,34 @@ nav{
     bottom: 20px;
   }
 
+  #dashboardCarousel a{
+    font-size: 2rem;
+  }
+
+  /*SCROLLBAR*/
+
+
+  /* width*/
+  #dashboardCarousel::-webkit-scrollbar, #friendsDiv::-webkit-scrollbar, #showTripTeamDiv::-webkit-scrollbar, #bestTripsDiv::-webkit-scrollbar {
+    width: 10px;
+    height: 5px;
+  }
+
+  /* Track */
+  #dashboardCarousel::-webkit-scrollbar-track, #friendsDiv::-webkit-scrollbar-track, #showTripTeamDiv::-webkit-scrollbar-track, #bestTripsDiv::-webkit-scrollbar-track{
+    background: transparent;
+  }
+
+  /* Handle */
+  #dashboardCarousel::-webkit-scrollbar-thumb, #friendsDiv::-webkit-scrollbar-thumb, #showTripTeamDiv::-webkit-scrollbar-thumb, #bestTripsDiv::-webkit-scrollbar-thumb{
+    background: gray;
+  }
+
+  /* Handle on hover */
+  #dashboardCarousel::-webkit-scrollbar-thumb:hover, #friendsDiv::-webkit-scrollbar-thumb:hover, #showTripTeamDiv::-webkit-scrollbar-thumb:hover, #bestTripsDiv::-webkit-scrollbar-thumb:hover{
+    background: #555;
+  }
+
 }
 
 /*====================================Animations==========================================*/
-
-/*SCROLLBAR*/
-/* width */
-/*::-webkit-scrollbar {*/
-/*  width: 10px;*/
-/*}*/
-
-/*!* Track *!*/
-/*::-webkit-scrollbar-track {*/
-/*  background: gray;*/
-/*}*/
-
-/*!* Handle *!*/
-/*::-webkit-scrollbar-thumb {*/
-/*  background: #6DD5FA;*/
-/*}*/
-
-/*!* Handle on hover *!*/
-/*::-webkit-scrollbar-thumb:hover {*/
-/*  background: #555;*/
-/*}*/

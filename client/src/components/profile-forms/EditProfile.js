@@ -353,7 +353,7 @@ const EditProfile = ({getCurrentProfile, createProfile, deleteUser,logout, profi
                 <Fragment>
                     {profile !== null && auth.user!==null ? (<Fragment>
                         <form encType="multipart/form-data" className="p-3" noValidate onSubmit={e=>onSubmit(e)}>
-                            <h2 className="text-center my-5">Edit Profile</h2>
+                            <h1 className="text-center my-5">Edit Profile</h1>
                             <div className="profileCreate row">
                                 <div className="upload-image col-12 col-md-4 col-lg-2 order-0">
                                     <div className="form-group">

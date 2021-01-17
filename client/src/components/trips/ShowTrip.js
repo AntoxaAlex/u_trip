@@ -159,7 +159,7 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
                 <Spinner/>
             ): (<Fragment>
                     {trip && !loading && user && myProfile && style.bg !== "" && style.image !== ""  ? (<Fragment>
-                        <div className="trip_container" style={{background: style.bg, padding: "10px"}}>
+                        <div className="trip_container" style={{background: style.bg}}>
                             <div id="showTripHeader" className="container-fluid mb-4" style={{backgroundImage: style.image}}>
                                 <div id="trip_title_div" className="container">
                                     <h1 className="">{trip.title}</h1>
@@ -258,7 +258,7 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
                                                     zIndex: "1000"
                                                 }}
                                             />
-                                            <li className="row showPointDiv" style={{color: trip.st_point.isSpReached ? "green" : "gray"}}>
+                                            <li className="row showPointDiv" style={{color: trip.st_point.isSpReached ? "green" : "gray", marginTop: "30px"}}>
                                                 <div className="col-2">
                                                     <i className="far fa-flag"/>
                                                 </div>

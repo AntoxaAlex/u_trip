@@ -5,7 +5,6 @@ import {
     GET_TRIP_BY_ID,
     PROFILE_ERROR,
     GET_ALL_MY_TRIPS,
-    NEW_PROFILE,
     GET_CURRENT_TRIP,
     GET_ALL_TRIPS,
     NOT_READY_TRIP
@@ -50,6 +49,7 @@ export const getAllUserTrips = (id) => async dispatch =>{
 export const getAllTrips = () => async dispatch =>{
     try{
         const res = await axios.get("/trips/")
+        console.log("allTrips")
         dispatch({
             type: GET_ALL_TRIPS,
             payload: res.data
@@ -78,6 +78,7 @@ export const getTripById = (id) => async dispatch => {
 export const getCurrentTrip = () => async dispatch => {
     try{
         const res = await axios.get("/trips/current")
+        console.log("currentTrip")
         if(res.data.status === "not ready"){
             dispatch({
                 type: NOT_READY_TRIP,

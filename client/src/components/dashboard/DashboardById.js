@@ -153,7 +153,7 @@ const DashboardById = ({getProfileById, getAllUserTrips, getUserCurrentTrip, aut
                                                     </li>
                                                 </ul>
                                                 {trips.length > 0  ? (
-                                                    <div id="dashboardCarousel" style={{gridTemplateColumns: `repeat(${trips.length}, calc(50%))`}}>
+                                                    <div id="dashboardCarousel" style={{gridTemplateColumns: `repeat(${trips.length}, calc(50%))`, marginBottom: "50px"}}>
                                                         {trips.map((trip,i)=>{
                                                             return(
                                                                 <Carousel key={i} controls={false} className="mb-5">
@@ -164,8 +164,8 @@ const DashboardById = ({getProfileById, getAllUserTrips, getUserCurrentTrip, aut
                                                                             alt="First slide"
                                                                         />
                                                                         <Carousel.Caption>
-                                                                            <h1><Link className="nav-link text-white" to={"/n/trips/show/"+trip._id}>{trip.title}</Link></h1>
-                                                                            <p>{trip.trip_description.slice(0,140)+"..."}</p>
+                                                                            <Link className="nav-link text-white" to={"/n/trips/show/"+trip._id}>{trip.title}</Link>
+                                                                            <p className="d-none d-lg-block">{trip.trip_description.slice(0,140)+"..."}</p>
                                                                         </Carousel.Caption>
                                                                     </Carousel.Item>
                                                                     {trip.campContent.map((camp,i)=>{
@@ -177,8 +177,8 @@ const DashboardById = ({getProfileById, getAllUserTrips, getUserCurrentTrip, aut
                                                                                     alt="First slide"
                                                                                 />
                                                                                 <Carousel.Caption>
-                                                                                    <h1><Link className="nav-link text-white" to={"/n/trips/show/"+trip._id}>{trip.title}</Link></h1>
-                                                                                    <p>{trip.trip_description.slice(0,140)+"..."}</p>
+                                                                                    <Link className="nav-link text-white" to={"/n/trips/show/"+trip._id}>{trip.title}</Link>
+                                                                                    <p className="d-none d-lg-block">{trip.trip_description.slice(0,140)+"..."}</p>
                                                                                 </Carousel.Caption>
                                                                             </Carousel.Item>
                                                                         )
@@ -190,8 +190,8 @@ const DashboardById = ({getProfileById, getAllUserTrips, getUserCurrentTrip, aut
                                                                             alt="First slide"
                                                                         />
                                                                         <Carousel.Caption>
-                                                                            <h1><Link className="nav-link text-white" to={"/n/trips/show/"+trip._id}>{trip.title}</Link></h1>
-                                                                            <p>{trip.trip_description.slice(0,140)+"..."}</p>
+                                                                            <Link className="nav-link text-white" to={"/n/trips/show/"+trip._id}>{trip.title}</Link>
+                                                                            <p className="d-none d-lg-block">{trip.trip_description.slice(0,140)+"..."}</p>
                                                                         </Carousel.Caption>
                                                                     </Carousel.Item>
                                                                 </Carousel>
@@ -213,7 +213,7 @@ const DashboardById = ({getProfileById, getAllUserTrips, getUserCurrentTrip, aut
                                     </ul>
                                     {tripFriends.length > 0? (
                                         <div id="friendsDiv" style={{gridTemplateColumns: `repeat(${tripFriends.length}, calc(30%))`}}>
-                                            {tripFriends.map((friend, i)=>{
+                                            {auth.user && tripFriends.map((friend, i)=>{
                                                 return(
                                                     <Link key={i+0.1} className="nav-link" to={`/n/dashboard/${auth.user._id !== friend.id ? friend.id : ""}`}>
                                                         <img alt="" src={friend.image} className="rounded-circle friendDiv" style={{width: "100px", height: "100px"}}/>

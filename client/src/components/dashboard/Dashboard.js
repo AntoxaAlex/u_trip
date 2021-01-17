@@ -15,12 +15,16 @@ const Dashboard = ({getCurrentProfile, getAllMyTrips, getCurrentTrip, completeTr
         getCurrentProfile()
         getCurrentTrip()
         getAllMyTrips()
+        console.log("1")
+    },[])
+
+    useEffect(()=>{
+        const newTeam = []
         if(trips && profile){
-            const newTeam = []
             trips.map(trip=>{
                 trip.team.map(teammate=>{
                     if(profile._id !== teammate._id)
-                    newTeam.push(teammate)
+                        newTeam.push(teammate)
                 })
             })
             const newFriendsArr = Array.from(new Set(newTeam.map(teammate=>teammate.user._id))).map(id=>{
@@ -31,7 +35,7 @@ const Dashboard = ({getCurrentProfile, getAllMyTrips, getCurrentTrip, completeTr
             })
             setTripFriends(newFriendsArr)
         }
-    },[trips])
+    },[trips,profile])
 
     const [profileStatus, setPrStatus] =useState({
         status: ""
@@ -205,7 +209,7 @@ const Dashboard = ({getCurrentProfile, getAllMyTrips, getCurrentTrip, completeTr
                                                     </li>
                                                 </ul>
                                                 {trips.length > 0  ? (
-                                                        <div id="dashboardCarousel" style={{gridTemplateColumns: `repeat(${trips.length}, calc(50%))`}}>
+                                                        <div id="dashboardCarousel" style={{gridTemplateColumns: `repeat(${trips.length}, calc(50%))`, marginBottom: "50px"}}>
                                                             {trips.map((trip,i)=>{
                                                                 return(
                                                                     <Carousel key={i} controls={false} className="mb-5">
@@ -216,8 +220,8 @@ const Dashboard = ({getCurrentProfile, getAllMyTrips, getCurrentTrip, completeTr
                                                                                 alt="First slide"
                                                                             />
                                                                             <Carousel.Caption>
-                                                                                <h1><Link className="nav-link text-white" to={"/n/trips/show/"+trip._id}>{trip.title}</Link></h1>
-                                                                                <p>{trip.trip_description.slice(0,140)+"..."}</p>
+                                                                                <Link className="nav-link text-white" to={"/n/trips/show/"+trip._id}>{trip.title}</Link>
+                                                                                <p className="d-none d-lg-block">{trip.trip_description.slice(0,140)+"..."}</p>
                                                                             </Carousel.Caption>
                                                                         </Carousel.Item>
                                                                         {trip.campContent.map((camp,i)=>{
@@ -229,8 +233,8 @@ const Dashboard = ({getCurrentProfile, getAllMyTrips, getCurrentTrip, completeTr
                                                                                         alt="First slide"
                                                                                     />
                                                                                     <Carousel.Caption>
-                                                                                        <h1><Link className="nav-link text-white" to={"/n/trips/show/"+trip._id}>{trip.title}</Link></h1>
-                                                                                        <p>{trip.trip_description.slice(0,140)+"..."}</p>
+                                                                                        <Link className="nav-link text-white" to={"/n/trips/show/"+trip._id}>{trip.title}</Link>
+                                                                                        <p className="d-none d-lg-block">{trip.trip_description.slice(0,140)+"..."}</p>
                                                                                     </Carousel.Caption>
                                                                                 </Carousel.Item>
                                                                             )
@@ -242,8 +246,8 @@ const Dashboard = ({getCurrentProfile, getAllMyTrips, getCurrentTrip, completeTr
                                                                                 alt="First slide"
                                                                             />
                                                                             <Carousel.Caption>
-                                                                                <h1><Link className="nav-link text-white" to={"/n/trips/show/"+trip._id}>{trip.title}</Link></h1>
-                                                                                <p>{trip.trip_description.slice(0,140)+"..."}</p>
+                                                                                <Link className="nav-link text-white" to={"/n/trips/show/"+trip._id}>{trip.title}</Link>
+                                                                                <p className="d-none d-lg-block">{trip.trip_description.slice(0,140)+"..."}</p>
                                                                             </Carousel.Caption>
                                                                         </Carousel.Item>
                                                                     </Carousel>
@@ -278,16 +282,7 @@ const Dashboard = ({getCurrentProfile, getAllMyTrips, getCurrentTrip, completeTr
                             </div>
 
                         </div>
-                    ) : (
-                        <Fragment>
-                            <Link to="/n/profile/new" className="nav-link text-center">
-                                <label id="createProfileBtn">
-                                    <i className="fas fa-user-plus"/>
-                                    <p>Create profile</p>
-                                </label>
-                            </Link>
-                        </Fragment>
-                    )
+                    ) : null
                     }
                 </Fragment>
                 )

@@ -27,7 +27,7 @@ const NavbarComponent =({auth:{isAuthenticated, loading}, logout, profile:{myPro
             </form>
             <div className="d-flex pt-1">
                 <img alt="" src={myProfile === null ? "https://meetanentrepreneur.lu/wp-content/uploads/2019/08/profil-linkedin-300x300.jpg": myProfile.imageUrl} style={{width: "40px", height: "40px"}} className="rounded-circle"/>
-                <DropdownButton variant="link" id="dropdown-button" size="sm" title="" bg="transparent" menuAlign={{ lg: 'right' }}>
+                <DropdownButton variant="link" id="dropdown-button" size="sm" title="" bg="transparent" menuAlign={{ lg: 'right' }} >
                     <Link className="signLinks" to="/n/dashboard">See profile</Link>
                     <Link to="/n/profile/edit" className="signLinks d-block">Edit Profile</Link>
                 </DropdownButton>
@@ -43,8 +43,8 @@ const NavbarComponent =({auth:{isAuthenticated, loading}, logout, profile:{myPro
             </Nav>
     );
     return (
-    <Navbar collapseOnSelect expand="lg" bg="transparent" variant="dark" fixed="top">
-        <Navbar.Brand href="/n/home"><span>y</span>Trip</Navbar.Brand>
+    <Navbar collapseOnSelect expand="lg" bg="transparent" variant="light" fixed="top">
+        <Navbar.Brand href="/n/home" className="text-dark"><span>y</span>Trip</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
             {!loading && (<Fragment>{isAuthenticated ? authLinks : guestLinks}</Fragment>)}

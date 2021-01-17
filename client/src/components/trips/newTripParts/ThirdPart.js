@@ -251,7 +251,7 @@ const ThirdPart = ({
                                         >Set manual position</button>
                                     </div>
                                     {manualPosition.isOpen && <div className="row pt-5">
-                                        <div className="d-none d-md-block col-sm-6">
+                                        <div className="d-none d-md-block col-md-6">
                                             <p>Latitude</p>
                                             <p>Longitude</p>
                                         </div>
@@ -274,12 +274,12 @@ const ThirdPart = ({
                                                 id="sp_longitude"
                                                 onChange={(e)=>manualSetPosition({...manualPosition, lng: e.target.value})}
                                             />
-                                            <button
-                                                type="button"
-                                                className="btn btn-sm btn-outline-secondary"
-                                                onClick={()=>submitManualPosition()}
-                                            >Submit manual position</button>
                                         </div>
+                                        <button
+                                            type="button"
+                                            className="btn btn-sm btn-outline-secondary mt-2 mx-auto"
+                                            onClick={()=>submitManualPosition()}
+                                        >Submit manual position</button>
                                     </div>}
                                 </div>
                                 <CroppModal
@@ -328,7 +328,7 @@ const ThirdPart = ({
                                     </div>
                                 </div>
                                 <div className="col-md-7">
-                                    <div className="card-body p-0">
+                                    <div className="card-body p-0 mb-3">
                                         <input
                                             type="text"
                                             className="form-control"
@@ -363,7 +363,7 @@ const ThirdPart = ({
                                     >Set manual position</button>
                                 </div>
                                 {manualPosition.isOpen && <div className="row pt-5">
-                                    <div className="d-none d-md-block col-sm-6">
+                                    <div className="d-none d-md-block col-md-6">
                                         <p>Latitude</p>
                                         <p>Longitude</p>
                                     </div>
@@ -389,7 +389,7 @@ const ThirdPart = ({
                                     </div>
                                     <button
                                         type="button"
-                                        className="btn btn-sm btn-outline-secondary"
+                                        className="btn btn-sm btn-outline-secondary mt-2 mx-auto"
                                         onClick={()=>submitManualPosition()}
                                     >Submit manual position</button>
                                 </div>}
@@ -448,7 +448,7 @@ const ThirdPart = ({
                                                 </button>
                                             </div>
                                             <div className="col-md-7">
-                                                <div className="card-body p-0">
+                                                <div className="card-body p-0 mb-3">
                                                     <input
                                                         type="text"
                                                         className="form-control"
@@ -510,7 +510,7 @@ const ThirdPart = ({
                                             </div>
                                             <button
                                                 type="button"
-                                                className="btn btn-sm btn-outline-secondary"
+                                                className="btn btn-sm btn-outline-secondary mt-2 mx-auto"
                                                 onClick={()=>submitManualPosition()}
                                             >Submit manual position</button>
                                         </div>}

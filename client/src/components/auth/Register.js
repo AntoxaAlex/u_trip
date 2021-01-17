@@ -44,6 +44,7 @@ const Register = ({setAlert, register, isAuthenticated})=>{
                         placeholder="First name"
                         className="form-control"
                         autoComplete="off"
+                        autoFocus="autofocus"
                         name="firstname"
                         value={firstname}
                         onChange={(e)=>onChange(e)}

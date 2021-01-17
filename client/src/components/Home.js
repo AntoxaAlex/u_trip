@@ -31,19 +31,15 @@ const Home = ({getAllProfiles, getCurrentProfile, getAllTrips, getCurrentTrip,co
         getAllTrips()
     },[])
 
-
-    if (navigator.geolocation) {
+    useEffect(()=>{
         navigator.geolocation.getCurrentPosition((position) =>{
             setCurrentPosition({...currentPosition,lat: parseFloat(position.coords.latitude), lng: parseFloat(position.coords.longitude)})
             if(currentPosition.lat && currentPosition.lng && currentPosition.lat !== "" && currentPosition.lng !== "" && !trips.loading){
-                const nearTrips = trips.trips.filter(trip=> calculateDistance(parseFloat(trip.st_point.sp_latitude), currentPosition.lat, parseFloat(trip.st_point.sp_longitude), currentPosition.lng, 6371) < 500);
+                const nearTrips = trips.trips.filter(trip=> calculateDistance(parseFloat(trip.st_point.sp_latitude), currentPosition.lat, parseFloat(trip.st_point.sp_longitude), currentPosition.lng, 6371) < 700);
                 setNearTripDist(nearTrips)
             }
         });
-    } else {
-        console.log("Geolocation is not supported by this browser.");
-    }
-
+    },[trips])
 
     return (
         <Fragment>
@@ -102,11 +98,11 @@ const Home = ({getAllProfiles, getCurrentProfile, getAllTrips, getCurrentTrip,co
                             </Fragment>}
                         </div>
                     </header>
-                    {!profile.loading && !trips.loading && <main>
+                    {!profile.loading && !trips.loading && nearTripsDist.length > 5 && <main>
                         <div id="homeDivContent" className="p-3">
-                            {trips.trips && nearTripsDist.length > 0 ? (<Fragment>
+                            {trips.trips ? (<Fragment>
                                 <div id="tripsNearYouContainer">
-                                    <h3 className="homeContentHeader">Trips near you</h3>
+                                    <h2 className="homeContentHeader">Trips near you</h2>
                                     <div id="tripsNearYou">
                                         {(nearTripsDist.filter((trip,i)=>i<6)).map((trip,i)=>{
                                             return(
@@ -128,13 +124,13 @@ const Home = ({getAllProfiles, getCurrentProfile, getAllTrips, getCurrentTrip,co
                             </Fragment>) : null}
                             {!profile.loading && profile.profiles? (<Fragment>
                                 <div id="bestUsersContainer">
-                                    <h3 className="homeContentHeader">Best users</h3>
+                                    <h2 className="homeContentHeader">Best users</h2>
                                     <div id="bestUsersDiv">
-                                        {(profile.profiles.filter((user,i)=>i<6)).sort((a,b)=>{
+                                        {profile.profiles.sort((a,b)=>{
                                             if(a.level > b.level) return -1;
                                             if(a.level < b.level) return 1;
                                             return 0
-                                        }).map((user,i)=>{
+                                        }).filter((user,i)=>i<6).map((user,i)=>{
                                             return(
                                                 <div key={i} className="userGridItem">
                                                     <img src={user.imageUrl} className="rounded-circle" style={{width: "100px", height: "100px", border: "green", marginBottom: "40px"}} alt="..."/>
@@ -175,15 +171,15 @@ const Home = ({getAllProfiles, getCurrentProfile, getAllTrips, getCurrentTrip,co
                             </Fragment>): null}
                             {!trips.loading && trips.trips ? (<Fragment>
                                 <div id="bestTripsContainer">
-                                    <h3 className="homeContentHeader">Best trips</h3>
+                                    <h2 className="homeContentHeader">Best trips</h2>
                                     <div id="bestTripsDiv">
-                                        {(trips.trips.filter((trip,i)=>i<6)).sort((a,b)=>{
+                                        {(trips.trips.sort((a,b)=>{
                                             if(a.generalRating > b.generalRating) return -1;
                                             if(a.generalRating < b.generalRating) return 1;
                                             return 0
-                                        }).map((trip,i)=>{
+                                        }).filter((trip,i)=>i<6)).map((trip,i)=>{
                                             return(
-                                                <div key={i} className="tripsGridItem">
+                                                <div key={i} className="tripsGridItem mb-3">
                                                     <img src={trip.st_point.sp_image} style={{width: "100%", borderRadius: "15px 15px 0 0"}} alt="..."/>
 
                                                     <div className="tripsInformation" style={{width: "100%"}}>
@@ -250,7 +246,6 @@ Home.propTypes = {
     getCurrentProfile: PropTypes.func.isRequired,
     getAllProfiles: PropTypes.func.isRequired,
     getAllTrips: PropTypes.func.isRequired,
-    completeTrip: PropTypes.func.isRequired,
     getCurrentTrip: PropTypes.func.isRequired
 }
 

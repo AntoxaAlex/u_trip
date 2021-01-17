@@ -35,6 +35,7 @@ const Login = ({login, isAuthenticated}) =>{
                             className="form-control"
                             placeholder="Email Address"
                             autoComplete="off"
+                            autoFocus="autofocus"
                             name="email"
                             value={email}
                             onChange={(e)=>onChange(e)}

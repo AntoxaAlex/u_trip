@@ -6,7 +6,7 @@ import {GET_PROFILE, PROFILE_ERROR, NEW_PROFILE, CHANGE_TAB, CLEAR_PROFILE, GET_
 export const getCurrentProfile = () => async dispatch =>{
     try {
         const res = await axios.get("/profile/me");
-
+        console.log("currentProfile")
         dispatch({
             type: GET_PROFILE,
             payload: res.data
@@ -22,6 +22,7 @@ export const getCurrentProfile = () => async dispatch =>{
 export const getAllProfiles = () => async dispatch =>{
     try{
         const res = await axios.get("/profile/")
+        console.log("allProfiles")
         dispatch({
             type: GET_ALL_PROFILES,
             payload: res.data
