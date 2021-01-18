@@ -32,13 +32,15 @@ const Home = ({getAllProfiles, getCurrentProfile, getAllTrips, getCurrentTrip,co
     },[])
 
     useEffect(()=>{
-        navigator.geolocation.getCurrentPosition((position) =>{
-            setCurrentPosition({...currentPosition,lat: parseFloat(position.coords.latitude), lng: parseFloat(position.coords.longitude)})
-            if(currentPosition.lat && currentPosition.lng && currentPosition.lat !== "" && currentPosition.lng !== "" && !trips.loading){
-                const nearTrips = trips.trips.filter(trip=> calculateDistance(parseFloat(trip.st_point.sp_latitude), currentPosition.lat, parseFloat(trip.st_point.sp_longitude), currentPosition.lng, 6371) < 700);
-                setNearTripDist(nearTrips)
-            }
-        });
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) =>{
+                setCurrentPosition({...currentPosition,lat: parseFloat(position.coords.latitude), lng: parseFloat(position.coords.longitude)})
+                if(currentPosition.lat && currentPosition.lng && currentPosition.lat !== "" && currentPosition.lng !== "" && !trips.loading){
+                    const nearTrips = trips.trips.filter(trip=> calculateDistance(parseFloat(trip.st_point.sp_latitude), currentPosition.lat, parseFloat(trip.st_point.sp_longitude), currentPosition.lng, 6371) < 700);
+                    setNearTripDist(nearTrips)
+                }
+            });
+        }
     },[trips])
 
     return (
