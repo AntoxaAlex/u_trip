@@ -29,19 +29,12 @@ const Home = ({getAllProfiles, getCurrentProfile, getAllTrips, getCurrentTrip,co
         getCurrentTrip()
         getAllProfiles()
         getAllTrips()
-    },[])
-
-    useEffect(()=>{
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((position) =>{
                 setCurrentPosition({...currentPosition,lat: parseFloat(position.coords.latitude), lng: parseFloat(position.coords.longitude)})
-                if(currentPosition.lat && currentPosition.lng && currentPosition.lat !== "" && currentPosition.lng !== "" && !trips.loading){
-                    const nearTrips = trips.trips.filter(trip=> calculateDistance(parseFloat(trip.st_point.sp_latitude), currentPosition.lat, parseFloat(trip.st_point.sp_longitude), currentPosition.lng, 6371) < 700);
-                    setNearTripDist(nearTrips)
-                }
             });
         }
-    },[trips])
+    },[])
 
     return (
         <Fragment>
@@ -102,11 +95,11 @@ const Home = ({getAllProfiles, getCurrentProfile, getAllTrips, getCurrentTrip,co
                     </header>
                     {!profile.loading && !trips.loading && <main>
                         <div id="homeDivContent" className="p-3">
-                            {trips.trips ? (<Fragment>
+                            {trips.trips && currentPosition.lat && currentPosition.lng && currentPosition.lat !== "" && currentPosition.lng !== "" ? (<Fragment>
                                 <div id="tripsNearYouContainer">
                                     <h2 className="homeContentHeader">Trips near you</h2>
                                     <div id="tripsNearYou">
-                                        {(nearTripsDist.filter((trip,i)=>i<6)).map((trip,i)=>{
+                                        {(trips.trips.filter(trip=> calculateDistance(parseFloat(trip.st_point.sp_latitude), currentPosition.lat, parseFloat(trip.st_point.sp_longitude), currentPosition.lng, 6371) < 700).filter((trip,i)=>i<6)).map((trip,i)=>{
                                             return(
                                                 <div key={i} className="nearTripsGridItem">
                                                     <img src={trip.st_point.sp_image} style={{width: "100px", height: "100px", borderRadius: "15px", marginRight: "10px"}} alt="..."/>
