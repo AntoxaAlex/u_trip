@@ -52,6 +52,14 @@ function checkFileType(file, cb) {
     }
 }
 
+const calculateDistance = (lat1, lat2, lng1, lng2, r) =>{
+
+    return Math.acos((Math.sin(lat1 *(Math.PI / 180)) * Math.sin(lat2 *(Math.PI / 180))) +
+        (Math.cos(lat1 *(Math.PI / 180)) * Math.cos(lat2 *(Math.PI / 180)) * Math.cos((lng1 *(Math.PI / 180)) - (lng2 *(Math.PI / 180))))
+    )*r
+
+}
+
 //Find and display my trips
 router.get("/me",auth, async (req, res)=>{
     try{
@@ -86,6 +94,18 @@ router.get("/current", auth, async (req, res)=>{
     }
 })
 
+//Find nearest trips
+router.get("/near/:lat/:lng", async (req, res)=>{
+    try{
+        const trips = await Trip.find();
+        const nearTrips = trips.filter(trip=> calculateDistance(parseFloat(trip.st_point.sp_latitude), req.params.lat, parseFloat(trip.st_point.sp_longitude), req.params.lng, 6371) < 700)
+            .filter((trip,i)=>i<6)
+        res.json(nearTrips)
+    }catch (e) {
+        res.status(500).send("Server error")
+        console.log(e.message)
+    }
+})
 //Confirm trip
 router.put("/:id/confirm",[
     auth

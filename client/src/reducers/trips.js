@@ -5,13 +5,15 @@ import {
     GET_TRIP_BY_ID,
     GET_CURRENT_TRIP,
     GET_ALL_TRIPS,
-    NOT_READY_TRIP
+    NOT_READY_TRIP,
+    GET_NEAREST_TRIPS
 } from "../actions/types";
 
 const initialState ={
     trip: null,
     trips: [],
     currentTrip: null,
+    nearestTrips: [],
     loading: true,
     status: null,
     isCreated: null,
@@ -60,6 +62,14 @@ export default (state = initialState, action) =>{
             return {
                 ...state,
                 currentTrip: payload,
+                loading: false,
+                isCreated: false,
+                status: null
+            }
+        case GET_NEAREST_TRIPS:
+            return {
+                ...state,
+                nearestTrips: payload,
                 loading: false,
                 isCreated: false,
                 status: null

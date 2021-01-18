@@ -7,7 +7,8 @@ import {
     GET_ALL_MY_TRIPS,
     GET_CURRENT_TRIP,
     GET_ALL_TRIPS,
-    NOT_READY_TRIP
+    NOT_READY_TRIP,
+    GET_NEAREST_TRIPS
 } from "./types";
 import axios from "axios";
 import {setAlert} from "./alert";
@@ -74,6 +75,23 @@ export const getTripById = (id) => async dispatch => {
         })
     }
 }
+
+//Get nearest trips
+export const getNearestTrips = (lat,lng) => async dispatch => {
+    try{
+        const res = await axios.get(`/trips/near/${lat}/${lng}`)
+        dispatch({
+            type: GET_NEAREST_TRIPS,
+            payload: res.data
+        })
+    }catch (e) {
+        console.log(e)
+        dispatch({
+            type: NEW_TRIP_FAILED,
+        })
+    }
+}
+
 //Get current trip
 export const getCurrentTrip = () => async dispatch => {
     try{

@@ -18,6 +18,7 @@ export const NEW_TRIP_SUCCESS = "NEW_TRIP_SUCCESS";
 export const NEW_TRIP_FAILED = "NEW_TRIP_FAILED";
 export const GET_ALL_MY_TRIPS = "GET_ALL_MY_TRIPS";
 export const GET_ALL_TRIPS = "GET_ALL_TRIPS";
+export const GET_NEAREST_TRIPS = "GET_NEAREST_TRIPS";
 export const GET_CURRENT_TRIP = "GET_CURRENT_TRIP";
 export const NOT_READY_TRIP = "NOT_READY_TRIP";
 export const GET_TRIP_BY_ID = "GET_TRIP_BY_ID";

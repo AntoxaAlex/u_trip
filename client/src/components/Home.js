@@ -1,28 +1,19 @@
 import React, {useEffect, useState, Fragment }from 'react';
 import {connect} from "react-redux";
 import {getAllProfiles, getCurrentProfile} from "../actions/profile";
-import {getAllTrips, getCurrentTrip,confirmTrip} from "../actions/trips";
+import {getAllTrips, getCurrentTrip,confirmTrip,getNearestTrips} from "../actions/trips";
 import Spinner from "./layout/Spinner";
 import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
 import ReactStars from "react-rating-stars-component";
 import moment from "moment";
 
-const Home = ({getAllProfiles, getCurrentProfile, getAllTrips, getCurrentTrip,confirmTrip, trips, profile, auth}) => {
+const Home = ({getAllProfiles, getCurrentProfile, getAllTrips,getNearestTrips, getCurrentTrip,confirmTrip, trips, profile, auth}) => {
 
-    const[nearTripsDist, setNearTripDist] = useState([])
     const[currentPosition, setCurrentPosition] = useState({
         lat: "",
         lng: ""
     })
-
-    const calculateDistance = (lat1, lat2, lng1, lng2, r) =>{
-
-        return Math.acos((Math.sin(lat1 *(Math.PI / 180)) * Math.sin(lat2 *(Math.PI / 180))) +
-            (Math.cos(lat1 *(Math.PI / 180)) * Math.cos(lat2 *(Math.PI / 180)) * Math.cos((lng1 *(Math.PI / 180)) - (lng2 *(Math.PI / 180))))
-        )*r
-
-    }
 
     useEffect(()=>{
         getCurrentProfile()
@@ -35,6 +26,10 @@ const Home = ({getAllProfiles, getCurrentProfile, getAllTrips, getCurrentTrip,co
             });
         }
     },[])
+
+    useEffect(()=>{
+        getNearestTrips(currentPosition.lat, currentPosition.lng)
+    },[currentPosition.lat, currentPosition.lng])
 
     return (
         <Fragment>
@@ -95,11 +90,11 @@ const Home = ({getAllProfiles, getCurrentProfile, getAllTrips, getCurrentTrip,co
                     </header>
                     {!profile.loading && !trips.loading && <main>
                         <div id="homeDivContent" className="p-3">
-                            {trips.trips && currentPosition.lat && currentPosition.lng && currentPosition.lat !== "" && currentPosition.lng !== "" ? (<Fragment>
+                            {trips.nearestTrips ? (<Fragment>
                                 <div id="tripsNearYouContainer">
                                     <h2 className="homeContentHeader">Trips near you</h2>
                                     <div id="tripsNearYou">
-                                        {(trips.trips.filter(trip=> calculateDistance(parseFloat(trip.st_point.sp_latitude), currentPosition.lat, parseFloat(trip.st_point.sp_longitude), currentPosition.lng, 6371) < 700).filter((trip,i)=>i<6)).map((trip,i)=>{
+                                        {trips.nearestTrips.map((trip,i)=>{
                                             return(
                                                 <div key={i} className="nearTripsGridItem">
                                                     <img src={trip.st_point.sp_image} style={{width: "100px", height: "100px", borderRadius: "15px", marginRight: "10px"}} alt="..."/>
@@ -239,6 +234,7 @@ Home.propTypes = {
     auth: PropTypes.object.isRequired,
     profile: PropTypes.object.isRequired,
     getCurrentProfile: PropTypes.func.isRequired,
+    getNearestTrips: PropTypes.func.isRequired,
     getAllProfiles: PropTypes.func.isRequired,
     getAllTrips: PropTypes.func.isRequired,
     getCurrentTrip: PropTypes.func.isRequired
@@ -249,4 +245,4 @@ const mapStateToProps = state => ({
     profile: state.profile,
     auth: state.auth
 })
-export default connect(mapStateToProps, {getAllProfiles, getAllTrips, getCurrentProfile, getCurrentTrip,confirmTrip})(Home);
+export default connect(mapStateToProps, {getAllProfiles, getAllTrips, getCurrentProfile, getCurrentTrip,confirmTrip,getNearestTrips})(Home);
