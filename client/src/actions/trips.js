@@ -79,7 +79,7 @@ export const getCurrentTrip = () => async dispatch => {
     try{
         const res = await axios.get("/trips/current")
         console.log("currentTrip")
-        if(res.data){
+        if(!res.data.trip){
             if(res.data.status === "not ready"){
                 dispatch({
                     type: NOT_READY_TRIP,

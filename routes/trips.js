@@ -72,7 +72,7 @@ router.get("/me",auth, async (req, res)=>{
 router.get("/current", auth, async (req, res)=>{
     try{
         if(!req.user.id){
-            res.json(null)
+            res.json({trip:null})
         }
         const trip = await Trip.findOne({"team.user": {$eq: req.user.id}, isCompleted: false, isTripReady: true})
         if(!trip){
@@ -81,7 +81,7 @@ router.get("/current", auth, async (req, res)=>{
                 res.json({id: notReadyTrip, status: "not ready"})
             }
         } else {
-            res.json(null)
+            res.json({trip:null})
         }
     }catch (e) {
         res.status(500).send("Server error")
