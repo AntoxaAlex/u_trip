@@ -102,7 +102,7 @@ const Home = ({getAllProfiles, getCurrentProfile, getAllTrips,getNearestTrips, g
                                 <div id="tripsNearYouContainer">
                                     <h2 className="homeContentHeader">Trips near you</h2>
                                     <div id="tripsNearYou">
-                                        {trips.nearestTrips.map((trip,i)=>{
+                                        {trips.nearestTrips && trips.nearestTrips.map((trip,i)=>{
                                             return(
                                                 <div key={i} className="nearTripsGridItem">
                                                     <img src={trip.st_point.sp_image} style={{width: "100px", height: "100px", borderRadius: "15px", marginRight: "10px"}} alt="..."/>
