@@ -15,6 +15,14 @@ const Home = ({getAllProfiles, getCurrentProfile, getAllTrips,getNearestTrips, g
         lng: ""
     })
 
+    const calculateDistance = (lat1, lat2, lng1, lng2, r) =>{
+
+        return Math.acos((Math.sin(lat1 *(Math.PI / 180)) * Math.sin(lat2 *(Math.PI / 180))) +
+            (Math.cos(lat1 *(Math.PI / 180)) * Math.cos(lat2 *(Math.PI / 180)) * Math.cos((lng1 *(Math.PI / 180)) - (lng2 *(Math.PI / 180))))
+        )*r
+
+    }
+
     useEffect(()=>{
         getCurrentProfile()
         getCurrentTrip()
