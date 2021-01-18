@@ -79,16 +79,18 @@ export const getCurrentTrip = () => async dispatch => {
     try{
         const res = await axios.get("/trips/current")
         console.log("currentTrip")
-        if(res.data.status === "not ready"){
-            dispatch({
-                type: NOT_READY_TRIP,
-                payload: res.data
-            })
-        } else {
-            dispatch({
-                type: GET_CURRENT_TRIP,
-                payload: res.data
-            })
+        if(res.data){
+            if(res.data.status === "not ready"){
+                dispatch({
+                    type: NOT_READY_TRIP,
+                    payload: res.data
+                })
+            } else {
+                dispatch({
+                    type: GET_CURRENT_TRIP,
+                    payload: res.data
+                })
+            }
         }
     }catch (e) {
         console.log(e)

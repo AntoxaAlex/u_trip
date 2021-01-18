@@ -81,7 +81,7 @@ router.get("/current", auth, async (req, res)=>{
                 res.json({id: notReadyTrip, status: "not ready"})
             }
         } else {
-            res.json(trip)
+            res.json(null)
         }
     }catch (e) {
         res.status(500).send("Server error")

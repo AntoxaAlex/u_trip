@@ -15,7 +15,6 @@ const Dashboard = ({getCurrentProfile, getAllMyTrips, getCurrentTrip, completeTr
         getCurrentProfile()
         getCurrentTrip()
         getAllMyTrips()
-        console.log("1")
     },[])
 
     useEffect(()=>{
