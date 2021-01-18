@@ -63,7 +63,8 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
                 )
             })
         }
-    },[trip, myProfile, userLoading, loading])
+        console.log("1")
+    },[userLoading, loading])
 
     const [displayInfo, setInfo] =useState({
         st_point_card: false,

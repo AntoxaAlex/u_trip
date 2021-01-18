@@ -16,6 +16,9 @@ const DashboardById = ({getProfileById, getAllUserTrips, getUserCurrentTrip, aut
         getProfileById(id)
         getUserCurrentTrip(id)
         getAllUserTrips(id)
+    },[])
+
+    useEffect(()=>{
         const newTeam = []
         trips.map((trip)=>{
             trip.team.map((teammate, )=>{
@@ -31,8 +34,8 @@ const DashboardById = ({getProfileById, getAllUserTrips, getUserCurrentTrip, aut
             }
         })
         setTripFriends(newFriendsArr)
-    },[id,trips])
-
+        console.log("2")
+    },[trips])
 
     const [displayLinks, setDisplay] =useState(false)
     const[selectedIcon, setIconTip] = useState(null)
