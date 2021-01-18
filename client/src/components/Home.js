@@ -98,7 +98,7 @@ const Home = ({getAllProfiles, getCurrentProfile, getAllTrips, getCurrentTrip,co
                             </Fragment>}
                         </div>
                     </header>
-                    {!profile.loading && !trips.loading && nearTripsDist.length > 5 && <main>
+                    {!profile.loading && !trips.loading && <main>
                         <div id="homeDivContent" className="p-3">
                             {trips.trips ? (<Fragment>
                                 <div id="tripsNearYouContainer">

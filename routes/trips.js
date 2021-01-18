@@ -71,9 +71,6 @@ router.get("/me",auth, async (req, res)=>{
 //Find and display current trip
 router.get("/current", auth, async (req, res)=>{
     try{
-        if(!req.user.id){
-            res.json({trip:null})
-        }
         const trip = await Trip.findOne({"team.user": {$eq: req.user.id}, isCompleted: false, isTripReady: true})
         if(!trip){
             const notReadyTrip = await Trip.findOne({"team.user": {$eq: req.user.id}, isCompleted: false, isTripReady: false})
