@@ -389,8 +389,7 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
                                     </Fragment>}
                                     {displayInfo.fn_destination_card &&  <Fragment>
                                         <div className="card m-auto p-3" style={{width: "18rem", position: "relative", transform: "rotate(10deg)"}}>
-                                            {document.getElementById("camp_information").classList.contains("showPhotoClass") &&
-                                            document.getElementById("camp_information").getAnimations() ? (<Fragment>
+                                            {document.getElementById("camp_information").classList.contains("showPhotoClass") ? (<Fragment>
                                                 <img
                                                     alt=""
                                                     src="https://res.cloudinary.com/antoxaalex/image/upload/v1607177511/backgrounds/pushpin-147918_640_y0u3dz.png"
@@ -418,8 +417,7 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
                                     </Fragment>}
                                     {displayInfo.camp_cards && <Fragment>
                                         <div className="card m-auto p-3" style={{width: "18rem", position: "relative", transform: "rotate(10deg)"}}>
-                                            {document.getElementById("camp_information").classList.contains("showPhotoClass") &&
-                                            document.getElementById("camp_information").getAnimations() ? (<Fragment>
+                                            {document.getElementById("camp_information").classList.contains("showPhotoClass") ? (<Fragment>
                                                 <img
                                                     alt=""
                                                     src="https://res.cloudinary.com/antoxaalex/image/upload/v1607177511/backgrounds/pushpin-147918_640_y0u3dz.png"
