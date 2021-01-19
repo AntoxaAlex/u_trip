@@ -36,8 +36,10 @@ const Home = ({getAllProfiles, getCurrentProfile, getAllTrips,getNearestTrips, g
     },[])
 
     useEffect(()=>{
-        getNearestTrips(currentPosition.lat, currentPosition.lng)
-    },[currentPosition.lat, currentPosition.lng])
+        if(currentPosition.lat !== "" && currentPosition.lat !== ""){
+            getNearestTrips(currentPosition.lat, currentPosition.lng)
+        }
+    },[currentPosition.lat, currentPosition.lng, getNearestTrips])
 
     return (
         <Fragment>

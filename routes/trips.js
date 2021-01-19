@@ -98,7 +98,7 @@ router.get("/current", auth, async (req, res)=>{
 router.get("/near/:lat/:lng", async (req, res)=>{
     try{
         const trips = await Trip.find();
-        const nearTrips = trips.filter(trip=> calculateDistance(parseFloat(trip.st_point.sp_latitude), req.params.lat, parseFloat(trip.st_point.sp_longitude), req.params.lng, 6371) < 700)
+        const nearTrips = await trips.filter(trip=> calculateDistance(parseFloat(trip.st_point.sp_latitude), req.params.lat, parseFloat(trip.st_point.sp_longitude), req.params.lng, 6371) < 700)
             .filter((trip,i)=>i<6)
         res.json(nearTrips)
     }catch (e) {
