@@ -27,10 +27,16 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
     })
     const[displayInfoState, setDisplayInfoState] = useState("")
 
+    const [displayInfo, setInfo] =useState({
+        st_point_card: false,
+        fn_destination_card: false,
+        camp_cards: false
+    })
+
 
     useEffect(()=>{
         getTripById(id)
-    },[id, displayInfoState])
+    },[id, displayInfoState, displayInfo])
 
     useEffect(()=>{
         if(trip){
@@ -68,12 +74,6 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
             })
         }
     },[trip])
-
-    const [displayInfo, setInfo] =useState({
-        st_point_card: false,
-        fn_destination_card: false,
-        camp_cards: false
-    })
 
     const [campInfo, setCampInfo] =useState({
         image: "",
