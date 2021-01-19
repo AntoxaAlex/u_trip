@@ -25,11 +25,12 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
     const[commentForm, editCommentForm] = useState({
         text: ""
     })
+    const[displayInfoState, setDisplayInfoState] = useState("")
 
 
     useEffect(()=>{
         getTripById(id)
-    },[id])
+    },[id, displayInfoState])
 
     useEffect(()=>{
         if(trip){
@@ -66,7 +67,6 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
                 )
             })
         }
-        console.log(trip)
     },[trip])
 
     const [displayInfo, setInfo] =useState({
@@ -103,10 +103,10 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
         if(document.getElementById("camp_information").classList.contains("showInfoClass")){
             document.getElementById("camp_information").classList.remove("showInfoClass")
             document.getElementById("camp_information").classList.add("showPhotoClass")
+            setDisplayInfoState("showPhotoClass")
         }
         if(id === "st_point" && displayInfo){
-            // setInfo({...displayInfo, st_point_card: true, fn_destination_card: false, camp_cards: false})
-            console.log(displayInfo)
+            setInfo({...displayInfo, st_point_card: true, fn_destination_card: false, camp_cards: false})
             setCenter({...centerMap,
                 isClicked: true,
                 latitude: trip.st_point.sp_latitude,
@@ -114,16 +114,14 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
             })
 
         }else if(id === "fn_destination" && displayInfo){
-            // setInfo({...displayInfo, fn_destination_card: true, st_point_card: false, camp_cards: false})
-            console.log(displayInfo)
+            setInfo({...displayInfo, fn_destination_card: true, st_point_card: false, camp_cards: false})
             setCenter({...centerMap,
                 isClicked: true,
                 latitude: trip.fn_destination.fd_latitude,
                 longitude: trip.fn_destination.fd_longitude
             })
         }else{
-            // setInfo({...displayInfo, camp_cards: true, st_point_card: false, fn_destination_card: false})
-            console.log(displayInfo)
+            setInfo({...displayInfo, camp_cards: true, st_point_card: false, fn_destination_card: false})
             setCampInfo({ ...campInfo,
                 image: trip.campContent[index].campImage,
                 title: trip.campContent[index].campTitle,
@@ -144,9 +142,11 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
             if(div.classList.contains("showInfoClass")){
                 div.classList.remove("showInfoClass")
                 div.classList.add("showPhotoClass")
-            } else if(!div.classList.contains("showInfoClass")) {
+                setDisplayInfoState("showPhotoClass")
+            } else if(div.classList.contains("showPhotoClass")) {
                 div.classList.remove("showPhotoClass")
                 div.classList.add("showInfoClass")
+                setDisplayInfoState("showInfoClass")
             }
 
     }
@@ -361,8 +361,7 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
                                 <div id="camp_information" className="mx-auto my-5 showPhotoClass" onClick={()=>rotateDiv()}>
                                     {displayInfo.st_point_card &&  <Fragment>
                                         <div className="card m-auto p-3" style={{width: "18rem", position: "relative", transform: "rotate(10deg)"}}>
-                                            {document.getElementById("camp_information").classList.contains("showPhotoClass") &&
-                                            document.getElementById("camp_information").getAnimations() ? (<Fragment>
+                                            {document.getElementById("camp_information").classList.contains("showPhotoClass") ? (<Fragment>
                                                 <img
                                                     alt=""
                                                     src="https://res.cloudinary.com/antoxaalex/image/upload/v1607177511/backgrounds/pushpin-147918_640_y0u3dz.png"
