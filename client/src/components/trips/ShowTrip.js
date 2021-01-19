@@ -105,7 +105,7 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
             document.getElementById("camp_information").classList.add("showPhotoClass")
         }
         if(id === "st_point" && displayInfo){
-            setInfo({...displayInfo, st_point_card: true, fn_destination_card: false, camp_cards: false})
+            // setInfo({...displayInfo, st_point_card: true, fn_destination_card: false, camp_cards: false})
             console.log(displayInfo)
             setCenter({...centerMap,
                 isClicked: true,
@@ -114,7 +114,7 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
             })
 
         }else if(id === "fn_destination" && displayInfo){
-            setInfo({...displayInfo, fn_destination_card: true, st_point_card: false, camp_cards: false})
+            // setInfo({...displayInfo, fn_destination_card: true, st_point_card: false, camp_cards: false})
             console.log(displayInfo)
             setCenter({...centerMap,
                 isClicked: true,
@@ -122,7 +122,7 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
                 longitude: trip.fn_destination.fd_longitude
             })
         }else{
-            setInfo({...displayInfo, camp_cards: true, st_point_card: false, fn_destination_card: false})
+            // setInfo({...displayInfo, camp_cards: true, st_point_card: false, fn_destination_card: false})
             console.log(displayInfo)
             setCampInfo({ ...campInfo,
                 image: trip.campContent[index].campImage,
