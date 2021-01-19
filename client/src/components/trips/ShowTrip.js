@@ -8,7 +8,6 @@ import {addLike} from "../../actions/trips";
 import Spinner from "../layout/Spinner";
 import {Link} from "react-router-dom";
 import ReactStars from "react-rating-stars-component";
-import {wrapMapToPropsConstant} from "react-redux/lib/connect/wrapMapToProps";
 
 const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, removeCommentReply, reachPoint, editComment, trips:{trip, loading}, profile:{myProfile}, profileLoading, auth:{user}, userLoading}) => {
 
@@ -107,21 +106,24 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
         }
         if(id === "st_point" && displayInfo){
             setInfo({...displayInfo, st_point_card: true, fn_destination_card: false, camp_cards: false})
-            // setCenter({...centerMap,
-            //     isClicked: true,
-            //     latitude: trip.st_point.sp_latitude,
-            //     longitude: trip.st_point.sp_longitude
-            // })
+            console.log(displayInfo)
+            setCenter({...centerMap,
+                isClicked: true,
+                latitude: trip.st_point.sp_latitude,
+                longitude: trip.st_point.sp_longitude
+            })
 
         }else if(id === "fn_destination" && displayInfo){
             setInfo({...displayInfo, fn_destination_card: true, st_point_card: false, camp_cards: false})
-            // setCenter({...centerMap,
-            //     isClicked: true,
-            //     latitude: trip.fn_destination.fd_latitude,
-            //     longitude: trip.fn_destination.fd_longitude
-            // })
+            console.log(displayInfo)
+            setCenter({...centerMap,
+                isClicked: true,
+                latitude: trip.fn_destination.fd_latitude,
+                longitude: trip.fn_destination.fd_longitude
+            })
         }else{
             setInfo({...displayInfo, camp_cards: true, st_point_card: false, fn_destination_card: false})
+            console.log(displayInfo)
             setCampInfo({ ...campInfo,
                 image: trip.campContent[index].campImage,
                 title: trip.campContent[index].campTitle,
@@ -129,11 +131,11 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
                 latitude: trip.campContent[index].campLatitude,
                 longitude: trip.campContent[index].campLongitude
             })
-            // setCenter({...centerMap,
-            //     isClicked: true,
-            //     latitude: trip.campContent[index].campLatitude,
-            //     longitude: trip.campContent[index].campLongitude
-            // })
+            setCenter({...centerMap,
+                isClicked: true,
+                latitude: trip.campContent[index].campLatitude,
+                longitude: trip.campContent[index].campLongitude
+            })
         }
     }
 
@@ -272,7 +274,7 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
                                                         type="button"
                                                         className="btn btn-sm bg-transparent"
                                                         style={{color: trip.st_point.isSpReached ? "green" : "gray"}}
-                                                        onClick={()=>showCamp("st_point")}
+                                                        onClick={()=>showCamp("st_point",0)}
                                                     >{trip.st_point.sp_title}</button>
                                                 </div>
                                                 {!trip.st_point.isSpReached ? ( <form className="col-2">
@@ -335,7 +337,7 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
                                                         type="button"
                                                         className="btn btn-sm bg-transparent"
                                                         style={{color: trip.fn_destination.isFdReached ? "green" : "gray"}}
-                                                        onClick={()=>showCamp("fn_destination")}
+                                                        onClick={()=>showCamp("fn_destination",0)}
                                                     >{trip.fn_destination.fd_title}</button>
                                                 </div>
                                                 {!trip.fn_destination.isFdReached ? (<form className="col-2">
