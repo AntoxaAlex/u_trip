@@ -107,19 +107,19 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
         }
         if(id === "st_point" && displayInfo){
             setInfo({...displayInfo, st_point_card: true, fn_destination_card: false, camp_cards: false})
-            setCenter({...centerMap,
-                isClicked: true,
-                latitude: trip.st_point.sp_latitude,
-                longitude: trip.st_point.sp_longitude
-            })
+            // setCenter({...centerMap,
+            //     isClicked: true,
+            //     latitude: trip.st_point.sp_latitude,
+            //     longitude: trip.st_point.sp_longitude
+            // })
 
         }else if(id === "fn_destination" && displayInfo){
             setInfo({...displayInfo, fn_destination_card: true, st_point_card: false, camp_cards: false})
-            setCenter({...centerMap,
-                isClicked: true,
-                latitude: trip.fn_destination.fd_latitude,
-                longitude: trip.fn_destination.fd_longitude
-            })
+            // setCenter({...centerMap,
+            //     isClicked: true,
+            //     latitude: trip.fn_destination.fd_latitude,
+            //     longitude: trip.fn_destination.fd_longitude
+            // })
         }else{
             setInfo({...displayInfo, camp_cards: true, st_point_card: false, fn_destination_card: false})
             setCampInfo({ ...campInfo,
@@ -129,11 +129,11 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
                 latitude: trip.campContent[index].campLatitude,
                 longitude: trip.campContent[index].campLongitude
             })
-            setCenter({...centerMap,
-                isClicked: true,
-                latitude: trip.campContent[index].campLatitude,
-                longitude: trip.campContent[index].campLongitude
-            })
+            // setCenter({...centerMap,
+            //     isClicked: true,
+            //     latitude: trip.campContent[index].campLatitude,
+            //     longitude: trip.campContent[index].campLongitude
+            // })
         }
     }
 
