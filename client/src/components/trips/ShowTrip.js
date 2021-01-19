@@ -29,6 +29,9 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
 
     useEffect(()=>{
         getTripById(id)
+    },[id])
+
+    useEffect(()=>{
         if(trip){
             setStyle({
                 bg: trip.type === "Mountains" ? "linear-gradient(to right,rgba(15,32,39,0.5),rgba(32,58,67,0.5), rgba(44,83,100,0.5))" : (
@@ -63,8 +66,7 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
                 )
             })
         }
-        console.log("1")
-    },[userLoading, loading])
+    },[trip])
 
     const [displayInfo, setInfo] =useState({
         st_point_card: false,
