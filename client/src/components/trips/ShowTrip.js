@@ -8,6 +8,7 @@ import {addLike} from "../../actions/trips";
 import Spinner from "../layout/Spinner";
 import {Link} from "react-router-dom";
 import ReactStars from "react-rating-stars-component";
+import {wrapMapToPropsConstant} from "react-redux/lib/connect/wrapMapToProps";
 
 const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, removeCommentReply, reachPoint, editComment, trips:{trip, loading}, profile:{myProfile}, profileLoading, auth:{user}, userLoading}) => {
 
@@ -66,6 +67,7 @@ const ShowTrip = ({getTripById, createComment, createReply, addLike, setRating, 
                 )
             })
         }
+        console.log(trip)
     },[trip])
 
     const [displayInfo, setInfo] =useState({
